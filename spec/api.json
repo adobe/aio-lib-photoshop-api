@@ -1,0 +1,79 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Aio-lib-creativecloud-automation REST API requests",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://my-server.com/"
+    }
+  ],
+  "components": {
+    "schemas": {
+    },
+    "requestBodies": {
+    },
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Api-Key"
+      }
+    },
+    "parameters": {
+      "Cache-Control": {
+        "in": "header",
+        "name": "Cache-Control",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "no-cache"
+        }
+      },
+      "Content-Type": {
+        "in": "header",
+        "name": "Content-Type",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "default": "application/json;charset=utf-8"
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "BearerAuth": []
+    }
+  ],
+  "paths": {
+    "/something": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Cache-Control"
+        },
+        {
+          "$ref": "#/components/parameters/Content-Type"
+        }
+      ],
+      "get": {
+        "summary": "Get something",
+        "operationId": "getSomething",
+        "tags": ["mytag"],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    }
+  }
+}
