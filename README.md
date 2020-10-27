@@ -23,8 +23,6 @@ governing permissions and limitations under the License.
 The Rest API is documented at:
 
 - [Public Documentation](https://adobedocs.github.io/photoshop-api-docs-pre-release/#api-Photoshop)
-- [OpenAPI Spec](./spec/api.json)
-- [OpenAPI Documentation](https://git.corp.adobe.com/pages/bmanen/aio-lib-photoshop/)
 
 ### Installing
 
