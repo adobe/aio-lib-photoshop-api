@@ -10,7 +10,7 @@ governing permissions and limitations under the License.
 */
 
 const Swagger = require('swagger-client')
-const loggerNamespace = 'aio-lib-photoshop'
+const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
 const { reduceError, requestInterceptor, responseInterceptor, createRequestOptions } = require('./helpers')
 const { codes } = require('./SDKErrors')

@@ -1,14 +1,14 @@
 {
-  "name": "@nui/aio-lib-photoshop",
+  "name": "@adobe/aio-lib-photoshop-api",
   "publishConfig": {
     "registry": "https://artifactory.corp.adobe.com/artifactory/api/npm/npm-nui-release-local"
   },
   "version": "0.0.3",
-  "description": "Adobe I/O Creative Cloud Automation SDK",
+  "description": "AAdobe I/O Photoshop Automation SDK",
   "homepage": "https://github.com/AdobeDocs/photoshop-api-docs",
-  "repository": "https://github.com/adobe/aio-lib-photoshop",
+  "repository": "https://github.com/adobe/aio-lib-photoshop-api",
   "bugs": {
-    "url": "https://github.com/adobe/aio-lib-photoshop/issues"
+    "url": "https://github.com/adobe/aio-lib-photoshop-api/issues"
   },
   "license": "Apache-2.0",
   "main": "src/index.js",

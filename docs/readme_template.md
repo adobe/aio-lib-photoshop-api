@@ -23,13 +23,11 @@ governing permissions and limitations under the License.
 The Rest API is documented at:
 
 - [Public Documentation](https://adobedocs.github.io/photoshop-api-docs-pre-release/#api-Photoshop)
-- [OpenAPI Spec](./spec/api.json)
-- [OpenAPI Documentation](https://git.corp.adobe.com/pages/bmanen/aio-lib-photoshop/)
 
 ### Installing
 
 ```bash
-$ npm install @adobe/aio-lib-photoshop
+$ npm install @adobe/aio-lib-photoshop-api
 ```
 
 ### Usage
@@ -37,7 +35,7 @@ $ npm install @adobe/aio-lib-photoshop
 1) Initialize the SDK
 
 ```javascript
-const sdk = require('@adobe/aio-lib-photoshop')
+const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
   //initialize sdk
@@ -51,7 +49,7 @@ Configuring the SDK like this will make plain paths reference locations in Adobe
 
 ```javascript
 const libFiles = require('@adobe/aio-lib-files')
-const sdk = require('@adobe/aio-lib-photoshop')
+const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
   // initialize sdk
@@ -66,7 +64,7 @@ This will automatically detect the storage type of `http://host/input.jpg` (e.g.
 
 ```javascript
 const libFiles = require('@adobe/aio-lib-files')
-const sdk = require('@adobe/aio-lib-photoshop')
+const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
   // initialize sdk
