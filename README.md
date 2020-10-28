@@ -45,7 +45,7 @@ async function sdkTest() {
 
 2) Remove the background of a photo
 
-This will automatically detect the storage type of `http://host/input.jpg` (e.g. Azure, External) and call the service to cutout the background, ask for JPEG output, and store the result in Adobe I/O Files under `path/output.jpg`.
+This is the example of using the storage type of `http://host/input.jpg` (External) and call the service to cutout the background, ask for JPEG output, and store the result in Adobe Creative Cloud file storage `path/output.jpg`.
 
 ```javascript
 const sdk = require('@adobe/aio-lib-photoshop-api')
