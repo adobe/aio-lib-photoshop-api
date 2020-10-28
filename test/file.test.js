@@ -38,7 +38,7 @@ test('resolveAIOAbsPath', async () => {
   })
   const result = await resolver.resolveInput('/path/to/file')
   expect(result).toEqual({
-    href: 'https://host/r/3600//path/to/file',
+    href: 'https://host/r/3600/path/to/file',
     storage: 'external'
   })
 })
