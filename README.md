@@ -12,7 +12,7 @@ governing permissions and limitations under the License.
 
 [![Version](https://img.shields.io/npm/v/@adobe.svg)](https://npmjs.org/package/@adobe)
 [![Downloads/week](https://img.shields.io/npm/dw/@adobe.svg)](https://npmjs.org/package/@adobe)
-[![Build Status](https://travis-ci.com/adobe.svg?branch=master)](https://travis-ci.com/adobe)
+[![Build Status](https://travis-ci.com/adobe/aio-lib-photoshop-api.svg?branch=master)](https://travis-ci.com/adobe/aio-lib-photoshop-api)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Greenkeeper badge](https://badges.greenkeeper.io/adobe.svg)](https://greenkeeper.io/)
 [![Codecov Coverage](https://img.shields.io/codecov/c/github/adobe/master.svg?style=flat-square)](https://codecov.io/gh/adobe/)
 
@@ -43,7 +43,37 @@ async function sdkTest() {
 }
 ```
 
-2) Initialize the SDK with Adobe I/O Files access
+2) Remove the background of a photo
+
+This will automatically detect the storage type of `http://host/input.jpg` (e.g. Azure, External) and call the service to cutout the background, ask for JPEG output, and store the result in Adobe I/O Files under `path/output.jpg`.
+
+```javascript
+const sdk = require('@adobe/aio-lib-photoshop-api')
+
+async function sdkTest() {
+  // initialize sdk
+  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
+
+  // call methods
+  try {
+    const result = await client.createCutout({
+      href: 'http://host/input.jpg',
+      storage: sdk.Storage.EXTERNAL
+    }, {
+      href: 'path/output.jpg',
+      storage: sdk.Storage.ADOBE,
+      type: sdk.MimeType.JPEG
+    })
+
+  } catch (e) {
+    console.error(e)
+  }
+}
+```
+
+### Usage with Adobe I/O Files access
+
+1) Initialize the SDK with Adobe I/O Files access
 
 Configuring the SDK like this will make plain paths reference locations in Adobe I/O Files.
 
@@ -58,7 +88,7 @@ async function sdkTest() {
 }
 ```
 
-3) Remove the background of a photo
+2) Remove the background of a photo
 
 This will automatically detect the storage type of `http://host/input.jpg` (e.g. Azure, External) and call the service to cutout the background, ask for JPEG output, and store the result in Adobe I/O Files under `path/output.jpg`.
 
@@ -84,7 +114,7 @@ async function sdkTest() {
     }, {
       href: 'path/output.jpg',
       storage: sdk.Storage.AIO,
-      type: sdk.OutputFormat.JPEG
+      type: sdk.MimeType.JPEG
     })
 
   } catch (e) {
@@ -502,7 +532,7 @@ Extract and return a psd file's layer information
 | input | <code>string</code> \| [<code>Input</code>](#Input) | An object describing an input PSD file.Current support is for files less than 1000MB. |
 | [options] | <code>object</code> | available options to apply to all input files |
 | [options.thumbnails] | <code>object</code> | Include presigned GET URLs to small preview thumbnails for any renderable layer. |
-| [options.thumbnails.type] | <code>types.OutputFormat</code> | desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff" |
+| [options.thumbnails.type] | <code>types.MimeType</code> | desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff" |
 
 <a name="PhotoshopAPI+modifyDocument"></a>
 
