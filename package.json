@@ -4,7 +4,7 @@
     "registry": "https://artifactory.corp.adobe.com/artifactory/api/npm/npm-nui-release-local"
   },
   "version": "0.0.3",
-  "description": "AAdobe I/O Photoshop Automation SDK",
+  "description": "Adobe I/O Photoshop Automation SDK",
   "homepage": "https://github.com/AdobeDocs/photoshop-api-docs",
   "repository": "https://github.com/adobe/aio-lib-photoshop-api",
   "bugs": {
