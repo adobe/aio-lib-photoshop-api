@@ -10,66 +10,117 @@ governing permissions and limitations under the License.
 */
 
 const Swagger = require('swagger-client')
-const loggerNamespace = '@adobe'
+const loggerNamespace = 'aio-lib-photoshop'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
 const { reduceError, requestInterceptor, responseInterceptor, createRequestOptions } = require('./helpers')
 const { codes } = require('./SDKErrors')
-
-require('./types.jsdoc') // for VS Code autocomplete
-/* global MyParameters, Response */ // for linter
+const { Job } = require('./job')
+const { FileResolver } = require('./fileresolver')
+const types = require('./types')
+require('./types')
 
 /**
- * Returns a Promise that resolves with a new Aio-lib-creativecloud-automation object.
+ * Returns a Promise that resolves with a new PhotoshopAPI object.
  *
- * @param {string} tenantId the tenant id
+ * @param {string} orgId IMS organization id
  * @param {string} apiKey the API key for your integration
  * @param {string} accessToken the access token for your integration
- * @returns {Promise<Aio-lib-creativecloud-automation>} a Promise with a Aio-lib-creativecloud-automation object
+ * @param {*} [files] Adobe I/O Files instance
+ * @param {PhotoshopAPIOptions} [options] Options
+ * @returns {Promise<PhotoshopAPI>} a Promise with a PhotoshopAPI object
  */
-function init (tenantId, apiKey, accessToken) {
-  return new Promise((resolve, reject) => {
-    const clientWrapper = new Aio-lib-creativecloud-automation()
-
-    clientWrapper.init(tenantId, apiKey, accessToken)
-      .then(initializedSDK => {
-        logger.debug('sdk initialized successfully')
-        resolve(initializedSDK)
-      })
-      .catch(err => {
-        logger.debug(`sdk init error: ${err}`)
-        reject(err)
-      })
-  })
+async function init (orgId, apiKey, accessToken, files, options) {
+  try {
+    const clientWrapper = new PhotoshopAPI()
+    const initializedSDK = await clientWrapper.init(orgId, apiKey, accessToken, files, options)
+    logger.debug('sdk initialized successfully')
+    return initializedSDK
+  } catch (err) {
+    logger.debug(`sdk init error: ${err}`)
+    throw err
+  }
 }
 
 /**
- * This class provides methods to call your Aio-lib-creativecloud-automation APIs.
- * Before calling any method initialize the instance by calling the `init` method on it
- * with valid values for tenantId, apiKey and accessToken
+ * Translate and throw error
+ *
+ * @param {*} err Error response
  */
-class Aio-lib-creativecloud-automation {
+function throwError (err) {
+  const errType = err.response && err.response.body && err.response.body.type
+  switch (err.status) {
+    case 400:
+      switch (errType) {
+        case 'InputValidationError':
+          throw new codes.ERROR_INPUT_VALIDATION({ messageValues: reduceError(err) })
+        case 'PayloadValidationError':
+          throw new codes.ERROR_PAYLOAD_VALIDATION({ messageValues: reduceError(err) })
+        case 'RequestBodyError':
+          throw new codes.ERROR_REQUEST_BODY({ messageValues: reduceError(err) })
+        default:
+          throw new codes.ERROR_BAD_REQUEST({ messageValues: reduceError(err) })
+      }
+    case 401:
+      throw new codes.ERROR_UNAUTHORIZED({ messageValues: reduceError(err) })
+    case 403:
+      throw new codes.ERROR_AUTH_FORBIDDEN({ messageValues: reduceError(err) })
+    case 404:
+      switch (errType) {
+        case 'FileExistsErrors':
+          throw new codes.ERROR_FILE_EXISTS({ messageValues: reduceError(err) })
+        case 'InputFileExistsErrors':
+          throw new codes.ERROR_INPUT_FILE_EXISTS({ messageValues: reduceError(err) })
+        default:
+          throw new codes.ERROR_RESOURCE_NOT_FOUND({ messageValues: reduceError(err) })
+      }
+    case 415:
+      throw new codes.ERROR_INVALID_CONTENT_TYPE({ messageValues: reduceError(err) })
+    case 500:
+      throw new codes.ERROR_UNDEFINED({ messageValues: reduceError(err) })
+    default:
+      throw new codes.ERROR_UNKNOWN({ messageValues: reduceError(err) })
+  }
+}
+
+/**
+ * This class provides methods to call your PhotoshopAPI APIs.
+ * Before calling any method initialize the instance by calling the `init` method on it
+ * with valid values for orgId, apiKey and accessToken
+ */
+class PhotoshopAPI {
   /**
-   * Initializes a Aio-lib-creativecloud-automation object and returns it.
+   * @typedef {object} PhotoshopAPIOptions
+   * @property {number} [presignExpiryInSeconds=3600] Expiry time of any presigned urls, defaults to 1 hour
+   * @property {boolean} [defaultAdobeCloudPaths] True if paths should be considered references to files in Creative Cloud
+   * @property {boolean} [defaultAIOPaths] True if paths should be considered references to Adobe I/O Files
+   */
+  /**
+   * Initializes the PhotoshopAPI object and returns it.
    *
-   * @param {string} tenantId the tenant id
+   * @param {string} orgId the IMS organization id
    * @param {string} apiKey the API key for your integration
    * @param {string} accessToken the access token for your integration
-   * @returns {Promise<Aio-lib-creativecloud-automation>} a Aio-lib-creativecloud-automation object
+   * @param {*} [files] Adobe I/O Files instance
+   * @param {PhotoshopAPIOptions} [options] Options
+   * @returns {Promise<PhotoshopAPI>} a PhotoshopAPI object
    */
-  async init (tenantId, apiKey, accessToken) {
+  async init (orgId, apiKey, accessToken, files, options) {
     // init swagger client
     const spec = require('../spec/api.json')
-    const swagger = new Swagger({
+    this.sdk = await new Swagger({
       spec: spec,
       requestInterceptor,
       responseInterceptor,
+      authorizations: {
+        BearerAuth: { value: accessToken },
+        ApiKeyAuth: { value: apiKey }
+      },
       usePromise: true
     })
-    this.sdk = (await swagger)
 
     const initErrors = []
-    if (!tenantId) {
-      initErrors.push('tenantId')
+    if (!orgId) {
+      initErrors.push('orgId')
     }
     if (!apiKey) {
       initErrors.push('apiKey')
@@ -79,16 +130,16 @@ class Aio-lib-creativecloud-automation {
     }
 
     if (initErrors.length) {
-      const sdkDetails = { tenantId, apiKey, accessToken }
+      const sdkDetails = { orgId, apiKey, accessToken }
       throw new codes.ERROR_SDK_INITIALIZATION({ sdkDetails, messageValues: `${initErrors.join(', ')}` })
     }
 
     /**
-     * The tenant id
+     * The IMS organization id
      *
      * @type {string}
      */
-    this.tenantId = tenantId
+    this.orgId = orgId
 
     /**
      * The api key from your integration
@@ -104,12 +155,17 @@ class Aio-lib-creativecloud-automation {
      */
     this.accessToken = accessToken
 
+    /**
+     * @private
+     */
+    this.fileResolver = new FileResolver(files, options)
+
     return this
   }
 
-  __createRequestOptions ({ body } = {}) {
+  __createRequestOptions (body = {}) {
     return createRequestOptions({
-      tenantId: this.tenantId,
+      orgId: this.orgId,
       apiKey: this.apiKey,
       accessToken: this.accessToken,
       body
@@ -117,25 +173,308 @@ class Aio-lib-creativecloud-automation {
   }
 
   /**
-   * Get something.
+   * Acquire the current job status
    *
-   * @param {MyParameters} [parameters={}] parameters to pass
-   * @returns {Promise<Response>} the response
+   * The APIs for status updates are defined in the OpenAPI spec, however the status is provided
+   * as a url, and not just a jobId. Instead of parsing the url to extract the jobId, this code is
+   * invoking the url directly but routed through the Swagger client to take advantage of the request
+   * and response interceptor for consistency.
+   *
+   * @private
+   * @param {string} url Job status url
+   * @returns {*} Job status response
    */
-  getSomething (parameters = {}) {
-    const sdkDetails = { parameters }
-
-    return new Promise((resolve, reject) => {
-      this.sdk.apis.mytag.getSomething(parameters, this.__createRequestOptions())
-        .then(response => {
-          resolve(response)
-        })
-        .catch(err => {
-          reject(new codes.ERROR_GET_SOMETHING({ sdkDetails, messageValues: reduceError(err) }))
-        })
+  async __getJobStatus (url) {
+    const response = await Swagger.http({
+      url,
+      headers: {
+        authorization: `Bearer ${this.accessToken}`,
+        'x-api-key': this.apiKey,
+        'x-gw-ims-org-id': this.orgId
+      },
+      method: 'GET',
+      requestInterceptor,
+      responseInterceptor
     })
+    return response.obj
+  }
+
+  /**
+   * Create a cutout mask, and apply it to the input
+   *
+   * @param {string|Input} input Input file
+   * @param {string|Output} output Output file
+   * @returns {Job} Auto cutout job
+   */
+  async createCutout (input, output) {
+    try {
+      const response = await this.sdk.apis.sensei.autoCutout({}, this.__createRequestOptions({
+        input: await this.fileResolver.resolveInput(input),
+        output: await this.fileResolver.resolveOutput(output)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Create a cutout mask
+   *
+   * @param {string|Input} input Input file
+   * @param {string|Output} output Output file
+   * @returns {Job} Auto masking job
+   */
+  async createMask (input, output) {
+    try {
+      const response = await this.sdk.apis.sensei.autoMask({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
+        input: await this.fileResolver.resolveInput(input),
+        output: await this.fileResolver.resolveOutput(output)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Straighten photo
+   *
+   * @param {string|Input} input Input file
+   * @param {string|Output|Output[]} outputs Output file
+   * @returns {Job} Auto straighten job
+   */
+  async straighten (input, outputs) {
+    try {
+      const response = await this.sdk.apis.lightroom.autoStraighten({}, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInput(input),
+        outputs: await this.fileResolver.resolveOutputs(outputs)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Automatically tone photo
+   *
+   * @param {string|Input} input Input file
+   * @param {string|Output} output Output file
+   * @returns {Job} Auto tone job
+   */
+  async autoTone (input, output) {
+    try {
+      const response = await this.sdk.apis.lightroom.autoTone({}, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInput(input),
+        outputs: await this.fileResolver.resolveOutputs(output)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Apply a set of edit parameters on an image
+   *
+   * @param {string|Input} input Input file
+   * @param {string|Output} output Output file
+   * @param {EditPhotoOptions} options Edit options
+   * @returns {Job} Edit photo job
+   */
+  async editPhoto (input, output, options) {
+    try {
+      const response = await this.sdk.apis.lightroom.editPhoto({}, this.__createRequestOptions({
+        inputs: {
+          source: await this.fileResolver.resolveInput(input)
+        },
+        outputs: await this.fileResolver.resolveOutputs(output),
+        options
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Apply a preset on an image
+   *
+   * @param {string|Input} input Input file
+   * @param {string|Input} preset Lightroom preset XMP file
+   * @param {string|Output} output Output file
+   * @returns {Job} Apply preset job
+   */
+  async applyPreset (input, preset, output) {
+    try {
+      const response = await this.sdk.apis.lightroom.applyPreset({}, this.__createRequestOptions({
+        inputs: {
+          source: await this.fileResolver.resolveInput(input),
+          presets: await this.fileResolver.resolveInputs(preset)
+        },
+        outputs: await this.fileResolver.resolveOutputs(output)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Apply a preset on an image
+   *
+   * @param {string|Input} input Input file
+   * @param {string|Output} output Output file
+   * @param {string} xmp Lightroom preset XMP file contents
+   * @returns {Job} Apply preset job
+   */
+  async applyPresetXmp (input, output, xmp) {
+    try {
+      const response = await this.sdk.apis.lightroom.applyPresetXmp({}, this.__createRequestOptions({
+        inputs: {
+          source: await this.fileResolver.resolveInput(input)
+        },
+        outputs: await this.fileResolver.resolveOutputs(output),
+        options: {
+          xmp
+        }
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Create a new psd, optionally with layers, and then generate renditions and/or save as a psd
+   *
+   * @param {string|string[]|Output|Output[]} outputs Desired output
+   * @param {CreateDocumentOptions} options Document create options
+   * @returns {Job} Create document job
+   */
+  async createDocument (outputs, options) {
+    try {
+      const response = await this.sdk.apis.photoshop.createDocument({}, this.__createRequestOptions({
+        outputs: await this.fileResolver.resolveOutputs(outputs),
+        options: await this.fileResolver.resolveInputsDocumentOptions(options)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Extract and return a psd file's layer information
+   *
+   * @param {string|Input} input An object describing an input PSD file.Current support is for files less than 1000MB.
+   * @param {object} [options] available options to apply to all input files
+   * @param {object} [options.thumbnails] Include presigned GET URLs to small preview thumbnails for any renderable layer.
+   * @param {types.OutputFormat} [options.thumbnails.type] desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff"
+   * @returns {Job} Get document manifest job
+   */
+  async getDocumentManifest (input, options) {
+    try {
+      const response = await this.sdk.apis.photoshop.getDocumentManifest({}, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInputs(input),
+        options
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Apply (optional) psd edits and then generate renditions and/or save a new psd
+   *
+   * @param {string|Input} input An object describing an input PSD file. Current support is for files less than 1000MB.
+   * @param {string|string[]|Output|Output[]} outputs Desired output
+   * @param {ModifyDocumentOptions} options Modify document options
+   * @returns {Job} Modify document job
+   */
+  async modifyDocument (input, outputs, options) {
+    try {
+      const response = await this.sdk.apis.photoshop.modifyDocument({}, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInputs(input),
+        outputs: await this.fileResolver.resolveOutputs(outputs),
+        options: await this.fileResolver.resolveInputsDocumentOptions(options)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Create renditions
+   *
+   * @param {string|Input} input An object describing an input file. Currently supported filetypes include: jpeg, png, psd, tiff. Current support is for files less than 1000MB.
+   * @param {string|string[]|Output|Output[]} outputs Desired output
+   * @returns {Job} Create rendition job
+   */
+  async createRendition (input, outputs) {
+    try {
+      const response = await this.sdk.apis.photoshop.createRendition({}, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInputs(input),
+        outputs: await this.fileResolver.resolveOutputs(outputs)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Apply psd edits for replacing embedded smart object and then generate renditions and/or save a new psd
+   *
+   * @param {Input} input An object describing an input PSD file. Current support is for files less than 1000MB.
+   * @param {string|Output|Output[]} outputs Desired output
+   * @param {ReplaceSmartObjectOptions} options Replace smart object options
+   * @returns {Job} Replace smart object job
+   */
+  async replaceSmartObject (input, outputs, options) {
+    try {
+      const response = await this.sdk.apis.photoshop.replaceSmartObject({}, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInputs(input),
+        outputs: await this.fileResolver.resolveOutputs(outputs),
+        options: await this.fileResolver.resolveInputsDocumentOptions(options)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
   }
 }
+
 module.exports = {
-  init: init
+  init,
+  ...types
 }

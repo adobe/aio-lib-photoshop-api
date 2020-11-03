@@ -33,9 +33,9 @@ const Updater = createUpdater(
  */
 const E = ErrorWrapper(
   // The class name for your SDK Error. Your Error objects will be these objects
-  'Aio-lib-creativecloud-automationError',
+  'PhotoshopSDKError',
   // The name of your SDK. This will be a property in your Error objects
-  'Aio-lib-creativecloud-automationSDK',
+  'PhotoshopSDK',
   // the object returned from the CreateUpdater call above
   Updater
   // the base class that your Error class is extending. AioCoreSDKError is the default
@@ -49,4 +49,15 @@ module.exports = {
 
 // Define your error codes with the wrapper
 E('ERROR_SDK_INITIALIZATION', 'SDK initialization error(s). Missing arguments: %s')
-E('ERROR_GET_SOMETHING', 'Something went wrong.')
+E('ERROR_INPUT_VALIDATION', '%s')
+E('ERROR_PAYLOAD_VALIDATION', '%s')
+E('ERROR_REQUEST_BODY', '%s')
+E('ERROR_BAD_REQUEST', '%s')
+E('ERROR_UNAUTHORIZED', '%s')
+E('ERROR_AUTH_FORBIDDEN', '%s')
+E('ERROR_FILE_EXISTS', '%s')
+E('ERROR_INPUT_FILE_EXISTS', '%s')
+E('ERROR_RESOURCE_NOT_FOUND', '%s')
+E('ERROR_INVALID_CONTENT_TYPE', '%s')
+E('ERROR_UNDEFINED', '%s')
+E('ERROR_UNKNOWN', 'Unknown Error: %s')

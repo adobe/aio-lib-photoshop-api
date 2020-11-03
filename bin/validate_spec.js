@@ -1,4 +1,5 @@
-#!/usr/bin/env node
+
+'use strict'
 
 const path = require('path')
 
@@ -16,6 +17,6 @@ const apiDoc = require(arg)
 const result = validator.validate(apiDoc)
 
 if (result.errors.length > 0) {
-  console.log(result)
-  process.exit(1)
+  console.log(JSON.stringify(result, null, 4))
+  throw Error(`Failed to validate: ${arg}`)
 }

@@ -11,51 +11,193 @@ governing permissions and limitations under the License.
 
 const sdk = require('../src/index')
 const path = require('path')
+const { getAccessTokenFromProject } = require('./auth')
+const storage = require('./storage')
+const { v4: uuidv4 } = require('uuid')
+const { readFile } = require('fs-extra')
 
 // load .env values in the e2e folder, if any
 require('dotenv').config({ path: path.join(__dirname, '.env') })
 
+/**
+ * @type {import('../src/index').PhotoshopAPI}
+ */
 let sdkClient = {}
-const tenantId = process.env['Aio-lib-creativecloud-automation_TENANT_ID']
-const apiKey = process.env['Aio-lib-creativecloud-automation_API_KEY']
-const accessToken = process.env['Aio-lib-creativecloud-automation_ACCESS_TOKEN']
+let container = {}
+let testRunId = ''
+let orgId = process.env.PHOTOSHOP_ORG_ID
+let apiKey = process.env.PHOTOSHOP_API_KEY
+let accessToken = process.env.PHOTOSHOP_ACCESS_TOKEN
+const projectFile = process.env.PHOTOSHOP_PROJECT_FILE
+const projectPrivateKeyFile = process.env.PHOTOSHOP_PROJECT_PRIVATE_KEY_FILE
 
 beforeAll(async () => {
-  sdkClient = await sdk.init(tenantId, apiKey, accessToken)
+  if (projectFile && projectPrivateKeyFile) {
+    ({ orgId, apiKey, accessToken } = await getAccessTokenFromProject(projectFile, projectPrivateKeyFile))
+  }
+  container = await storage.init()
+  sdkClient = await sdk.init(orgId, apiKey, accessToken, container)
+  testRunId = uuidv4()
+  console.error(`Test run id: ${testRunId}`)
 })
 
 test('sdk init test', async () => {
-  expect(sdkClient.tenantId).toBe(tenantId)
+  expect(sdkClient.orgId).toBe(orgId)
   expect(sdkClient.apiKey).toBe(apiKey)
   expect(sdkClient.accessToken).toBe(accessToken)
 })
 
-test('test bad access token', async () => {
-  const _sdkClient = await sdk.init(tenantId, apiKey, 'bad_access_token')
-  const promise = _sdkClient.getSomething()
-
-  // just match the error message
-  return expect(promise).rejects.toThrow('401')
+test('createCutout-soft', async () => {
+  const input = `${testRunId}/autoCutout-soft-input.jpg`
+  const output = `${testRunId}/autoCutout-soft-output.jpg`
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.createCutout(input, {
+    href: output,
+    mask: {
+      format: 'soft'
+    }
+  })
+  expect(job.isDone()).toEqual(true)
 })
 
-test('test bad api key', async () => {
-  const _sdkClient = await sdk.init(tenantId, 'bad_api_key', accessToken)
-  const promise = _sdkClient.getSomething()
-
-  // just match the error message
-  return expect(promise).rejects.toThrow('403')
+test('createMask-soft', async () => {
+  const input = `${testRunId}/createMask-soft-input.jpg`
+  const output = `${testRunId}/createMask-soft-output.jpg`
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.createMask(input, {
+    href: output,
+    mask: {
+      format: 'soft'
+    }
+  })
+  expect(job.isDone()).toEqual(true)
 })
 
-test('test bad tenant id', async () => {
-  const _sdkClient = await sdk.init('bad_tenant_id', apiKey, accessToken)
-  const promise = _sdkClient.getSomething()
-
-  // just match the error message
-  return expect(promise).rejects.toThrow('500')
+test('straighten', async () => {
+  const input = `${testRunId}/straighten-input.jpg`
+  const output = `${testRunId}/straighten-output.dng`
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.straighten(input, output)
+  expect(job.isDone()).toEqual(true)
 })
 
-test('test getSomething API', async () => {
-  // check success response
-  const res = await sdkClient.getSomething({ limit: 5, page: 0 })
-  expect(res.ok).toBeTruthy()
+test('autoTone', async () => {
+  const input = `${testRunId}/autoTone-input.jpg`
+  const outputs = [
+    `${testRunId}/autoTone-output.png`,
+    `${testRunId}/autoTone-output.jpg`
+  ]
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.autoTone(input, outputs)
+  expect(job.isDone()).toEqual(true)
+})
+
+test('editPhoto', async () => {
+  const input = `${testRunId}/editPhoto-input.jpg`
+  const output = `${testRunId}/editPhoto-output.jpg`
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.editPhoto(input, output, {
+    Contrast: 100
+  })
+  expect(job.isDone()).toEqual(true)
+})
+
+test('applyPreset-CoolLight', async () => {
+  const input = `${testRunId}/applyPreset-input.jpg`
+  const preset = `${testRunId}/Cool Light.xmp`
+  const output = `${testRunId}/applyPreset-output.jpg`
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  await container.copy('./testfiles/Cool Light.xmp', preset, { localSrc: true })
+  const job = await sdkClient.applyPreset(input, preset, output)
+  expect(job.isDone()).toEqual(true)
+})
+
+test('applyPresetXmp-CoolLight', async () => {
+  const input = `${testRunId}/applyPresetXmp-input.jpg`
+  const output = `${testRunId}/applyPresetXmp-output.jpg`
+  const xmp = await readFile('./testfiles/Cool Light.xmp', 'utf8')
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.applyPresetXmp(input, output, xmp)
+  expect(job.isDone()).toEqual(true)
+})
+
+test('createDocument', async () => {
+  const input = `${testRunId}/createDocument-input.jpg`
+  const output = `${testRunId}/createDocument-output.psd`
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.createDocument(output, {
+    document: {
+      width: 960,
+      height: 586,
+      resolution: 96,
+      fill: sdk.BackgroundFill.TRANSPARENT,
+      mode: sdk.Colorspace.RGB
+    },
+    layers: [{
+      type: sdk.LayerType.ADJUSTMENT_LAYER,
+      adjustments: {
+        brightnessContrast: {
+          brightness: 150
+        }
+      }
+    }, {
+      type: sdk.LayerType.LAYER,
+      input,
+      name: 'cat'
+    }]
+  })
+  expect(job.isDone()).toEqual(true)
+})
+
+test('getDocumentManifest', async () => {
+  const input = `${testRunId}/getDocumentManifest-input.psd`
+  await container.copy('./testfiles/RedShirt_Template.psd', input, { localSrc: true })
+  const job = await sdkClient.getDocumentManifest(input)
+  expect(job.isDone()).toEqual(true)
+})
+
+test('modifyDocument', async () => {
+  const input = `${testRunId}/modifyDocument-input.psd`
+  const output = `${testRunId}/modifyDocument-output.psd`
+  await container.copy('./testfiles/RedShirt_Template.psd', input, { localSrc: true })
+  const job = await sdkClient.modifyDocument(input, output, {
+    layers: [{
+      add: {
+        insertTop: true
+      },
+      type: sdk.LayerType.ADJUSTMENT_LAYER,
+      adjustments: {
+        brightnessContrast: {
+          brightness: 150
+        }
+      }
+    }]
+  })
+  expect(job.isDone()).toEqual(true)
+})
+
+test('createRendition-500px', async () => {
+  const input = `${testRunId}/createRendition-input.jpg`
+  const output = `${testRunId}/createRendition-output.jpg`
+  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  const job = await sdkClient.createRendition(input, {
+    href: output,
+    width: 500
+  })
+  expect(job.isDone()).toEqual(true)
+})
+
+test('replaceSmartObject', async () => {
+  const input = `${testRunId}/replaceSmartObject-input.psd`
+  const replacement = `${testRunId}/replaceSmartObject-replacement.psd`
+  const output = `${testRunId}/replaceSmartObject-output.psd`
+  await container.copy('./testfiles/RedShirt_Template.psd', input, { localSrc: true })
+  await container.copy('./testfiles/Falcons.psd', replacement, { localSrc: true })
+  const job = await sdkClient.replaceSmartObject(input, output, {
+    layers: [{
+      name: 'FootballGraphic',
+      input: replacement
+    }]
+  })
+  expect(job.isDone()).toEqual(true)
 })

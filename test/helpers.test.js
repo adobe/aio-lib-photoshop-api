@@ -38,12 +38,12 @@ test('reduceError', () => {
 })
 
 test('createRequestOptions', () => {
-  const tenantId = 'my-tenant'
+  const orgId = 'my-org-id'
   const apiKey = 'my-api-key'
   const accessToken = 'my-token'
 
   const options = createRequestOptions({
-    tenantId,
+    orgId,
     apiKey,
     accessToken
   })

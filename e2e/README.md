@@ -3,9 +3,9 @@
 ## Requirements
 
 To run the e2e test you'll need these env variables set:
-  1. `Aio-lib-creativecloud-automation_TENANT_ID`
-  2. `Aio-lib-creativecloud-automation_API_KEY`
-  3. `Aio-lib-creativecloud-automation_ACCESS_TOKEN`
+  1. `PHOTOSHOP_TENANT_ID`
+  2. `PHOTOSHOP_API_KEY`
+  3. `PHOTOSHOP_ACCESS_TOKEN`
 
 ## Run
 

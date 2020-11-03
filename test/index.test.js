@@ -16,7 +16,7 @@ const { codes } = require('../src/SDKErrors')
 
 // /////////////////////////////////////////////
 
-const gTenantId = 'test-company'
+const gOrgId = 'test-orgid'
 const gApiKey = 'test-apikey'
 const gAccessToken = 'test-token'
 
@@ -24,7 +24,7 @@ const gAccessToken = 'test-token'
 
 const createSwaggerOptions = ({ body } = {}) => {
   return createRequestOptions({
-    tenantId: gTenantId,
+    orgId: gOrgId,
     apiKey: gApiKey,
     accessToken: gAccessToken,
     body
@@ -32,7 +32,7 @@ const createSwaggerOptions = ({ body } = {}) => {
 }
 
 const createSdkClient = async () => {
-  return sdk.init(gTenantId, gApiKey, gAccessToken)
+  return sdk.init(gOrgId, gApiKey, gAccessToken)
 }
 
 // /////////////////////////////////////////////
@@ -44,25 +44,25 @@ beforeEach(() => {
 test('sdk init test', async () => {
   const sdkClient = await createSdkClient()
 
-  expect(sdkClient.tenantId).toBe(gTenantId)
+  expect(sdkClient.orgId).toBe(gOrgId)
   expect(sdkClient.apiKey).toBe(gApiKey)
   expect(sdkClient.accessToken).toBe(gAccessToken)
 })
 
-test('sdk init test - no tenantId', async () => {
+test('sdk init test - no orgId', async () => {
   return expect(sdk.init(null, gApiKey, gAccessToken)).rejects.toEqual(
-    new codes.ERROR_SDK_INITIALIZATION({ messageValues: 'tenantId' })
+    new codes.ERROR_SDK_INITIALIZATION({ messageValues: 'orgId' })
   )
 })
 
 test('sdk init test - no apiKey', async () => {
-  return expect(sdk.init(gTenantId, null, gAccessToken)).rejects.toEqual(
+  return expect(sdk.init(gOrgId, null, gAccessToken)).rejects.toEqual(
     new codes.ERROR_SDK_INITIALIZATION({ messageValues: 'apiKey' })
   )
 })
 
 test('sdk init test - no accessToken', async () => {
-  return expect(sdk.init(gTenantId, gApiKey, null)).rejects.toEqual(
+  return expect(sdk.init(gOrgId, gApiKey, null)).rejects.toEqual(
     new codes.ERROR_SDK_INITIALIZATION({ messageValues: 'accessToken' })
   )
 })
@@ -104,16 +104,16 @@ async function standardTest ({
   expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 }
 
-test('getSomething', async () => {
-  const sdkArgs = []
-  const apiParameters = {}
-  const apiOptions = createSwaggerOptions()
+// test('getSomething', async () => {
+//   const sdkArgs = []
+//   const apiParameters = {}
+//   const apiOptions = createSwaggerOptions()
 
-  return expect(() => standardTest({
-    fullyQualifiedApiName: 'mytag.getSomething',
-    apiParameters,
-    apiOptions,
-    sdkArgs,
-    ErrorClass: codes.ERROR_GET_SOMETHING
-  })).not.toThrow()
-})
+//   return expect(() => standardTest({
+//     fullyQualifiedApiName: 'mytag.getSomething',
+//     apiParameters,
+//     apiOptions,
+//     sdkArgs,
+//     ErrorClass: codes.ERROR_GET_SOMETHING
+//   })).not.toThrow()
+// })

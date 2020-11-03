@@ -1,19 +1,603 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.0.2",
   "info": {
-    "title": "Aio-lib-creativecloud-automation REST API requests",
-    "version": "v1.0.0"
+    "title": "Adobe Photoshop and Imaging APIs",
+    "description": "Your interface to Adobe Photoshop and Imaging APIs",
+    "version": "1.0"
   },
-  "servers": [
-    {
-      "url": "https://my-server.com/"
+  "servers": [{
+    "url": "https://image.adobe.io"
+  }],
+  "security": [{
+    "ApiKeyAuth": []
+  },{
+    "BearerAuth": []
+  }],
+  "paths": {
+    "/sensei/status/{jobID}": {
+      "summary": "Get the status for an asynchronous cutout/mask job",
+      "get": {
+        "operationId": "senseiStatus",
+        "tags": ["sensei"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "name": "jobID",
+          "in": "path",
+          "description": "The job to get status for",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "Job status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/senseiStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sensei/cutout": {
+      "summary": "Initiate an asynchronous job to generate a PNG file in 4 channel RGBA format with the generated cutout mask applied to the input image",
+      "post": {
+        "operationId": "autoCutout",
+        "tags": ["sensei"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cutoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sensei/mask": {
+      "summary": "Initiate an asynchronous job to generate a mask PNG",
+      "post": {
+        "operationId": "autoMask",
+        "tags": ["sensei"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/cutoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lrService/status/{jobID}": {
+      "summary": "Get the status for an asynchronous Lightroom job",
+      "get": {
+        "operationId": "lightroomStatus",
+        "tags": ["lightroom"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "name": "jobID",
+          "in": "path",
+          "description": "The job to get status for",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "202": {
+            "description": "Job status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lightroomStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lrService/autoStraighten": {
+      "summary": "Initiates an asynchronous job to auto straighten an image",
+      "post": {
+        "operationId": "autoStraighten",
+        "tags": ["lightroom"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/autoStraightenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lrService/autoTone": {
+      "summary": "Initiates an asynchronous job to auto tone an image",
+      "post": {
+        "operationId": "autoTone",
+        "tags": ["lightroom"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/autoStraightenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lrService/edit": {
+      "summary": "Initiates an asynchronous job to apply a set of edit parameters on an image",
+      "post": {
+        "operationId": "editPhoto",
+        "tags": ["lightroom"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/editPhotoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lrService/presets": {
+      "summary": "Initiates an asynchronous job to apply a preset on an image",
+      "post": {
+        "operationId": "applyPreset",
+        "tags": ["lightroom"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/applyPresetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lrService/xmp": {
+      "summary": "Initiates an asynchronous job to apply an XMP setting to an image",
+      "post": {
+        "operationId": "applyPresetXmp",
+        "tags": ["lightroom"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/applyPresetXmpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pie/psdService/status/{jobId}": {
+      "summary": "Returns status and layer info for a psd file created by POST /psdService/status. Will return 202 as long as there are child jobs still running and 200 once all children are complete",
+      "get": {
+        "operationId": "photoshopStatus",
+        "tags": ["photoshop"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }, {
+          "name": "jobId",
+          "in": "path",
+          "description": "The job to get status for",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "once all children are complete",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/photoshopStatusResponse"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "as long as there are child jobs still running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/photoshopStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pie/psdService/documentManifest": {
+      "summary": "Initiates an asynchronous job to extract and return a psd file's layer information",
+      "post": {
+        "operationId": "getDocumentManifest",
+        "tags": ["photoshop"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/documentManifestRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pie/psdService/documentCreate": {
+      "summary": "Initiates an asynchronous job to create a new psd, optionally with layers, and then generate renditions and/or save as a psd",
+      "post": {
+        "operationId": "createDocument",
+        "tags": ["photoshop"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/documentCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "401": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "415": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/documentOperations": {
+      "summary": "Initiates an asynchronous job to apply (optional) psd edits and then generate renditions and/or save a new psd",
+      "post": {
+        "operationId": "modifyDocument",
+        "tags": ["photoshop"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/documentOperationsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "401": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "415": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/renditionCreate": {
+      "summary": "Initiates an asynchronous job to create renditions",
+      "post": {
+        "operationId": "createRendition",
+        "tags": ["photoshop"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/renditionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "401": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "415": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/smartObject": {
+      "summary": "Initiates an asynchronous job to apply psd edits for replacing embedded smart object and then generate renditions and/or save a new psd",
+      "post": {
+        "operationId": "replaceSmartObject",
+        "tags": ["photoshop"],
+        "parameters": [{
+          "$ref": "#/components/parameters/x-gw-ims-org-id"
+        }, {
+          "$ref": "#/components/parameters/json-content-type"
+        }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/smartObjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "401": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "415": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
     }
-  ],
+  },
   "components": {
-    "schemas": {
-    },
-    "requestBodies": {
-    },
     "securitySchemes": {
       "BearerAuth": {
         "type": "http",
@@ -26,51 +610,1599 @@
       }
     },
     "parameters": {
-      "Cache-Control": {
+      "x-gw-ims-org-id": {
+        "name": "x-gw-ims-org-id",
         "in": "header",
-        "name": "Cache-Control",
+        "description": "IMS organization ID. This needs to be sent only if it is desirable to receive the job status through Adobe I/O Events",
         "required": false,
         "schema": {
-          "type": "string",
-          "default": "no-cache"
+          "type": "string"
         }
       },
-      "Content-Type": {
+      "json-content-type": {
+        "name": "content-type",
         "in": "header",
-        "name": "Content-Type",
+        "description": "application/json;charset=utf-8",
         "required": false,
         "schema": {
           "type": "string",
           "default": "application/json;charset=utf-8"
         }
       }
-    }
-  },
-  "security": [
-    {
-      "ApiKeyAuth": []
     },
-    {
-      "BearerAuth": []
-    }
-  ],
-  "paths": {
-    "/something": {
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/Cache-Control"
-        },
-        {
-          "$ref": "#/components/parameters/Content-Type"
+    "schemas": {
+      "errors": {
+        "type": "object",
+        "description": "any errors reported requested output",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "error type"
+          },
+          "code": {
+            "type": "string",
+            "description": "error code"
+          },
+          "title": {
+            "type": "string",
+            "description": "error description"
+          },
+          "errorDetails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "param name"
+                },
+                "reason": {
+                  "type": "string",
+                  "description": "error"
+                }
+              }
+            }
+          }
         }
-      ],
-      "get": {
-        "summary": "Get something",
-        "operationId": "getSomething",
-        "tags": ["mytag"],
-        "responses": {
-          "default": {
-            "description": ""
+      },
+      "input": {
+        "type": "object",
+        "description": "File on Adobe's cloud or an external service (like AWS S3, Azure, Dropbox)",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Either an href to a single Creative Cloud asset for storage='adobe' OR a presigned GET URL for other external services.\n\n* CC Storage path must be prepended with `/files` or `/cloud-content` or `/assets`\n* The `/files` path directly corresponds to the root of your local `Creative Cloud Files` folder\n* The `/cloud-content` path directly corresponds to the root of your `Cloud Documents` folder in CC\n* The `/assets` path directly corresponds to the specific sync-group section of CC storage"
+          },
+          "storage": {
+            "type": "string",
+            "description": "Storage location",
+            "enum": ["adobe", "external", "azure", "dropbox"]
+          }
+        }
+      },
+      "senseiOutput": {
+        "type": "object",
+        "description": "a PNG file",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Either an href to a single Creative Cloud asset for storage='adobe' OR a presigned GET URL for other external services.\n\n* CC Storage path must be prepended with `/files` or `/cloud-content` or `/assets`\n* The `/files` path directly corresponds to the root of your local `Creative Cloud Files` folder\n* The `/cloud-content` path directly corresponds to the root of your `Cloud Documents` folder in CC\n* The `/assets` path directly corresponds to the specific sync-group section of CC storage"
+          },
+          "storage": {
+            "type": "string",
+            "description": "Storage location",
+            "enum": ["adobe", "external", "azure", "dropbox"]
+          },
+          "mask": {
+            "type": "object",
+            "properties": {
+              "format": {
+                "type": "string",
+                "description": "soft mask or binary mask",
+                "enum": ["binary", "soft"]    
+              }
+            }
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "If the file already exists, indicates if the output file should be overwritten. Will eventually support eTags. Only applies to CC Storage",
+            "default": true
+          }
+        }
+      },
+      "senseiStatusResponse": {
+        "type": "object",
+        "properties": {
+          "jobID": {
+            "type": "string",
+            "description": "the job's id requested"
+          },
+          "created": {
+            "type": "string",
+            "description": "Created timestamp of the job (YYYY-DD-MMThh:mm:ss.mmmmmZ)"
+          },
+          "modified": {
+            "type": "string",
+            "description": "Modified timestamp of the job (YYYY-DD-MMThh:mm:ss.mmmmmZ)"
+          },
+          "status": {
+            "type": "string",
+            "description": "Job status",
+            "enum": ["pending", "running", "succeeded", "failed"]
+          },
+          "input": {
+            "$ref": "#/components/schemas/input"
+          },
+          "output": {
+            "$ref": "#/components/schemas/senseiOutput"
+          },
+          "errors": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "_links": {
+            "$ref": "#/components/schemas/jobStatusLink"
+          }
+        }
+      },
+      "jobStatusLink": {
+        "type": "object",
+        "properties": {
+          "self": {
+            "type": "object",
+            "properties": {
+              "href": {
+                "type": "string",
+                "description": "Job Status Url"
+              }
+            }
+          }
+        }
+      },
+      "cutoutRequest": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/input"
+          },
+          "output": {
+            "$ref": "#/components/schemas/senseiOutput"
+          }
+        }
+      },
+      "jobStatusLinkResponse": {
+        "type": "object",
+        "properties": {
+          "_links": {
+            "$ref": "#/components/schemas/jobStatusLink"
+          }
+        }
+      },
+      "lightroomOutput": {
+        "type": "object",
+        "description": "output object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Either a Creative Cloud assets path for storage='adobe' OR a presignedPutURL\n\n* CC Storage hrefs\n  * Must be prepended with `/files` or `/cloud-content` or `/asset`\n  * The `/files` path directly corresponds to the root of your local `Creative Cloud Files` folder\n  * The `/cloud-content` path directly corresponds to the root of your `Cloud documents` folder in CC\n* Template Tokens: At runtime these two tokens get replaced with their respective values... (FOR \"adobe\" STORED FOLDERS ONLY)\n  * $ReqID - replaced with the request id generated by the service\n  * $FileName - replaced with the folder name\n* If the output path is a folder than the Template Tokens will be used to dynamically generate the output file name according to the pattern \"/files/<path>/$ReqID_$FileName.<ext>\""
+          },
+          "storage": {
+            "type": "string",
+            "description": "Storage location",
+            "enum": ["adobe", "external", "azure", "dropbox"]
+          },
+          "type": {
+            "type": "string",
+            "description": "outputs.type desired image format.",
+            "default": "image/jpeg",
+            "enum": ["image/jpeg", "image/x-adobe-dng", "image/png"]
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "If the file already exists, indicates if the output file should be overwritten. Will eventually support eTags. Only applies to CC Storage",
+            "default": true
+          }
+        }
+      },
+      "lightroomStatusResponse": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "the job's id requested (tbd. different case from Sensei?)"
+          },
+          "created": {
+            "type": "string",
+            "description": "Created timestamp of the job (YYYY-DD-MMThh:mm:ss.mmmmmZ) (epoch?)"
+          },
+          "modified": {
+            "type": "string",
+            "description": "Modified timestamp of the job (YYYY-DD-MMThh:mm:ss.mmmmmZ) (epoch?)"
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "string",
+                  "description": "the original input file path"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["pending", "running", "succeeded", "failed"]
+                },
+                "_links": {
+                  "type": "object",
+                  "properties": {
+                    "self": {
+                      "$ref": "#/components/schemas/input"
+                    }
+                  }
+                },
+                "errorDetails": {
+                  "type": "string",
+                  "description": "Description of the exact error that is reported by the requested job. Will appear in the response only if there is an error."
+                }
+              }
+            }
+          },
+          "_links": {
+            "$ref": "#/components/schemas/jobStatusLink"
+          }
+        }
+      },
+      "autoStraightenRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "$ref": "#/components/schemas/input"
+          },
+          "outputs": {
+            "type": "array",
+            "description": "Only a single output is supported currently",
+            "items": {
+              "$ref": "#/components/schemas/lightroomOutput"
+            }
+          }
+        }
+      },
+      "editPhotoRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "object",
+            "description": "A hash describing an input image to edit. The input object will be one of 'external', 'adobe', 'azure' or 'dropbox'",
+            "properties": {
+              "source": {
+                "$ref": "#/components/schemas/input"
+              }
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "Contrast": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Saturation": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "VignetteAmount": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Vibrance": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Highlights": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Shadows": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Whites": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Blacks": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Clarity": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Dehaze": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Texture": {
+                "type": "integer",
+                "minimum": -100,
+                "maximum": 100
+              },
+              "Sharpness": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 150
+              },
+              "ColorNoiseReduction": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "NoiseReduction": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "SharpenDetail": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "SharpenEdgeMasking": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 10
+              },
+              "Exposure": {
+                "type": "number",
+                "minimum": -5.0,
+                "maximum": 5.0
+              },
+              "SharpenRadius": {
+                "type": "number",
+                "minimum": 0.5,
+                "maximum": 3.0
+              },
+              "WhiteBalance": {
+                "type": "string",
+                "enum": ["As Shot", "Auto", "Cloudy", "Custom", "Daylight", "Flash", "Fluorescent", "Shade", "Tungsten"]
+              }
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/lightroomOutput"
+            }
+          }
+        }
+      },
+      "applyPresetRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "$ref": "#/components/schemas/input"
+              },
+              "presets": {
+                "type": "array",
+                "description": "An array describing the list of presets to apply. The preset objects will either be one of 'external', 'adobe', 'azure' or 'dropbox'",
+                "items": {
+                  "$ref": "#/components/schemas/input"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/lightroomOutput"
+            }
+          }
+        }
+      },
+      "applyPresetXmpRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "object",
+            "properties": {
+              "source": {
+                "$ref": "#/components/schemas/input"
+              }
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "xmp": {
+                "type": "string",
+                "description": "The XMP to apply"
+              }
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/lightroomOutput"
+            }
+          }
+        }
+      },
+      "iccProfile": {
+        "type": "object",
+        "properties": {
+          "imageMode": {
+            "type": "string",
+            "description": "the image mode",
+            "enum": ["grayscale", "rgb", "cmyk"]
+          },
+          "input": {
+            "$ref": "#/components/schemas/input"
+          },
+          "profileName": {
+            "type": "string",
+            "description": "the name of the color profile",
+            "enum": ["Adobe RGB (1998)", "Apple RGB", "ColorMatch RGB", "sRGB IEC61966-2.1", "Dot Gain 10%", "Dot Gain 15%", "Dot Gain 20%", "Dot Gain 25%", "Dot Gain 30%", "Gray Gamma 1.8", "Gray Gamma 2.2"]
+          }
+        }
+      },
+      "photoshopOutputLayers": {
+        "type": "array",
+        "description": "An array of layer objects.\nBy including this array you are signaling that you'd like a rendition created from these layer id's or layer names. Excluding it will generate a document-level rendition.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "the layer id"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "the layer name"
+                }
+              }
+            }
+          }
+        }
+      },
+      "photoshopOutput": {
+        "type": "object",
+        "description": "output object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "Either a Creative Cloud assets path for storage='adobe' OR a presignedPutURL\n\n* CC Storage hrefs\n  * Must be prepended with `/files` or `/cloud-content` or `/asset`\n  * The `/files` path directly corresponds to the root of your local `Creative Cloud Files` folder\n  * The `/cloud-content` path directly corresponds to the root of your `Cloud documents` folder in CC\n* Template Tokens: At runtime these two tokens get replaced with their respective values... (FOR \"adobe\" STORED FOLDERS ONLY)\n  * $ReqID - replaced with the request id generated by the service\n  * $FileName - replaced with the folder name\n* If the output path is a folder than the Template Tokens will be used to dynamically generate the output file name according to the pattern \"/files/<path>/$ReqID_$FileName.<ext>\""
+          },
+          "storage": {
+            "type": "string",
+            "description": "Storage location",
+            "enum": ["adobe", "external", "azure", "dropbox"]
+          },
+          "type": {
+            "type": "string",
+            "description": "desired image format\n\n* image/vnd.adobe.photoshop - Create a new PSD file\n* image/jpeg, image/png, image/tiff - Create a new jpeg, png or tiff rendition\n\nImage mode conversions:\n\nCertain image modes (rgb, cmyk, greyscale, etc) must be converted to another image mode before a rendition can be created:\n\n* Tiff Requested: Multichannel and Duotone will convert to RGB\n* PNG Requested: CMYK, HSL, HSB, Multichannel, Duotone, Lab and XYZ will convert to RGB",
+            "enum": ["image/vnd.adobe.photoshop", "image/jpeg", "image/png", "image/tiff"]
+          },
+          "overwrite": {
+            "type": "boolean",
+            "description": "If the file already exists, indicates if the output file should be overwritten. Will eventually support eTags. Only applies to CC Storage",
+            "default": true
+          },
+          "width": {
+            "type": "integer",
+            "description": "width, in pixels, of the renditions. Width of 0 generates a full size rendition. Height is not necessary as the rendition generate will automatically figure out the correct width-to-height aspect ratio. Only supported for image rendition",
+            "default": 0
+          },
+          "quality": {
+            "type": "integer",
+            "description": "quality of the renditions for JPEG. Range from 1 to 7, with 7 as the highest quality.",
+            "minimum": 1,
+            "maximum": 7,
+            "default": 7
+          },
+          "compression": {
+            "type": "string",
+            "description": "compression level for PNG: small, medium or large.",
+            "enum": ["small", "medium", "large"],
+            "default": "large"
+          },
+          "trimToCanvas": {
+            "type": "string",
+            "description": "'false' generates renditions that are the actual size of the layer (as seen by View > Show > Layer Edges within the Photoshop desktop app) but will remove any extra transparent pixel padding. 'true' generates renditions that are the size of the canvas, either trimming the layer to the visible portion of the canvas or padding extra space. If the requested file format supports transparency than transparent pixels will be used for padding, otherwise white pixels will be used.",
+            "default": "false",
+            "enum": ["true", "false"]
+          },
+          "layers": {
+            "$ref": "#/components/schemas/photoshopOutputLayers"
+          },
+          "iccProfile": {
+            "$ref": "#/components/schemas/iccProfile"
+          }
+        }
+      },
+      "photoshopRenditionLink": {
+        "type": "object",
+        "description": "rendition object",
+        "properties": {
+          "href": {
+            "type": "string",
+            "description": "the rendition location"
+          },
+          "storage": {
+            "type": "string",
+            "enum": ["external", "adobe", "azure", "dropbox"]
+          },
+          "width": {
+            "type": "integer",
+            "description": "the requested rendition width in pixels"
+          },
+          "type": {
+            "type": "string",
+            "enum": ["image/jpeg", "image/png", "image/tiff", "image/vnd.adobe.photoshop"]
+          },
+          "trimToCanvas": {
+            "type": "string",
+            "enum": ["true", "false"]
+          },
+          "layers": {
+            "$ref": "#/components/schemas/photoshopOutputLayers"
+          }
+        }
+      },
+      "photoshopStatusResponse": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "string",
+            "description": "the job's id requested"
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "input": {
+                  "type": "string",
+                  "description": "the original input file path"
+                },
+                "created": {
+                  "type": "string",
+                  "description": "Created timestamp of the job (YYYY-DD-MMThh:mm:ss.mmmmmZ)"
+                },
+                "modified": {
+                  "type": "string",
+                  "description": "Modified timestamp of the job (YYYY-DD-MMThh:mm:ss.mmmmmZ)"
+                },
+                "status": {
+                  "type": "string",
+                  "description": "the child job status\n* pending - request has been accepted and is waiting to start\n* running - the child job is running\n* uploading - files have been generated and are uploading to destination\n* succeeded - the child job has succeeded\n* failed - the child job has failed",
+                  "enum": ["pending", "running", "uploading", "succeeded", "failed"]
+                },
+                "document": {
+                  "$ref": "#/components/schemas/document"
+                },
+                "layers": {
+                  "$ref": "#/components/schemas/layers"
+                },
+                "_links": {
+                  "type": "object",
+                  "description": "the rendition links",
+                  "properties": {
+                    "renditions": {
+                      "type": "array",
+                      "description": "array off rendition objects",
+                      "items": {
+                        "$ref": "#/components/schemas/photoshopRenditionLink"
+                      }
+                    }
+                  }
+                },
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "documentManifestRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "options": {
+            "type": "object",
+            "description": "available options to apply to all input files",
+            "properties": {
+              "thumbnails": {
+                "type": "object",
+                "description": "Include presigned GET URLs to small preview thumbnails for any renderable layer",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "desired image format",
+                    "enum": ["image/jpeg", "image/png", "image/tiff"]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "layerEdit": {
+        "type": "object",
+        "description": "Indicates you want to edit the layer identified by it's id or name. Note the object is currently empty but leaves room for further enhancements. The layer block should than contain changes from the original manifest. If you apply it to a group layer you will be effecting the attributes of the group layer itself, not the child layers. Edit layer is supported for layer type \"smartObject\" and \"fillLayer\" only.",
+        "properties": { }
+      },
+      "layerPosition": {
+        "type": "object",
+        "description": "",
+        "properties": {
+          "insertAbove": {
+            "$ref": "#/components/schemas/layerReference"
+          },
+          "insertBelow": {
+            "$ref": "#/components/schemas/layerReference"
+          },
+          "insertInto": {
+            "$ref": "#/components/schemas/layerReference"
+          },
+          "insertTop": {
+            "type": "boolean"
+          },
+          "insertBottom": {
+            "type": "boolean"
+          }
+        }
+      },
+      "layerReference": {
+        "type": "object",
+        "description": "",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The id of the layer you want to insert above. Use either id OR name."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the layer you want to insert above. Use either id OR name."
+          }
+        }
+      },
+      "documentCreateRequest": {
+        "type": "object",
+        "description": "",
+        "properties": {
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "manageMissingFonts": {
+                "type": "string",
+                "description": "action to take if there are one or more missing fonts in the document\n\n* fail - The job will not succeed and the status will be set to \"failed\", with the details of the error provided in the \"details\" section in the status\n* useDefault - The job will succeed, however, by default all the missing fonts will be replaced with this font: ArialMT",
+                "enum": ["useDefault", "fail"],
+                "default": "useDefault"
+              },
+              "globalFont": {
+                "type": "string",
+                "description": "options.globalFont The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer.\nIf this font itself is missing, the option specified for manageMissingFonts from above will take effect."
+              },
+              "fonts": {
+                "$ref": "#/components/schemas/fonts"
+              },
+              "document": {
+                "$ref": "#/components/schemas/document"
+              },
+              "layers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "description": "the layer type.\n\n* smartObject - a smart object\n* fillLayer - a fill layer",
+                      "enum": ["layer", "textLayer", "adjustmentLayer", "smartObject", "fillLayer"]
+                    },
+                    "input": {
+                      "$ref": "#/components/schemas/input"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": ""
+                    },
+                    "locked": {
+                      "type": "boolean",
+                      "description": "is the layer locked",
+                      "default": false
+                    },
+                    "visible": {
+                      "type": "boolean",
+                      "description": "is the layer visible",
+                      "default": true
+                    },
+                    "adjustments": {
+                      "$ref": "#/components/schemas/adjustmentLayer"
+                    },
+                    "bounds": {
+                      "$ref": "#/components/schemas/bounds"
+                    },
+                    "mask": {
+                      "type": "object",
+                      "allOf": [{
+                        "type": "object",
+                        "properties": {
+                          "input": {
+                            "$ref": "#/components/schemas/input"
+                          }  
+                        }
+                      }, {
+                        "$ref": "#/components/schemas/layerMask"
+                      }]
+                    },
+                    "smartObject": {
+                      "type": "object",
+                      "description": "An object describing the attributes specific to creating or editing a smartObject.\nSmartObject properties need the input smart object file to operate on, which can be obtained from Input block. Currently we support Embedded Smart Object only.So this block is optional. If you are creating a Linked Smart Object, this is a required block.",
+                      "properties": {
+                        "linked": {
+                          "type": "boolean",
+                          "description": "Indicates if this Smart Object is linked. Currently we support Embedded Smart Object only which means \"linked = false\".",
+                          "default": false
+                        }
+                      }
+                    },
+                    "fill": {
+                      "$ref": "#/components/schemas/fillLayer"
+                    },
+                    "text": {
+                      "$ref": "#/components/schemas/textLayer"
+                    },
+                    "blendOptions": {
+                      "$ref": "#/components/schemas/blendOptions"
+                    },
+                    "fillToCanvas": {
+                      "type": "boolean",
+                      "description": "",
+                      "default": false
+                    },
+                    "horizontalAlign": {
+                      "type": "string",
+                      "description": "Indicates the horizontal position where this layer needs to be placed at. Applicable only to layer type=\"smartObject\" or layer type=\"layer\".",
+                      "enum": ["left", "center", "right"]
+                    },
+                    "verticalAlign": {
+                      "type": "string",
+                      "description": "Indicates the vertical position where this layer needs to be placed at. Applicable only to layer type=\"smartObject\" or layer type=\"layer\".",
+                      "enum": ["top", "center", "bottom"]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "documentOperationsRequest": {
+        "type": "object",
+        "description": "",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "manageMissingFonts": {
+                "type": "string",
+                "description": "action to take if there are one or more missing fonts in the document\n\n* fail - The job will not succeed and the status will be set to \"failed\", with the details of the error provided in the \"details\" section in the status\n* useDefault - The job will succeed, however, by default all the missing fonts will be replaced with this font: ArialMT",
+                "enum": ["useDefault", "fail"],
+                "default": "useDefault"
+              },
+              "globalFont": {
+                "type": "string",
+                "description": "options.globalFont The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer.\nIf this font itself is missing, the option specified for manageMissingFonts from above will take effect."
+              },
+              "fonts": {
+                "$ref": "#/components/schemas/fonts"
+              },
+              "document": {
+                "type": "object",
+                "properties": {
+                  "canvasSize": {
+                    "type": "object",
+                    "properties": {
+                      "bounds": {
+                        "$ref": "#/components/schemas/bounds"
+                      }
+                    }
+                  },
+                  "imageSize": {
+                    "type": "object",
+                    "properties": {
+                      "width": {
+                        "type": "integer"
+                      },
+                      "height": {
+                        "type": "integer"
+                      }
+                    }
+                  },
+                  "trim": {
+                    "type": "object",
+                    "properties": {
+                      "basedOn": {
+                        "type": "string",
+                        "default": "transparentPixels",
+                        "enum": ["transparentPixels"]
+                      }
+                    }
+                  }
+                }
+              },
+              "layers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "edit": {
+                      "$ref": "#/components/schemas/layerEdit"
+                    },
+                    "move": {
+                      "allOf": [{
+                        "type": "object",
+                        "properties": {
+                          "moveChildren": {
+                            "type": "boolean",
+                            "default": true
+                          }
+                        }
+                      }, {
+                        "$ref": "#/components/schemas/layerPosition"
+                      }]
+                    },
+                    "add": {
+                      "$ref": "#/components/schemas/layerPosition"
+                    },
+                    "delete": {
+                      "type": "boolean",
+                      "description": "Indicates you want to delete the layer, including any children, identified by the id or name. Note the object is currently empty but leaves room for further enhancements"
+                    },
+                    "id": {
+                      "type": "integer",
+                      "description": "the layer id"
+                    },
+                    "index": {
+                      "type": "integer",
+                      "description": "the layer index.  Required when deleting a layer, otherwise not used"
+                    },
+                    "children": {
+                      "$ref": "#/components/schemas/layers"
+                    },
+                    "type": {
+                      "type": "string",
+                      "description": "the layer type.\n\n* smartObject - a smart object\n* fillLayer - a fill layer",
+                      "enum": ["layer", "textLayer", "adjustmentLayer", "smartObject", "fillLayer", "backgroundLayer"]
+                    },
+                    "input": {
+                      "$ref": "#/components/schemas/input"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": ""
+                    },
+                    "locked": {
+                      "type": "boolean",
+                      "description": "is the layer locked",
+                      "default": false
+                    },
+                    "visible": {
+                      "type": "boolean",
+                      "description": "is the layer visible",
+                      "default": true
+                    },
+                    "adjustments": {
+                      "$ref": "#/components/schemas/adjustmentLayer"
+                    },
+                    "mask": {
+                      "type": "object",
+                      "allOf": [{
+                        "type": "object",
+                        "properties": {
+                          "input": {
+                            "$ref": "#/components/schemas/input"
+                          }  
+                        }
+                      }, {
+                        "$ref": "#/components/schemas/layerMask"
+                      }]
+                    },
+                    "bounds": {
+                      "$ref": "#/components/schemas/bounds"
+                    },
+                    "smartObject": {
+                      "type": "object",
+                      "description": "An object describing the attributes specific to creating or editing a smartObject.\nSmartObject properties need the input smart object file to operate on, which can be obtained from Input block. Currently we support Embedded Smart Object only.So this block is optional. If you are creating a Linked Smart Object, this is a required block.",
+                      "properties": {
+                        "linked": {
+                          "type": "boolean",
+                          "description": "Indicates if this Smart Object is linked. Currently we support Embedded Smart Object only which means \"linked = false\".",
+                          "default": false
+                        }
+                      }
+                    },
+                    "fill": {
+                      "$ref": "#/components/schemas/fillLayer"
+                    },
+                    "text": {
+                      "$ref": "#/components/schemas/textLayer"
+                    },
+                    "blendOptions": {
+                      "$ref": "#/components/schemas/blendOptions"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "renditionCreateRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input objects. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "An array of output objects",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          }
+        }
+      },
+      "smartObjectRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input objects. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "An array of output objects",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "layers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "add": {
+                      "$ref": "#/components/schemas/layerPosition"
+                    },
+                    "id": {
+                      "type": "integer",
+                      "description": "the layer id"
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": ""
+                    },
+                    "locked": {
+                      "type": "boolean",
+                      "description": "is the layer locked",
+                      "default": false
+                    },
+                    "visible": {
+                      "type": "boolean",
+                      "description": "is the layer visible",
+                      "default": true
+                    },
+                    "input": {
+                      "$ref": "#/components/schemas/input"
+                    },
+                    "bounds": {
+                      "$ref": "#/components/schemas/bounds"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "document": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "name of the input file"
+          },
+          "width": {
+            "type": "integer",
+            "description": "in pixels"
+          },
+          "height": {
+            "type": "integer",
+            "description": "in pixels"
+          },
+          "photoshopBuild": {
+            "type": "string",
+            "description": "the name of the application that created the PSD"
+          },
+          "imageMode": {
+            "type": "string",
+            "description": "the document's image mode",
+            "enum": ["bitmap", "greyscale", "indexed", "rgb", "cmyk", "hsl", "hsb", "multichannel", "duotone", "lab", "xyz"]
+          },
+          "bitDepth": {
+            "type": "integer",
+            "description": "the document's bit/channel depth",
+            "enum": [8, 16, 32]
+          }
+        }
+      },
+      "layers": {
+        "type": "array",
+        "description": "a tree of layer objects representing the PSD layer structure extracted from the psd document",
+        "items": {
+          "$ref": "#/components/schemas/layer"
+        }
+      },
+      "layer": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "the layer id. Note an id of -1 is valid and indicates a PSD that only contains a background image and no layers"
+          },
+          "index": {
+            "type": "integer",
+            "description": "the layer index"
+          },
+          "thumbnail": {
+            "type": "string",
+            "description": "If thumbnails were requested, a presigned GET URL to the thumbnail"
+          },
+          "children": {
+            "$ref": "#/components/schemas/layers"
+          },
+          "type": {
+            "type": "string",
+            "description": "the layer type\n\n* layer - a pixel layer\n* textLayer - a text layer\n* adjustmentLayer - an adjustment layer\n* layerSection - a grouping layer\n* smartObject - a smart object\n* backgroundLayer - a background layer\n* fillLayer - a fill layer",
+            "enum": ["layer", "textLayer", "adjustmentLayer", "smartObject", "fillLayer", "backgroundLayer"]
+          },
+          "name": {
+            "type": "string",
+            "description": "the layer name"
+          },
+          "locked": {
+            "type": "boolean",
+            "description": "is the layer locked"
+          },
+          "visible": {
+            "type": "boolean",
+            "description": "is the layer visible"
+          },
+          "adjustments": {
+            "$ref": "#/components/schemas/adjustmentLayer"
+          },
+          "bounds": {
+            "$ref": "#/components/schemas/bounds"
+          },
+          "blendOptions": {
+            "$ref": "#/components/schemas/blendOptions"
+          },
+          "mask": {
+            "$ref": "#/components/schemas/layerMask"
+          },
+          "smartObject": {
+            "$ref": "#/components/schemas/smartObject"
+          },
+          "fill": {
+            "$ref": "#/components/schemas/fillLayer"
+          },
+          "text": {
+            "$ref": "#/components/schemas/textLayer"
+          }
+        }
+      },
+      "fonts": {
+        "type": "array",
+        "description": "array of custom fonts needed in this document",
+        "items": {
+          "$ref": "#/components/schemas/font"
+        }
+      },
+      "font": {
+        "type": "object",
+        "description": "An object describing the input font to add or replace for a Text layer. Filename should be <font_postscript_name>.otf.\n If the font filename is not in the specified format above, font substitution will occur",
+        "properties": {
+          "storage": {
+            "type": "string",
+            "description": "storage platforms supported",
+            "enum": ["adobe", "external", "azure", "dropbox"],
+            "default": "adobe"
+          },
+          "href": {
+            "type": "string",
+            "description": "Either a Creative Cloud assets path for storage=\"adobe\" OR a presignedGETURL"
+          }
+        }
+      },
+      "adjustmentLayer": {
+        "type": "object",
+        "description": "adjustment layer info",
+        "properties": {
+          "brightnessContrast": {
+            "$ref": "#/components/schemas/brightnessContrast"
+          },
+          "exposure": {
+            "$ref": "#/components/schemas/exposure"
+          },
+          "hueSaturation": {
+            "$ref": "#/components/schemas/hueSaturation"
+          },
+          "colorBalance": {
+            "$ref": "#/components/schemas/colorBalance"
+          }
+        }
+      },
+      "brightnessContrast": {
+        "type": "object",
+        "description": "brightness and contrast settings",
+        "properties": {
+          "brightness": {
+            "type": "integer",
+            "description": "the adjustment layer's brightness",
+            "minimum": -150,
+            "maximum": 150
+          },
+          "contrast": {
+            "type": "integer",
+            "description": "the adjustment layer's contrast",
+            "minimum": -150,
+            "maximum": 150
+          }
+        }
+      },
+      "exposure": {
+        "type": "object",
+        "properties": {
+          "exposure": {
+            "type": "number",
+            "description": "the layer's exposure",
+            "default": 0.0,
+            "minimum": -20.0,
+            "maximum": 20.0
+          },
+          "offset": {
+            "type": "number",
+            "description": "the layer's offset",
+            "default": 0.0,
+            "minimum": -0.5,
+            "maximum": 0.5
+          },
+          "gammaCorrection": {
+            "type": "number",
+            "description": "the layer's gamma correction",
+            "default": 1.0,
+            "minimum": 0.01,
+            "maximum": 9.99
+          }
+        }
+      },
+      "hueSaturation": {
+        "type": "object",
+        "properties": {
+          "colorize": {
+            "type": "boolean",
+            "description": "colorize"
+          },
+          "channels": {
+            "type": "array",
+            "description": "an array of hashes representing the 'master' channel (the remaining five channels of 'magentas', 'yellows', 'greens', etc are not yet supported)",
+            "items": {
+              "type": "object",
+              "properties": {
+                "channel": {
+                  "type": "string",
+                  "enum": ["master"]
+                },
+                "hue": {
+                  "type": "integer",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "saturation": {
+                  "type": "integer",
+                  "minimum": -100,
+                  "maximum": 100
+                },
+                "lightness": {
+                  "type": "integer",
+                  "minimum": -100,
+                  "maximum": 100
+                }
+              }            }
+          }
+        }
+      },
+      "colorBalance": {
+        "type": "object",
+        "properties": {
+          "preserveLuminosity": {
+            "type": "boolean",
+            "description": "preserve luminosity"
+          },
+          "shadowLevels": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -100,
+              "maximum": 100
+            }
+          },
+          "midtoneLevels": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -100,
+              "maximum": 100
+            }
+          },
+          "highlightLevels": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": -100,
+              "maximum": 100
+            }
+          }
+        }
+      },
+      "bounds": {
+        "type": "object",
+        "properties": {
+          "top": {
+            "type": "integer",
+            "description": "in pixels"
+          },
+          "left": {
+            "type": "integer",
+            "description": "in pixels"
+          },
+          "width": {
+            "type": "integer",
+            "description": "in pixels"
+          },
+          "height": {
+            "type": "integer",
+            "description": "in pixels"
+          }
+        }
+      },
+      "layerMask": {
+        "type": "object",
+        "description": "An object describing the input mask added or replaced to the layer",
+        "properties": {
+          "clip": {
+            "type": "boolean",
+            "description": "Indicates if this is a clipped layer"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Indicates a mask is enabled on that layer or not"
+          },
+          "linked": {
+            "type": "boolean",
+            "description": "Indicates a mask is linked to the layer or not"
+          },
+          "offset": {
+            "$ref": "#/components/schemas/offset"
+          }
+        }
+      },
+      "offset": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer",
+            "description": "Offset to indicate horizontal move of the mask"
+          },
+          "y": {
+            "type": "integer",
+            "description": "Offset to indicate vertical move of the mask"
+          }
+        }
+      },
+      "smartObject": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Desired image format for the smart object"
+          },
+          "linked": {
+            "type": "boolean",
+            "description": "Indicates if this Smart Object is linked. Currently we support Embedded Smart Object only which means \"linked = false\"",
+            "default": false
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the embedded or linked smart object. Currently we support Embedded Smart Object only"
+          },
+          "path": {
+            "type": "string",
+            "description": "Attribute for only Linked Smart Object. Indicates the relative path for the Linked Smart Object"
+          }
+        }
+      },
+      "fillLayer": {
+        "type": "object",
+        "properties": {
+          "solidColor": {
+            "type": "object",
+            "properties": {
+              "rgb": {
+                "$ref": "#/components/schemas/rgb"
+              }
+            }
+          }
+        }
+      },
+      "rgb": {
+        "type": "object",
+        "description": "An object describing the rgb color format in 8 bits",
+        "properties": {
+          "red": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "green": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "blue": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          }
+        }
+      },
+      "fontColorRgb": {
+        "type": "object",
+        "description": "An object describing the rgb color format in 16 bits",
+        "properties": {
+          "red": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          },
+          "green": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          },
+          "blue": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          }
+        }
+      },
+      "fontColorCmyk": {
+        "type": "object",
+        "description": "the font color settings for cmyk mode in 16bit representation",
+        "properties": {
+          "cyan": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          },
+          "magenta": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          },
+          "yellowColor": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          },
+          "black": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          }
+        }
+      },
+      "fontColorGray": {
+        "type": "object",
+        "description": "the font color settings for gray mode in 16bit representation",
+        "properties": {
+          "gray": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          }
+        }
+      },
+      "fontColorLab": {
+        "type": "object",
+        "description": "the font color settings for lab mode in 16bit representation.",
+        "properties": {
+          "luminance": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          },
+          "a": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          },
+          "b": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 32768
+          }
+        }
+      },
+      "textLayer": {
+        "type": "object",
+        "description": "text settings",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "the text string"
+          },
+          "characterStyles": {
+            "type": "array",
+            "description": "characterStyle settings. If the same supported attributes apply to all characters in the layer than this will be an array of one item, otherwise each characterStyle object will have a 'from' and 'to' value indicating the range of characters that the style applies to.",
+            "items": {
+              "$ref": "#/components/schemas/characterStyle"
+            }
+          },
+          "paragraphStyles": {
+            "type": "array",
+            "description": "paragraphStyles settings. If the same supported attributes apply to all characters in the layer than this will be an array of one item, otherwise each paragraphStyle object will have a 'from' and 'to' value indicating the range of characters that the style applies to.",
+            "items": {
+              "$ref": "#/components/schemas/paragraphStyle"
+            }
+          }
+        }
+      },
+      "characterStyle": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "integer",
+            "description": "The beginning of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1",
+            "minimum": 0
+          },
+          "to": {
+            "type": "integer",
+            "description": "The ending of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1",
+            "minimum": 0
+          },
+          "fontSize": {
+            "type": "number",
+            "description": "in points"
+          },
+          "fontName": {
+            "type": "string",
+            "description": "the font's postscript name. The list of supported fonts is at https://github.com/AdobeDocs/photoshop-api-docs/blob/master/SupportedFonts.md"
+          },
+          "fontAvailable": {
+            "type": "string",
+            "description": "is the font missing"
+          },
+          "orientation": {
+            "type": "string",
+            "description": "the text orientation",
+            "enum": ["horizontal", "vertical"]
+          },
+          "fontColor": {
+            "type": "object",
+            "properties": {
+              "rgb": {
+                "$ref": "#/components/schemas/fontColorRgb"
+              },
+              "cmyk": {
+                "$ref": "#/components/schemas/fontColorCmyk"
+              },
+              "gray": {
+                "$ref": "#/components/schemas/fontColorGray"
+              },
+              "lab": {
+                "$ref": "#/components/schemas/fontColorLab"
+              }
+            }
+          }
+        }
+      },
+      "paragraphStyle": {
+        "type": "object",
+        "description": "If the same supported attributes apply to all characters in the layer than this will be an array of one item, otherwise each paragraphStyle object will have a 'from' and 'to' value indicating the range of characters that the style applies to.",
+        "properties": {
+          "from": {
+            "type": "integer",
+            "description": "The beginning of the range of characters that this paragraphStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1",
+            "minimum": 0
+          },
+          "to": {
+            "type": "integer",
+            "description": "The ending of the range of characters that this paragraphStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1",
+            "minimum": 0
+          },
+          "alignment": {
+            "type": "string",
+            "description": "the paragraph alignment",
+            "enum": ["left", "center", "right", "justify", "justifyLeft", "justifyCenter", "justifyRight"]
+          }
+        }
+      },
+      "blendOptions": {
+        "type": "object",
+        "description": "Blend options of a layer, including opacity and blend mode",
+        "properties": {
+          "opacity": {
+            "type": "integer",
+            "description": "Indicates the opacity value of a layer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "blendMode": {
+            "type": "string",
+            "description": "Blend mode of layer",
+            "enum": ["normal", "dissolve", "darken", "multiply", "colorBurn", "linearBurn", "darkerColor", "lighten", "screen", "colorDodge", "linearDodge", "lighterColor", "overlay", "softLight", "hardLight", "vividLight", "linearLight", "pinLight", "hardMix", "difference", "exclusion", "subtract", "divide", "hue", "saturation", "color", "luminosity"]
           }
         }
       }

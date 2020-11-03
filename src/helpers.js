@@ -9,7 +9,7 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-const loggerNamespace = '@adobe'
+const loggerNamespace = 'aio-lib-photoshop'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
 
 /* global Request, Response */ // for linter
@@ -39,7 +39,7 @@ function reduceError (error = {}) {
  * @param {object} parameters object
  * @returns {object}  options request options
  */
-function createRequestOptions ({ tenantId, apiKey, accessToken, body = {} }) {
+function createRequestOptions ({ apiKey, accessToken, body = {} }) {
   return {
     requestBody: body,
     securities: {
@@ -54,6 +54,7 @@ function createRequestOptions ({ tenantId, apiKey, accessToken, body = {} }) {
 /**
  * Converts a fetch Response object's body contents to a string.
  *
+ * @private
  * @param {Response} response the response object
  * @returns {Promise<string>} a Promise that resolves to the converted object's body contents
  */
@@ -75,6 +76,7 @@ async function responseBodyToString (response) {
  * Filters a json object, removing any undefined or null entries.
  * Returns a new object (does not mutate original)
  *
+ * @private
  * @param {object} json the json object to filter
  * @returns {object} the filtered object (a new object)
  */
@@ -91,6 +93,7 @@ function filterUndefinedOrNull (json) {
 /**
  * Converts a fetch Request object to a string.
  *
+ * @private
  * @param {Request} request the request object
  * @returns {object} the converted object
  */
