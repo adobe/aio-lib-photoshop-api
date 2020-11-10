@@ -1,12 +1,11 @@
 /**
+ * File resolver options
  * @property [presignExpiryInSeconds = 3600] - Expiry time of any presigned urls, defaults to 1 hour
  * @property [defaultAdobeCloudPaths] - True if paths should be considered references to files in Creative Cloud
- * @property [defaultAIOPaths] - True if paths should be considered references to Adobe I/O Files
  */
 declare type FileResolverOptions = {
     presignExpiryInSeconds?: number;
     defaultAdobeCloudPaths?: boolean;
-    defaultAIOPaths?: boolean;
 };
 
 /**
@@ -16,10 +15,6 @@ declare type FileResolverOptions = {
  */
 declare class FileResolver {
     constructor(files?: any, options?: FileResolverOptions);
-    /**
-     * Adobe I/O Files instance
-     */
-    files: any;
     /**
      * Expiry time of presigned urls in seconds
      */
@@ -74,6 +69,16 @@ declare class FileResolver {
  * @returns a Promise with a PhotoshopAPI object
  */
 declare function init(orgId: string, apiKey: string, accessToken: string, files?: any, options?: PhotoshopAPIOptions): Promise<PhotoshopAPI>;
+
+/**
+ * Photoshop API options
+ * @property [presignExpiryInSeconds = 3600] - Expiry time of any presigned urls, defaults to 1 hour
+ * @property [defaultAdobeCloudPaths] - True if paths should be considered references to files in Creative Cloud
+ */
+declare type PhotoshopAPIOptions = {
+    presignExpiryInSeconds?: number;
+    defaultAdobeCloudPaths?: boolean;
+};
 
 /**
  * This class provides methods to call your PhotoshopAPI APIs.
@@ -172,7 +177,7 @@ declare class PhotoshopAPI {
      */
     getDocumentManifest(input: string | Input, options?: {
         thumbnails?: {
-            type?: types.OutputFormat;
+            type?: MimeType;
         };
     }): Job;
     /**
@@ -201,23 +206,12 @@ declare class PhotoshopAPI {
 }
 
 /**
- * @property [presignExpiryInSeconds = 3600] - Expiry time of any presigned urls, defaults to 1 hour
- * @property [defaultAdobeCloudPaths] - True if paths should be considered references to files in Creative Cloud
- * @property [defaultAIOPaths] - True if paths should be considered references to Adobe I/O Files
- */
-declare type PhotoshopAPIOptions = {
-    presignExpiryInSeconds?: number;
-    defaultAdobeCloudPaths?: boolean;
-    defaultAIOPaths?: boolean;
-};
-
-/**
  * Construct a job with the ability to acquire status updates
- * @param url - Job status url
+ * @param response - Service response
  * @param getJobStatus - Async function to get job status
  */
 declare class Job {
-    constructor(url: string, getJobStatus: (...params: any[]) => any);
+    constructor(response: any, getJobStatus: (...params: any[]) => any);
     /**
      * URL to request a status update of the job
      */
@@ -365,12 +359,27 @@ declare type IccProfile = {
 };
 
 /**
+ * Type of mask to create
+ */
+declare const enum CreateMaskType {
+    /**
+     * Binary mask
+     */
+    BINARY = "binary",
+    /**
+     * Soft mask
+     */
+    SOFT = "soft"
+}
+
+/**
+ * A reference to an output file, including output options
  * @property href - (all) Either an href to a single Creative Cloud asset for storage='adobe' OR a presigned GET URL for other external services.
  * @property [storage] - (all) Storage type, by default detected based on `href`
  * @property [type] - (all) Desired output image format, by default detected based on `href` extension
  * @property [overwrite = true] - (all) If the file already exists, indicates if the output file should be overwritten. Will eventually support eTags. Only applies to CC Storage
  * @property [mask] - (createMask, createCutout) Type of mask to create
- * @property [mask.format] - (createMask, createCutout) Binary or soft mask to create
+ * @property mask.format - (createMask, createCutout) Binary or soft mask to create
  * @property [width = 0] - (document) width, in pixels, of the renditions. Width of 0 generates a full size rendition. Height is not necessary as the rendition generate will automatically figure out the correct width-to-height aspect ratio. Only supported for image renditions
  * @property [quality = 7] - (document) quality of the renditions for JPEG. Range from 1 to 7, with 7 as the highest quality.
  * @property [compression = large] - (document) compression level for PNG: small, medium or large
@@ -384,7 +393,7 @@ declare type Output = {
     type?: MimeType;
     overwrite?: boolean;
     mask?: {
-        format?: 'binary' | 'soft';
+        format: CreateMaskType;
     };
     width?: number;
     quality?: number;
@@ -410,6 +419,7 @@ declare const enum WhiteBalance {
 }
 
 /**
+ * Set of edit parameters to apply to an image
  * @property Contrast - integer [ -100 .. 100 ]
  * @property Saturation - integer [ -100 .. 100 ]
  * @property VignetteAmount - integer [ -100 .. 100 ]
@@ -510,10 +520,11 @@ declare const enum LayerType {
 }
 
 /**
- * @property top - Top position of the layer (in pixels)
- * @property left - Left position of the layer (in pixels)
- * @property width - Layer width (in pixels)
- * @property height - Layer height (in pixels)
+ * Layer bounds (in pixels)
+ * @property top - Top position of the layer
+ * @property left - Left position of the layer
+ * @property width - Layer width
+ * @property height - Layer height
  */
 declare type Bounds = {
     top: number;
@@ -523,6 +534,7 @@ declare type Bounds = {
 };
 
 /**
+ * Mask applied to an layer
  * @property [clip] - Indicates if this is a clipped layer
  * @property [enabled = true] - Indicates a mask is enabled on that layer or not.
  * @property [linked = true] - Indicates a mask is linked to the layer or not.
@@ -574,6 +586,7 @@ declare const enum BlendMode {
 }
 
 /**
+ * Layer blend options
  * @property [opacity = 100] - Opacity value of the layer
  * @property [blendMode = "normal"] - Blend mode of the layer
  */
@@ -583,6 +596,7 @@ declare type BlendOptions = {
 };
 
 /**
+ * Adjustment layer brightness and contrast settings
  * @property [brightness = 0] - Adjustment layer brightness (-150...150)
  * @property [contrast = 0] - Adjustment layer contrast (-150...150)
  */
@@ -592,6 +606,7 @@ declare type BrightnessContrast = {
 };
 
 /**
+ * Adjustment layer exposure settings
  * @property [exposure = 0] - Adjustment layer exposure (-20...20)
  * @property [offset = 0] - Adjustment layer exposure offset (-0.5...0.5)
  * @property [gammaCorrection = 1] - Adjustment layer gamma correction (0.01...9.99)
@@ -603,6 +618,7 @@ declare type Exposure = {
 };
 
 /**
+ * Master channel hue and saturation settings
  * @property [channel = "master"] - Allowed values: "master"
  * @property [hue = 0] - Hue adjustment (-180...180)
  * @property [saturation = 0] - Saturation adjustment (-100...100)
@@ -616,6 +632,7 @@ declare type HueSaturationChannel = {
 };
 
 /**
+ * Adjustment layer hue and saturation settings
  * @property [colorize = false] - Colorize
  * @property [channels = []] - An array of hashes representing the 'master' channel (the remaining five channels of 'magentas', 'yellows', 'greens', etc are not yet supported)
  */
@@ -625,6 +642,7 @@ declare type HueSaturation = {
 };
 
 /**
+ * Adjustment layer color balance settings
  * @property [preserveLuminosity = true] - Preserve luminosity
  * @property [shadowLevels = [0,0,0]] - Shadow levels (-100...100)
  * @property [midtoneLevels = [0,0,0]] - Midtone levels (-100...100)
@@ -638,6 +656,7 @@ declare type ColorBalance = {
 };
 
 /**
+ * Adjustment layer settings
  * @property [brightnessContrast] - Brightness and contrast settings
  * @property [exposure] - Exposure settings
  * @property [hueSaturation] - Hue and saturation settings
@@ -659,6 +678,7 @@ declare const enum TextOrientation {
 }
 
 /**
+ * Font color settings for RGB mode (16-bit)
  * @property red - Red color (0...32768)
  * @property green - Green color (0...32768)
  * @property blue - Blue color (0...32768)
@@ -670,6 +690,7 @@ declare type FontColorRgb = {
 };
 
 /**
+ * Font color settings for CMYK mode (16-bit)
  * @property cyan - Cyan color (0...32768)
  * @property magenta - Magenta color (0...32768)
  * @property yellowColor - Yellow color (0...32768)
@@ -683,6 +704,7 @@ declare type FontColorCmyk = {
 };
 
 /**
+ * Font color settings for Gray mode (16-bit)
  * @property gray - Gray color (0...32768)
  */
 declare type FontColorGray = {
@@ -690,6 +712,7 @@ declare type FontColorGray = {
 };
 
 /**
+ * Font color settings
  * @property rgb - Font color settings for RGB mode (16-bit)
  * @property cmyk - Font color settings for CMYK mode (16-bit)
  * @property gray - Font color settings for Gray mode (16-bit)
@@ -701,6 +724,7 @@ declare type FontColor = {
 };
 
 /**
+ * Character style settings
  * @property [from] - The beginning of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
  * @property [to] - The ending of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
  * @property [fontSize] - Font size (in points)
@@ -749,6 +773,7 @@ declare const enum VerticalAlignment {
 }
 
 /**
+ * Paragraph style
  * @property [alignment = "left"] - Paragraph alignment
  * @property [from] - The beginning of the range of characters that this paragraphStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
  * @property [to] - The ending of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
@@ -760,6 +785,7 @@ declare type ParagraphStyle = {
 };
 
 /**
+ * Text layer settings
  * @property content - The text string
  * @property [characterStyles] - If the same supported attributes apply to all characters in the layer than this will be an array of one item, otherwise each characterStyle object will have a 'from' and 'to' value indicating the range of characters that the style applies to.
  * @property [paragraphStyles] - If the same supported attributes apply to all characters in the layer than this will be an array of one item, otherwise each paragraphStyle object will have a 'from' and 'to' value indicating the range of characters that the style applies to.
@@ -771,6 +797,7 @@ declare type TextLayer = {
 };
 
 /**
+ * Smart object settings
  * @property type - Desired image format for the smart object
  * @property [linked = false] - Indicates if this smart object is linked.
  * @property [path] - Relative path for the linked smart object
@@ -782,6 +809,7 @@ declare type SmartObject = {
 };
 
 /**
+ * Fill layer settings
  * @property solidColor - An object describing the solid color type for this fill layer. Currently supported mode is RGB only.
  * @property solidColor.red - Red color (0...255)
  * @property solidColor.green - Green color (0...255)
@@ -796,6 +824,7 @@ declare type FillLayer = {
 };
 
 /**
+ * Layer reference
  * @property [id] - The id of the layer you want to move above. Use either id OR name.
  * @property [name] - The name of the layer you want to move above. Use either id OR name.
  */
@@ -805,6 +834,7 @@ declare type LayerReference = {
 };
 
 /**
+ * Position where to add the layer in the layer hierarchy
  * @property [insertAbove] - Used to add the layer above another. If the layer ID indicated is a group layer than the layer will be inserted above the group layer.
  * @property [insertBelow] - Used to add the layer below another. If the layer ID indicated is a group layer than the layer will be inserted below (and outside of) the group layer
  * @property [insertInto] - Used to add the layer inside of a group. Useful when you need to move a layer to an empty group.
@@ -820,6 +850,7 @@ declare type AddLayerPosition = {
 };
 
 /**
+ * Position where to move the layer to in the layer hierarchy
  * @property [moveChildren = true] - If layer is a group layer than true = move the set as a unit. Otherwise an empty group is moved and any children are left where they were, un-grouped.
  * @property [insertAbove] - Used to move the layer above another. If the layer ID indicated is a group layer than the layer will be inserted above the group layer.
  * @property [insertBelow] - Used to move the layer below another. If the layer ID indicated is a group layer than the layer will be inserted below (and outside of) the group layer
@@ -837,9 +868,12 @@ declare type MoveLayerPosition = {
 };
 
 /**
- * @property type - Layer type, supported: LAYER, TEXT_LAYER, ADJUSTMENT_LAYER, SMART_OBJECT, FILL_LAYER
- * @property [id] - (modify, manifest) they layer id
- * @property [index] - (modify) the layer index. Required when deleting a layer, otherwise not used
+ * Layer to add, replace, move or delete when manipulating a Photoshop document, or retrieved from the manifest
+ * @property type - The layer type
+ * @property [id] - (modify, manifest) The layer id
+ * @property [index] - (modify, manifest) The layer index. Required when deleting a layer, otherwise not used
+ * @property [children] - (manifest) An array of nested layer objects. Only layerSections (group layers) can include children
+ * @property [thumbnail] - (manifest) If thumbnails were requested, a presigned GET URL to the thumbnail
  * @property [name] - Layer name
  * @property [locked = false] - Is the layer locked
  * @property [visible = true] - Is the layer visible
@@ -863,6 +897,8 @@ declare type Layer = {
     type: LayerType;
     id?: number;
     index?: number;
+    children?: Layer[];
+    thumbnail?: string;
     name?: string;
     locked?: boolean;
     visible?: boolean;
@@ -884,6 +920,7 @@ declare type Layer = {
 };
 
 /**
+ * Smart object layer to add or replace
  * @property [id] - (modify, smart object, manifest) they layer id
  * @property [name] - (all) Layer name
  * @property [locked = false] - (all) Is the layer locked
@@ -903,6 +940,7 @@ declare type SmartObjectLayer = {
 };
 
 /**
+ * Global Photoshop document modification options
  * @property [manageMissingFonts = 'useDefault'] - Action to take if there are one or more missing fonts in the document
  * @property [globalFont] - The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer. If this font itself is missing, the option specified for manageMissingFonts from above will take effect.
  * @property [fonts] - Array of custom fonts needed in this document. Filename should be <font_postscript_name>.otf
@@ -936,12 +974,13 @@ declare type ModifyDocumentOptions = {
 };
 
 /**
+ * Photoshop document create options
  * @property [manageMissingFonts = 'useDefault'] - Action to take if there are one or more missing fonts in the document
  * @property [globalFont] - The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer. If this font itself is missing, the option specified for manageMissingFonts from above will take effect.
  * @property [fonts] - Array of custom fonts needed in this document. Filename should be <font_postscript_name>.otf
  * @property document - Document attributes
- * @property document.width - Document width
- * @property document.height - Document height
+ * @property document.width - Document width in pixels
+ * @property document.height - Document height in pixels
  * @property document.resolution - Document resolution in pixels per inch. Allowed values: [72 ... 300].
  * @property document.fill - Background fill
  * @property document.mode - Color space
@@ -964,6 +1003,25 @@ declare type CreateDocumentOptions = {
 };
 
 /**
+ * Photoshop document manifest
+ * @property name - Name of the input file
+ * @property width - Document width in pixels
+ * @property height - Document height in pixels
+ * @property photoshopBuild - Name of the application that created the PSD
+ * @property imageMode - Document image mode
+ * @property bitDepth - Bit depth. Allowed values: 8, 16, 32
+ */
+declare type DocumentManifest = {
+    name: string;
+    width: number;
+    height: number;
+    photoshopBuild: string;
+    imageMode: Colorspace;
+    bitDepth: number;
+};
+
+/**
+ * Replace Smart Object options
  * @property layers - An array of layer objects you wish to act upon (edit, add, delete). Any layer missing an "operations" block will be ignored.
  */
 declare type ReplaceSmartObjectOptions = {
@@ -997,11 +1055,43 @@ declare const enum JobOutputStatus {
 }
 
 /**
- * @property input - the original input file path
- * @property status - output status
+ * Reported job errors
+ * @property type - A machine readable error type
+ * @property code - A machine readable error code
+ * @property title - A short human readable error summary
+ * @property errorDetails - Further descriptions of the exact errors where errorDetail is substituted for a specific issue.
+ */
+declare type JobError = {
+    type: string;
+    code: string;
+    title: string;
+    errorDetails: object[];
+};
+
+/**
+ * Job status and output
+ * @property input - The original input file path
+ * @property status - Output status
+ * @property created - Created timestamp of the job
+ * @property modified - Modified timestamp of the job
+ * @property [document] - (manifest) Information about the PSD file
+ * @property [layer] - (manifest) A tree of layer objects representing the PSD layer structure extracted from the psd document
+ * @property [_links] - Output references
+ * @property [_links.renditions] - (document) Created renditions
+ * @property [_links.self] - (lightroom, sensei) Created output
+ * @property [errors] - Any errors reported
  */
 declare type JobOutput = {
     input: string;
     status: JobOutputStatus;
+    created: string;
+    modified: string;
+    document?: DocumentManifest;
+    layer?: Layer[];
+    _links?: {
+        renditions?: Output[];
+        self?: Output;
+    };
+    errors?: JobError;
 };
 

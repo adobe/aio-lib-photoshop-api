@@ -9,9 +9,10 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
+'use strict'
+
 const sdk = require('../src/index')
 const path = require('path')
-const { getAccessTokenFromProject } = require('./auth')
 const storage = require('./storage')
 const { v4: uuidv4 } = require('uuid')
 const { readFile } = require('fs-extra')
@@ -25,16 +26,11 @@ require('dotenv').config({ path: path.join(__dirname, '.env') })
 let sdkClient = {}
 let container = {}
 let testRunId = ''
-let orgId = process.env.PHOTOSHOP_ORG_ID
-let apiKey = process.env.PHOTOSHOP_API_KEY
-let accessToken = process.env.PHOTOSHOP_ACCESS_TOKEN
-const projectFile = process.env.PHOTOSHOP_PROJECT_FILE
-const projectPrivateKeyFile = process.env.PHOTOSHOP_PROJECT_PRIVATE_KEY_FILE
+const orgId = process.env.PHOTOSHOP_ORG_ID
+const apiKey = process.env.PHOTOSHOP_API_KEY
+const accessToken = process.env.PHOTOSHOP_ACCESS_TOKEN
 
 beforeAll(async () => {
-  if (projectFile && projectPrivateKeyFile) {
-    ({ orgId, apiKey, accessToken } = await getAccessTokenFromProject(projectFile, projectPrivateKeyFile))
-  }
   container = await storage.init()
   sdkClient = await sdk.init(orgId, apiKey, accessToken, container)
   testRunId = uuidv4()

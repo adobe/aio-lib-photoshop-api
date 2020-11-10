@@ -9,6 +9,8 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
+'use strict'
+
 const { ErrorWrapper, createUpdater } = require('@adobe/aio-lib-core-errors').AioCoreSDKErrorWrapper
 
 const codes = {}
@@ -49,6 +51,7 @@ module.exports = {
 
 // Define your error codes with the wrapper
 E('ERROR_SDK_INITIALIZATION', 'SDK initialization error(s). Missing arguments: %s')
+E('ERROR_STATUS_URL_MISSING', 'Status URL is missing in the response: %s')
 E('ERROR_INPUT_VALIDATION', '%s')
 E('ERROR_PAYLOAD_VALIDATION', '%s')
 E('ERROR_REQUEST_BODY', '%s')

@@ -10,11 +10,11 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 -->
 
-[![Version](https://img.shields.io/npm/v/@adobe.svg)](https://npmjs.org/package/@adobe)
-[![Downloads/week](https://img.shields.io/npm/dw/@adobe.svg)](https://npmjs.org/package/@adobe)
+[![Version](https://img.shields.io/npm/v/@adobe/aio-lib-photoshop-api.svg)](https://npmjs.org/package/@adobe/aio-lib-photoshop-api)
+[![Downloads/week](https://img.shields.io/npm/dw/@adobe/aio-lib-photoshop-api.svg)](https://npmjs.org/package/@adobe/aio-lib-photoshop-api)
 [![Build Status](https://travis-ci.com/adobe/aio-lib-photoshop-api.svg?branch=master)](https://travis-ci.com/adobe/aio-lib-photoshop-api)
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Greenkeeper badge](https://badges.greenkeeper.io/adobe.svg)](https://greenkeeper.io/)
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/adobe/master.svg?style=flat-square)](https://codecov.io/gh/adobe/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/adobe/aio-lib-photoshop-api/master.svg?style=flat-square)](https://codecov.io/gh/adobe/aio-lib-photoshop-api/)
 
 # Adobe I/O Photoshop API Lib
 
@@ -134,7 +134,7 @@ async function sdkTest() {
 <li>If a URL is provided, the hostname is inspected to determine Azure, Dropbox, or External (default)</li>
 <li>If a path is provided, the path resolved to Adobe I/O Files if an instance is provided to the constructor, otherwise it&#39;s Creative Cloud</li>
 </ul>
-<p>Path resolution can be overridden by the <code>defaultAIOPaths</code> and <code>defaultAdobeCloudPaths</code> options.</p>
+<p>Path resolution can be overridden by the <code>defaultAdobeCloudPaths</code> option.</p>
 <p>The mime-type is resolved based on the extension of the pathname of the URL or the path. If no extension can
 be found or the extension is unknown, the default <code>image/png</code> is selected.</p>
 </dd>
@@ -160,9 +160,11 @@ with valid values for orgId, apiKey and accessToken</p>
 
 <dl>
 <dt><a href="#FileResolverOptions">FileResolverOptions</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>File resolver options</p>
+</dd>
 <dt><a href="#PhotoshopAPIOptions">PhotoshopAPIOptions</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Photoshop API options</p>
+</dd>
 <dt><a href="#Input">Input</a> : <code>object</code></dt>
 <dd><p>A reference to an input file</p>
 </dd>
@@ -170,63 +172,98 @@ with valid values for orgId, apiKey and accessToken</p>
 <dd><p>Either referencing a standard profile from <a href="#StandardIccProfileNames">StandardIccProfileNames</a> in <code>profileName</code>, or a custom profile through <code>input</code>.</p>
 </dd>
 <dt><a href="#Output">Output</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>A reference to an output file, including output options</p>
+</dd>
 <dt><a href="#EditPhotoOptions">EditPhotoOptions</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Set of edit parameters to apply to an image</p>
+</dd>
 <dt><a href="#Bounds">Bounds</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Layer bounds (in pixels)</p>
+</dd>
 <dt><a href="#LayerMask">LayerMask</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Mask applied to an layer</p>
+</dd>
 <dt><a href="#BlendOptions">BlendOptions</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Layer blend options</p>
+</dd>
 <dt><a href="#BrightnessContrast">BrightnessContrast</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Adjustment layer brightness and contrast settings</p>
+</dd>
 <dt><a href="#Exposure">Exposure</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Adjustment layer exposure settings</p>
+</dd>
 <dt><a href="#HueSaturationChannel">HueSaturationChannel</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Master channel hue and saturation settings</p>
+</dd>
 <dt><a href="#HueSaturation">HueSaturation</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Adjustment layer hue and saturation settings</p>
+</dd>
 <dt><a href="#ColorBalance">ColorBalance</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Adjustment layer color balance settings</p>
+</dd>
 <dt><a href="#AdjustmentLayer">AdjustmentLayer</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Adjustment layer settings</p>
+</dd>
 <dt><a href="#FontColorRgb">FontColorRgb</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Font color settings for RGB mode (16-bit)</p>
+</dd>
 <dt><a href="#FontColorCmyk">FontColorCmyk</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Font color settings for CMYK mode (16-bit)</p>
+</dd>
 <dt><a href="#FontColorGray">FontColorGray</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Font color settings for Gray mode (16-bit)</p>
+</dd>
 <dt><a href="#FontColor">FontColor</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Font color settings</p>
+</dd>
 <dt><a href="#CharacterStyle">CharacterStyle</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Character style settings</p>
+</dd>
 <dt><a href="#ParagraphStyle">ParagraphStyle</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Paragraph style</p>
+</dd>
 <dt><a href="#TextLayer">TextLayer</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Text layer settings</p>
+</dd>
 <dt><a href="#SmartObject">SmartObject</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Smart object settings</p>
+</dd>
 <dt><a href="#FillLayer">FillLayer</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Fill layer settings</p>
+</dd>
 <dt><a href="#LayerReference">LayerReference</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Layer reference</p>
+</dd>
 <dt><a href="#AddLayerPosition">AddLayerPosition</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Position where to add the layer in the layer hierarchy</p>
+</dd>
 <dt><a href="#MoveLayerPosition">MoveLayerPosition</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Position where to move the layer to in the layer hierarchy</p>
+</dd>
 <dt><a href="#Layer">Layer</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Layer to add, replace, move or delete when manipulating a Photoshop document, or retrieved from the manifest</p>
+</dd>
 <dt><a href="#SmartObjectLayer">SmartObjectLayer</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Smart object layer to add or replace</p>
+</dd>
 <dt><a href="#ModifyDocumentOptions">ModifyDocumentOptions</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Global Photoshop document modification options</p>
+</dd>
 <dt><a href="#CreateDocumentOptions">CreateDocumentOptions</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Photoshop document create options</p>
+</dd>
+<dt><a href="#DocumentManifest">DocumentManifest</a> : <code>object</code></dt>
+<dd><p>Photoshop document manifest</p>
+</dd>
 <dt><a href="#ReplaceSmartObjectOptions">ReplaceSmartObjectOptions</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Replace Smart Object options</p>
+</dd>
+<dt><a href="#JobError">JobError</a> : <code>object</code></dt>
+<dd><p>Reported job errors</p>
+</dd>
 <dt><a href="#JobOutput">JobOutput</a> : <code>object</code></dt>
-<dd></dd>
+<dd><p>Job status and output</p>
+</dd>
 </dl>
 
 <a name="FileResolver"></a>
@@ -240,7 +277,7 @@ The storage type storage type is resolved for input and output files using the f
 - If a URL is provided, the hostname is inspected to determine Azure, Dropbox, or External (default)
 - If a path is provided, the path resolved to Adobe I/O Files if an instance is provided to the constructor, otherwise it's Creative Cloud
 
-Path resolution can be overridden by the `defaultAIOPaths` and `defaultAdobeCloudPaths` options.
+Path resolution can be overridden by the `defaultAdobeCloudPaths` option.
 
 The mime-type is resolved based on the extension of the pathname of the URL or the path. If no extension can
 be found or the extension is unknown, the default `image/png` is selected.
@@ -249,7 +286,6 @@ be found or the extension is unknown, the default `image/png` is selected.
 
 * [FileResolver](#FileResolver)
     * [new FileResolver([files], [options])](#new_FileResolver_new)
-    * [.files](#FileResolver+files)
     * [.presignExpiryInSeconds](#FileResolver+presignExpiryInSeconds) : <code>number</code>
     * [.defaultPathStorage](#FileResolver+defaultPathStorage) : [<code>Storage</code>](#Storage)
     * [.resolveInput(input)](#FileResolver+resolveInput) ⇒ [<code>Input</code>](#Input)
@@ -269,12 +305,6 @@ Construct a file resolver
 | [files] | <code>\*</code> | Adobe I/O Files instance |
 | [options] | [<code>FileResolverOptions</code>](#FileResolverOptions) | Options |
 
-<a name="FileResolver+files"></a>
-
-### fileResolver.files
-Adobe I/O Files instance
-
-**Kind**: instance property of [<code>FileResolver</code>](#FileResolver)  
 <a name="FileResolver+presignExpiryInSeconds"></a>
 
 ### fileResolver.presignExpiryInSeconds : <code>number</code>
@@ -532,7 +562,7 @@ Extract and return a psd file's layer information
 | input | <code>string</code> \| [<code>Input</code>](#Input) | An object describing an input PSD file.Current support is for files less than 1000MB. |
 | [options] | <code>object</code> | available options to apply to all input files |
 | [options.thumbnails] | <code>object</code> | Include presigned GET URLs to small preview thumbnails for any renderable layer. |
-| [options.thumbnails.type] | <code>types.MimeType</code> | desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff" |
+| [options.thumbnails.type] | [<code>MimeType</code>](#MimeType) | desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff" |
 
 <a name="PhotoshopAPI+modifyDocument"></a>
 
@@ -583,7 +613,7 @@ Abstraction around the Photoshop Services Jobs
 **Kind**: global class  
 
 * [Job](#Job)
-    * [new Job(url, getJobStatus)](#new_Job_new)
+    * [new Job(response, getJobStatus)](#new_Job_new)
     * [.url](#Job+url) : <code>string</code>
     * [.jobId](#Job+jobId) : <code>string</code>
     * [.outputs](#Job+outputs) : [<code>Array.&lt;JobOutput&gt;</code>](#JobOutput)
@@ -593,13 +623,13 @@ Abstraction around the Photoshop Services Jobs
 
 <a name="new_Job_new"></a>
 
-### new Job(url, getJobStatus)
+### new Job(response, getJobStatus)
 Construct a job with the ability to acquire status updates
 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| url | <code>string</code> | Job status url |
+| response | <code>\*</code> | Service response |
 | getJobStatus | <code>function</code> | Async function to get job status |
 
 <a name="Job+url"></a>
@@ -739,6 +769,20 @@ Standard ICC profile names
 | DOTGAIN_30 | <code>Dot Gain 30%</code> | 
 | GRAY_GAMMA_18 | <code>Gray Gamma 1.8</code> | 
 | GRAY_GAMMA_22 | <code>Gray Gamma 2.2</code> | 
+
+<a name="CreateMaskType"></a>
+
+## CreateMaskType
+Type of mask to create
+
+**Kind**: global enum  
+**Read only**: true  
+**Properties**
+
+| Name | Default | Description |
+| --- | --- | --- |
+| BINARY | <code>binary</code> | Binary mask |
+| SOFT | <code>soft</code> | Soft mask |
 
 <a name="WhiteBalance"></a>
 
@@ -947,6 +991,8 @@ Returns a Promise that resolves with a new PhotoshopAPI object.
 <a name="FileResolverOptions"></a>
 
 ## FileResolverOptions : <code>object</code>
+File resolver options
+
 **Kind**: global typedef  
 **Properties**
 
@@ -954,11 +1000,12 @@ Returns a Promise that resolves with a new PhotoshopAPI object.
 | --- | --- | --- | --- |
 | [presignExpiryInSeconds] | <code>number</code> | <code>3600</code> | Expiry time of any presigned urls, defaults to 1 hour |
 | [defaultAdobeCloudPaths] | <code>boolean</code> |  | True if paths should be considered references to files in Creative Cloud |
-| [defaultAIOPaths] | <code>boolean</code> |  | True if paths should be considered references to Adobe I/O Files |
 
 <a name="PhotoshopAPIOptions"></a>
 
 ## PhotoshopAPIOptions : <code>object</code>
+Photoshop API options
+
 **Kind**: global typedef  
 **Properties**
 
@@ -966,7 +1013,6 @@ Returns a Promise that resolves with a new PhotoshopAPI object.
 | --- | --- | --- | --- |
 | [presignExpiryInSeconds] | <code>number</code> | <code>3600</code> | Expiry time of any presigned urls, defaults to 1 hour |
 | [defaultAdobeCloudPaths] | <code>boolean</code> |  | True if paths should be considered references to files in Creative Cloud |
-| [defaultAIOPaths] | <code>boolean</code> |  | True if paths should be considered references to Adobe I/O Files |
 
 <a name="Input"></a>
 
@@ -998,6 +1044,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="Output"></a>
 
 ## Output : <code>object</code>
+A reference to an output file, including output options
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1008,7 +1056,7 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 | [type] | [<code>MimeType</code>](#MimeType) |  | (all) Desired output image format, by default detected based on `href` extension |
 | [overwrite] | <code>boolean</code> | <code>true</code> | (all) If the file already exists, indicates if the output file should be overwritten. Will eventually support eTags. Only applies to CC Storage |
 | [mask] | <code>object</code> |  | (createMask, createCutout) Type of mask to create |
-| [mask.format] | <code>&#x27;binary&#x27;</code> \| <code>&#x27;soft&#x27;</code> |  | (createMask, createCutout) Binary or soft mask to create |
+| mask.format | [<code>CreateMaskType</code>](#CreateMaskType) |  | (createMask, createCutout) Binary or soft mask to create |
 | [width] | <code>number</code> | <code>0</code> | (document) width, in pixels, of the renditions. Width of 0 generates a full size rendition. Height is not necessary as the rendition generate will automatically figure out the correct width-to-height aspect ratio. Only supported for image renditions |
 | [quality] | <code>number</code> | <code>7</code> | (document) quality of the renditions for JPEG. Range from 1 to 7, with 7 as the highest quality. |
 | [compression] | [<code>PngCompression</code>](#PngCompression) | <code>large</code> | (document) compression level for PNG: small, medium or large |
@@ -1019,6 +1067,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="EditPhotoOptions"></a>
 
 ## EditPhotoOptions : <code>object</code>
+Set of edit parameters to apply to an image
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1047,19 +1097,23 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="Bounds"></a>
 
 ## Bounds : <code>object</code>
+Layer bounds (in pixels)
+
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
 | --- | --- | --- |
-| top | <code>number</code> | Top position of the layer (in pixels) |
-| left | <code>number</code> | Left position of the layer (in pixels) |
-| width | <code>number</code> | Layer width (in pixels) |
-| height | <code>number</code> | Layer height (in pixels) |
+| top | <code>number</code> | Top position of the layer |
+| left | <code>number</code> | Left position of the layer |
+| width | <code>number</code> | Layer width |
+| height | <code>number</code> | Layer height |
 
 <a name="LayerMask"></a>
 
 ## LayerMask : <code>object</code>
+Mask applied to an layer
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1075,6 +1129,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="BlendOptions"></a>
 
 ## BlendOptions : <code>object</code>
+Layer blend options
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1086,6 +1142,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="BrightnessContrast"></a>
 
 ## BrightnessContrast : <code>object</code>
+Adjustment layer brightness and contrast settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1097,6 +1155,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="Exposure"></a>
 
 ## Exposure : <code>object</code>
+Adjustment layer exposure settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1109,6 +1169,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="HueSaturationChannel"></a>
 
 ## HueSaturationChannel : <code>object</code>
+Master channel hue and saturation settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1122,6 +1184,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="HueSaturation"></a>
 
 ## HueSaturation : <code>object</code>
+Adjustment layer hue and saturation settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1133,6 +1197,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="ColorBalance"></a>
 
 ## ColorBalance : <code>object</code>
+Adjustment layer color balance settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1146,6 +1212,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="AdjustmentLayer"></a>
 
 ## AdjustmentLayer : <code>object</code>
+Adjustment layer settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1159,6 +1227,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="FontColorRgb"></a>
 
 ## FontColorRgb : <code>object</code>
+Font color settings for RGB mode (16-bit)
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1171,6 +1241,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="FontColorCmyk"></a>
 
 ## FontColorCmyk : <code>object</code>
+Font color settings for CMYK mode (16-bit)
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1184,6 +1256,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="FontColorGray"></a>
 
 ## FontColorGray : <code>object</code>
+Font color settings for Gray mode (16-bit)
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1194,6 +1268,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="FontColor"></a>
 
 ## FontColor : <code>object</code>
+Font color settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1206,6 +1282,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="CharacterStyle"></a>
 
 ## CharacterStyle : <code>object</code>
+Character style settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1221,6 +1299,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="ParagraphStyle"></a>
 
 ## ParagraphStyle : <code>object</code>
+Paragraph style
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1233,6 +1313,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="TextLayer"></a>
 
 ## TextLayer : <code>object</code>
+Text layer settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1245,6 +1327,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="SmartObject"></a>
 
 ## SmartObject : <code>object</code>
+Smart object settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1257,6 +1341,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="FillLayer"></a>
 
 ## FillLayer : <code>object</code>
+Fill layer settings
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1270,6 +1356,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="LayerReference"></a>
 
 ## LayerReference : <code>object</code>
+Layer reference
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1281,6 +1369,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="AddLayerPosition"></a>
 
 ## AddLayerPosition : <code>object</code>
+Position where to add the layer in the layer hierarchy
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1295,6 +1385,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="MoveLayerPosition"></a>
 
 ## MoveLayerPosition : <code>object</code>
+Position where to move the layer to in the layer hierarchy
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1310,14 +1402,18 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="Layer"></a>
 
 ## Layer : <code>object</code>
+Layer to add, replace, move or delete when manipulating a Photoshop document, or retrieved from the manifest
+
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
-| type | [<code>LayerType</code>](#LayerType) |  | Layer type, supported: LAYER, TEXT_LAYER, ADJUSTMENT_LAYER, SMART_OBJECT, FILL_LAYER |
-| [id] | <code>number</code> |  | (modify, manifest) they layer id |
-| [index] | <code>number</code> |  | (modify) the layer index. Required when deleting a layer, otherwise not used |
+| type | [<code>LayerType</code>](#LayerType) |  | The layer type |
+| [id] | <code>number</code> |  | (modify, manifest) The layer id |
+| [index] | <code>number</code> |  | (modify, manifest) The layer index. Required when deleting a layer, otherwise not used |
+| [children] | [<code>Array.&lt;Layer&gt;</code>](#Layer) |  | (manifest) An array of nested layer objects. Only layerSections (group layers) can include children |
+| [thumbnail] | <code>string</code> |  | (manifest) If thumbnails were requested, a presigned GET URL to the thumbnail |
 | [name] | <code>string</code> |  | Layer name |
 | [locked] | <code>boolean</code> | <code>false</code> | Is the layer locked |
 | [visible] | <code>boolean</code> | <code>true</code> | Is the layer visible |
@@ -1340,6 +1436,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="SmartObjectLayer"></a>
 
 ## SmartObjectLayer : <code>object</code>
+Smart object layer to add or replace
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1356,6 +1454,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="ModifyDocumentOptions"></a>
 
 ## ModifyDocumentOptions : <code>object</code>
+Global Photoshop document modification options
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1377,6 +1477,8 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 <a name="CreateDocumentOptions"></a>
 
 ## CreateDocumentOptions : <code>object</code>
+Photoshop document create options
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1386,17 +1488,36 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 | [globalFont] | <code>string</code> |  | The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer. If this font itself is missing, the option specified for manageMissingFonts from above will take effect. |
 | [fonts] | [<code>Array.&lt;Input&gt;</code>](#Input) |  | Array of custom fonts needed in this document. Filename should be <font_postscript_name>.otf |
 | document | <code>object</code> |  | Document attributes |
-| document.width | <code>number</code> |  | Document width |
-| document.height | <code>number</code> |  | Document height |
+| document.width | <code>number</code> |  | Document width in pixels |
+| document.height | <code>number</code> |  | Document height in pixels |
 | document.resolution | <code>number</code> |  | Document resolution in pixels per inch. Allowed values: [72 ... 300]. |
 | document.fill | [<code>BackgroundFill</code>](#BackgroundFill) |  | Background fill |
 | document.mode | [<code>Colorspace</code>](#Colorspace) |  | Color space |
 | document.depth | <code>number</code> |  | Bit depth. Allowed values: 8, 16, 32 |
 | [layers] | [<code>Array.&lt;Layer&gt;</code>](#Layer) |  | An array of layer objects representing the layers to be created, in the same order as provided (from top to bottom). |
 
+<a name="DocumentManifest"></a>
+
+## DocumentManifest : <code>object</code>
+Photoshop document manifest
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | Name of the input file |
+| width | <code>number</code> | Document width in pixels |
+| height | <code>number</code> | Document height in pixels |
+| photoshopBuild | <code>string</code> | Name of the application that created the PSD |
+| imageMode | [<code>Colorspace</code>](#Colorspace) | Document image mode |
+| bitDepth | <code>number</code> | Bit depth. Allowed values: 8, 16, 32 |
+
 <a name="ReplaceSmartObjectOptions"></a>
 
 ## ReplaceSmartObjectOptions : <code>object</code>
+Replace Smart Object options
+
 **Kind**: global typedef  
 **Properties**
 
@@ -1404,16 +1525,41 @@ Either referencing a standard profile from [StandardIccProfileNames](#StandardIc
 | --- | --- | --- |
 | layers | [<code>Array.&lt;SmartObjectLayer&gt;</code>](#SmartObjectLayer) | An array of layer objects you wish to act upon (edit, add, delete). Any layer missing an "operations" block will be ignored. |
 
-<a name="JobOutput"></a>
+<a name="JobError"></a>
 
-## JobOutput : <code>object</code>
+## JobError : <code>object</code>
+Reported job errors
+
 **Kind**: global typedef  
 **Properties**
 
 | Name | Type | Description |
 | --- | --- | --- |
-| input | <code>string</code> | the original input file path |
-| status | [<code>JobOutputStatus</code>](#JobOutputStatus) | output status |
+| type | <code>string</code> | A machine readable error type |
+| code | <code>string</code> | A machine readable error code |
+| title | <code>string</code> | A short human readable error summary |
+| errorDetails | <code>Array.&lt;object&gt;</code> | Further descriptions of the exact errors where errorDetail is substituted for a specific issue. |
+
+<a name="JobOutput"></a>
+
+## JobOutput : <code>object</code>
+Job status and output
+
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| input | <code>string</code> | The original input file path |
+| status | [<code>JobOutputStatus</code>](#JobOutputStatus) | Output status |
+| created | <code>string</code> | Created timestamp of the job |
+| modified | <code>string</code> | Modified timestamp of the job |
+| [document] | [<code>DocumentManifest</code>](#DocumentManifest) | (manifest) Information about the PSD file |
+| [layer] | [<code>Array.&lt;Layer&gt;</code>](#Layer) | (manifest) A tree of layer objects representing the PSD layer structure extracted from the psd document |
+| [_links] | <code>object</code> | Output references |
+| [_links.renditions] | [<code>Array.&lt;Output&gt;</code>](#Output) | (document) Created renditions |
+| [_links.self] | [<code>Output</code>](#Output) | (lightroom, sensei) Created output |
+| [errors] | [<code>JobError</code>](#JobError) | Any errors reported |
 
 ### Debug Logs
 

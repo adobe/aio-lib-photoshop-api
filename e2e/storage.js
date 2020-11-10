@@ -9,6 +9,8 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
+'use strict'
+
 const {
   BlobServiceClient,
   StorageSharedKeyCredential,
@@ -92,9 +94,9 @@ class AzureContainer {
  * @returns {AzureContainer} Storage container
  */
 async function init () {
-  const accountKey = process.env.PHOTOSHOP_AZURE_ACCOUNT_KEY
-  const accountName = process.env.PHOTOSHOP_AZURE_ACCOUNT_NAME
-  const containerName = process.env.PHOTOSHOP_AZURE_CONTAINER_NAME
+  const accountKey = process.env.PHOTOSHOP_AZURE_STORAGE_KEY
+  const accountName = process.env.PHOTOSHOP_AZURE_STORAGE_ACCOUNT
+  const containerName = process.env.PHOTOSHOP_AZURE_STORAGE_CONTAINER
 
   const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey)
   const blobServiceClient = new BlobServiceClient(

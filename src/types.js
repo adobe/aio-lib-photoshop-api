@@ -9,6 +9,8 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
+'use strict'
+
 /**
  * Storage types
  *
@@ -132,13 +134,32 @@ const StandardIccProfileNames = {
  */
 
 /**
+ * Type of mask to create
+ *
+ * @readonly
+ * @enum
+ */
+const CreateMaskType = {
+  /**
+   * Binary mask
+   */
+  BINARY: 'binary',
+
+  /**
+   * Soft mask
+   */
+  SOFT: 'soft'
+}
+
+/**
  * @typedef {object} Output
+ * @description A reference to an output file, including output options
  * @property {string} href (all) Either an href to a single Creative Cloud asset for storage='adobe' OR a presigned GET URL for other external services.
  * @property {Storage} [storage] (all) Storage type, by default detected based on `href`
  * @property {MimeType} [type] (all) Desired output image format, by default detected based on `href` extension
  * @property {boolean} [overwrite=true] (all) If the file already exists, indicates if the output file should be overwritten. Will eventually support eTags. Only applies to CC Storage
  * @property {object} [mask] (createMask, createCutout) Type of mask to create
- * @property {'binary'|'soft'} mask.format (createMask, createCutout) Binary or soft mask to create
+ * @property {CreateMaskType} mask.format (createMask, createCutout) Binary or soft mask to create
  * @property {number} [width=0] (document) width, in pixels, of the renditions. Width of 0 generates a full size rendition. Height is not necessary as the rendition generate will automatically figure out the correct width-to-height aspect ratio. Only supported for image renditions
  * @property {number} [quality=7] (document) quality of the renditions for JPEG. Range from 1 to 7, with 7 as the highest quality.
  * @property {PngCompression} [compression=large] (document) compression level for PNG: small, medium or large
@@ -167,6 +188,7 @@ const WhiteBalance = {
 
 /**
  * @typedef {object} EditPhotoOptions
+ * @description Set of edit parameters to apply to an image
  * @property {number} Contrast integer [ -100 .. 100 ]
  * @property {number} Saturation integer [ -100 .. 100 ]
  * @property {number} VignetteAmount integer [ -100 .. 100 ]
@@ -256,14 +278,16 @@ const LayerType = {
 
 /**
  * @typedef {object} Bounds
- * @property {number} top Top position of the layer (in pixels)
- * @property {number} left Left position of the layer (in pixels)
- * @property {number} width Layer width (in pixels)
- * @property {number} height Layer height (in pixels)
+ * @description Layer bounds (in pixels)
+ * @property {number} top Top position of the layer
+ * @property {number} left Left position of the layer
+ * @property {number} width Layer width
+ * @property {number} height Layer height
  */
 
 /**
  * @typedef {object} LayerMask
+ * @description Mask applied to an layer
  * @property {boolean} [clip] Indicates if this is a clipped layer
  * @property {boolean} [enabled=true] Indicates a mask is enabled on that layer or not.
  * @property {boolean} [linked=true] Indicates a mask is linked to the layer or not.
@@ -310,18 +334,21 @@ const BlendMode = {
 
 /**
  * @typedef {object} BlendOptions
+ * @description Layer blend options
  * @property {number} [opacity=100] Opacity value of the layer
  * @property {BlendMode} [blendMode="normal"] Blend mode of the layer
  */
 
 /**
  * @typedef {object} BrightnessContrast
+ * @description Adjustment layer brightness and contrast settings
  * @property {number} [brightness=0] Adjustment layer brightness (-150...150)
  * @property {number} [contrast=0] Adjustment layer contrast (-150...150)
  */
 
 /**
  * @typedef {object} Exposure
+ * @description Adjustment layer exposure settings
  * @property {number} [exposure=0] Adjustment layer exposure (-20...20)
  * @property {number} [offset=0] Adjustment layer exposure offset (-0.5...0.5)
  * @property {number} [gammaCorrection=1] Adjustment layer gamma correction (0.01...9.99)
@@ -329,6 +356,7 @@ const BlendMode = {
 
 /**
  * @typedef {object} HueSaturationChannel
+ * @description Master channel hue and saturation settings
  * @property {string} [channel="master"] Allowed values: "master"
  * @property {number} [hue=0] Hue adjustment (-180...180)
  * @property {number} [saturation=0] Saturation adjustment (-100...100)
@@ -337,12 +365,14 @@ const BlendMode = {
 
 /**
  * @typedef {object} HueSaturation
+ * @description Adjustment layer hue and saturation settings
  * @property {boolean} [colorize=false] Colorize
  * @property {HueSaturationChannel[]} [channels=[]] An array of hashes representing the 'master' channel (the remaining five channels of 'magentas', 'yellows', 'greens', etc are not yet supported)
  */
 
 /**
  * @typedef {object} ColorBalance
+ * @description Adjustment layer color balance settings
  * @property {boolean} [preserveLuminosity=true] Preserve luminosity
  * @property {number[]} [shadowLevels=[0,0,0]] Shadow levels (-100...100)
  * @property {number[]} [midtoneLevels=[0,0,0]] Midtone levels (-100...100)
@@ -351,6 +381,7 @@ const BlendMode = {
 
 /**
  * @typedef {object} AdjustmentLayer
+ * @description Adjustment layer settings
  * @property {BrightnessContrast} [brightnessContrast] Brightness and contrast settings
  * @property {Exposure} [exposure] Exposure settings
  * @property {HueSaturation} [hueSaturation] Hue and saturation settings
@@ -370,12 +401,14 @@ const TextOrientation = {
 
 /**
  * @typedef {object} FontColorRgb
+ * @description Font color settings for RGB mode (16-bit)
  * @property {number} red Red color (0...32768)
  * @property {number} green Green color (0...32768)
  * @property {number} blue Blue color (0...32768)
  */
 /**
  * @typedef {object} FontColorCmyk
+ * @description Font color settings for CMYK mode (16-bit)
  * @property {number} cyan Cyan color (0...32768)
  * @property {number} magenta Magenta color (0...32768)
  * @property {number} yellowColor Yellow color (0...32768)
@@ -383,16 +416,19 @@ const TextOrientation = {
  */
 /**
  * @typedef {object} FontColorGray
+ * @description Font color settings for Gray mode (16-bit)
  * @property {number} gray Gray color (0...32768)
  */
 /**
  * @typedef {object} FontColor
+ * @description Font color settings
  * @property {FontColorRgb} rgb Font color settings for RGB mode (16-bit)
  * @property {FontColorCmyk} cmyk Font color settings for CMYK mode (16-bit)
  * @property {FontColorGray} gray Font color settings for Gray mode (16-bit)
  */
 /**
  * @typedef {object} CharacterStyle
+ * @description Character style settings
  * @property {number} [from] The beginning of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
  * @property {number} [to] The ending of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
  * @property {number} [fontSize] Font size (in points)
@@ -443,6 +479,7 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} ParagraphStyle
+ * @description Paragraph style
  * @property {ParagraphAlignment} [alignment="left"] Paragraph alignment
  * @property {number} [from] The beginning of the range of characters that this paragraphStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
  * @property {number} [to] The ending of the range of characters that this characterStyle applies to. Based on initial index of 0. For example a style applied to only the first two characters would be from=0 and to=1
@@ -450,6 +487,7 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} TextLayer
+ * @description Text layer settings
  * @property {string} content The text string
  * @property {CharacterStyle[]} [characterStyles] If the same supported attributes apply to all characters in the layer than this will be an array of one item, otherwise each characterStyle object will have a 'from' and 'to' value indicating the range of characters that the style applies to.
  * @property {ParagraphStyle[]} [paragraphStyles] If the same supported attributes apply to all characters in the layer than this will be an array of one item, otherwise each paragraphStyle object will have a 'from' and 'to' value indicating the range of characters that the style applies to.
@@ -457,6 +495,7 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} SmartObject
+ * @description Smart object settings
  * @property {string} type Desired image format for the smart object
  * @property {boolean} [linked=false] Indicates if this smart object is linked.
  * @property {string} [path] Relative path for the linked smart object
@@ -464,6 +503,7 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} FillLayer
+ * @description Fill layer settings
  * @property {object} solidColor An object describing the solid color type for this fill layer. Currently supported mode is RGB only.
  * @property {number} solidColor.red Red color (0...255)
  * @property {number} solidColor.green Green color (0...255)
@@ -472,12 +512,14 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} LayerReference
+ * @description Layer reference
  * @property {number} [id] The id of the layer you want to move above. Use either id OR name.
  * @property {string} [name] The name of the layer you want to move above. Use either id OR name.
  */
 
 /**
  * @typedef {object} AddLayerPosition
+ * @description Position where to add the layer in the layer hierarchy
  * @property {LayerReference} [insertAbove] Used to add the layer above another. If the layer ID indicated is a group layer than the layer will be inserted above the group layer.
  * @property {LayerReference} [insertBelow] Used to add the layer below another. If the layer ID indicated is a group layer than the layer will be inserted below (and outside of) the group layer
  * @property {LayerReference} [insertInto] Used to add the layer inside of a group. Useful when you need to move a layer to an empty group.
@@ -487,6 +529,7 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} MoveLayerPosition
+ * @description Position where to move the layer to in the layer hierarchy
  * @property {boolean} [moveChildren=true] If layer is a group layer than true = move the set as a unit. Otherwise an empty group is moved and any children are left where they were, un-grouped.
  * @property {LayerReference} [insertAbove] Used to move the layer above another. If the layer ID indicated is a group layer than the layer will be inserted above the group layer.
  * @property {LayerReference} [insertBelow] Used to move the layer below another. If the layer ID indicated is a group layer than the layer will be inserted below (and outside of) the group layer
@@ -497,9 +540,12 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} Layer
- * @property {LayerType} type Layer type, supported: LAYER, TEXT_LAYER, ADJUSTMENT_LAYER, SMART_OBJECT, FILL_LAYER
- * @property {number} [id] (modify, manifest) they layer id
- * @property {number} [index] (modify) the layer index. Required when deleting a layer, otherwise not used
+ * @description Layer to add, replace, move or delete when manipulating a Photoshop document, or retrieved from the manifest
+ * @property {LayerType} type The layer type
+ * @property {number} [id] (modify, manifest) The layer id
+ * @property {number} [index] (modify, manifest) The layer index. Required when deleting a layer, otherwise not used
+ * @property {Layer[]} [children] (manifest) An array of nested layer objects. Only layerSections (group layers) can include children
+ * @property {string} [thumbnail] (manifest) If thumbnails were requested, a presigned GET URL to the thumbnail
  * @property {string} [name] Layer name
  * @property {boolean} [locked=false] Is the layer locked
  * @property {boolean} [visible=true] Is the layer visible
@@ -522,6 +568,7 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} SmartObjectLayer
+ * @description Smart object layer to add or replace
  * @property {number} [id] (modify, smart object, manifest) they layer id
  * @property {string} [name] (all) Layer name
  * @property {boolean} [locked=false] (all) Is the layer locked
@@ -533,6 +580,7 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} ModifyDocumentOptions
+ * @description Global Photoshop document modification options
  * @property {ManageMissingFonts} [manageMissingFonts='useDefault'] Action to take if there are one or more missing fonts in the document
  * @property {string} [globalFont] The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer. If this font itself is missing, the option specified for manageMissingFonts from above will take effect.
  * @property {Input[]} [fonts] Array of custom fonts needed in this document. Filename should be <font_postscript_name>.otf
@@ -549,12 +597,13 @@ const VerticalAlignment = {
 
 /**
  * @typedef {object} CreateDocumentOptions
+ * @description Photoshop document create options
  * @property {ManageMissingFonts} [manageMissingFonts='useDefault'] Action to take if there are one or more missing fonts in the document
  * @property {string} [globalFont] The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer. If this font itself is missing, the option specified for manageMissingFonts from above will take effect.
  * @property {Input[]} [fonts] Array of custom fonts needed in this document. Filename should be <font_postscript_name>.otf
  * @property {object} document Document attributes
- * @property {number} document.width Document width
- * @property {number} document.height Document height
+ * @property {number} document.width Document width in pixels
+ * @property {number} document.height Document height in pixels
  * @property {number} document.resolution Document resolution in pixels per inch. Allowed values: [72 ... 300].
  * @property {BackgroundFill} document.fill Background fill
  * @property {Colorspace} document.mode Color space
@@ -563,7 +612,19 @@ const VerticalAlignment = {
  */
 
 /**
+ * @typedef {object} DocumentManifest
+ * @description Photoshop document manifest
+ * @property {string} name Name of the input file
+ * @property {number} width Document width in pixels
+ * @property {number} height Document height in pixels
+ * @property {string} photoshopBuild Name of the application that created the PSD
+ * @property {Colorspace} imageMode Document image mode
+ * @property {number} bitDepth Bit depth. Allowed values: 8, 16, 32
+ */
+
+/**
  * @typedef {object} ReplaceSmartObjectOptions
+ * @description Replace Smart Object options
  * @property {SmartObjectLayer[]} layers An array of layer objects you wish to act upon (edit, add, delete). Any layer missing an "operations" block will be ignored.
  */
 
@@ -597,15 +658,36 @@ const JobOutputStatus = {
 }
 
 /**
- * @typedef {object} JobOutput
- * @property {string} input the original input file path
- * @property {JobOutputStatus} status output status
+ * @typedef {object} JobError
+ * @description Reported job errors
+ * @property {string} type A machine readable error type
+ * @property {string} code A machine readable error code
+ * @property {string} title A short human readable error summary
+ * @property {object[]} errorDetails Further descriptions of the exact errors where errorDetail is substituted for a specific issue.
  */
+
+/**
+ * @typedef {object} JobOutput
+ * @description Job status and output
+ * @property {string} input The original input file path
+ * @property {JobOutputStatus} status Output status
+ * @property {string} created Created timestamp of the job
+ * @property {string} modified Modified timestamp of the job
+ * @property {DocumentManifest} [document] (manifest) Information about the PSD file
+ * @property {Layer[]} [layer] (manifest) A tree of layer objects representing the PSD layer structure extracted from the psd document
+ * @property {object} [_links] Output references
+ * @property {Output[]} [_links.renditions] (document) Created renditions
+ * @property {Output} [_links.self] (lightroom, sensei) Created output
+ * @property {JobError} [errors] Any errors reported
+ */
+
+/* exported CreateDocumentOptions EditPhotoOptions File Input ModifyDocumentOptions JobOutput Output ReplaceSmartObjectOptions */
 
 module.exports = {
   BackgroundFill,
   BlendMode,
   Colorspace,
+  CreateMaskType,
   HorizontalAlignment,
   LayerType,
   VerticalAlignment,

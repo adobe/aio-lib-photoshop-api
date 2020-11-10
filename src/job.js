@@ -10,22 +10,10 @@ governing permissions and limitations under the License.
 */
 'use strict'
 const sleep = require('util').promisify(setTimeout)
+const { codes } = require('./SDKErrors')
 require('./types')
 
-/**
- * Acquire the status url from a response
- *
- * @param {*} response Service response
- * @returns {string} status url
- */
-function getStatusUrl (response) {
-  if (typeof response === 'string') {
-    // temporary fallback
-    return response
-  } else {
-    return response._links && response._links.self && response._links.self.href
-  }
-}
+/* global JobOutput */
 
 /**
  * Abstraction around the Photoshop Services Jobs
@@ -34,7 +22,7 @@ class Job {
   /**
    * Construct a job with the ability to acquire status updates
    *
-   * @param {string|*} response Initiate job response
+   * @param {*} response Service response
    * @param {Function} getJobStatus Async function to get job status
    */
   constructor (response, getJobStatus) {
@@ -45,7 +33,10 @@ class Job {
      *
      * @type {string}
      */
-    this.url = getStatusUrl(response)
+    this.url = response && response._links && response._links.self && response._links.self.href
+    if (!this.url) {
+      throw new codes.ERROR_STATUS_URL_MISSING({ messageValues: JSON.stringify(response) })
+    }
 
     /**
      * Job identifier
@@ -90,15 +81,20 @@ class Job {
     // Image cutout and mask APIs only support a single output, map the input, status, errors fields to
     // the same structure as Lightroom and Photoshop for consistency.
     this.outputs = response.outputs || []
-    if (response.output) {
-      this.outputs.push({
+    if (response.output || response.errors) {
+      const output = {
         input: response.input,
-        status: response.status,
-        _links: {
+        status: response.status
+      }
+      if (response.output) {
+        output._links = {
           self: response.output
-        },
-        errors: response.errors
-      })
+        }
+      }
+      if (response.errors) {
+        output.errors = response.errors
+      }
+      this.outputs.push(output)
     }
 
     // Lightroom APIs provide created and modified in the root, but do have outputs
@@ -115,7 +111,6 @@ class Job {
 
     this.jobId = response.jobId || response.jobID
     this._links = response._links
-    this.url = getStatusUrl(response)
 
     return this
   }

@@ -9,10 +9,37 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
-const { FileResolver } = require('../src/fileresolver')
-const { Storage } = require('../src/types')
+'use strict'
 
-test('resolveAdobeAbsPath', async () => {
+const { FileResolver } = require('../src/fileresolver')
+
+test('resolveInput', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInput({
+    href: 'https://host/path/to/image.png',
+    storage: 'external'
+  })
+  expect(result).toEqual({
+    href: 'https://host/path/to/image.png',
+    storage: 'external'
+  })
+})
+
+test('resolveOutput', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveOutput({
+    href: 'https://host/path/to/image.png',
+    storage: 'external',
+    type: 'image/png'
+  })
+  expect(result).toEqual({
+    href: 'https://host/path/to/image.png',
+    storage: 'external',
+    type: 'image/png'
+  })
+})
+
+test('resolveInputAdobeAbsPath', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput('/path/to/file')
   expect(result).toEqual({
@@ -21,7 +48,7 @@ test('resolveAdobeAbsPath', async () => {
   })
 })
 
-test('resolveAdobeRelPath', async () => {
+test('resolveInputAdobeRelPath', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput('path/to/file')
   expect(result).toEqual({
@@ -30,7 +57,22 @@ test('resolveAdobeRelPath', async () => {
   })
 })
 
-test('resolveAIOAbsPath', async () => {
+test('defaultAdobeCloudPaths', async () => {
+  const resolver = new FileResolver({
+    generatePresignURL: (href, { permissions, expiryInSeconds }) => {
+      return `https://host/${permissions}/${expiryInSeconds}/${href}`
+    }
+  }, {
+    defaultAdobeCloudPaths: true
+  })
+  const result = await resolver.resolveInput('path/to/file')
+  expect(result).toEqual({
+    href: 'path/to/file',
+    storage: 'adobe'
+  })
+})
+
+test('resolveInputAIOAbsPath', async () => {
   const resolver = new FileResolver({
     generatePresignURL: (href, { permissions, expiryInSeconds }) => {
       return `https://host/${permissions}/${expiryInSeconds}/${href}`
@@ -38,12 +80,12 @@ test('resolveAIOAbsPath', async () => {
   })
   const result = await resolver.resolveInput('/path/to/file')
   expect(result).toEqual({
-    href: 'https://host/r/3600/path/to/file',
+    href: 'https://host/r/3600//path/to/file',
     storage: 'external'
   })
 })
 
-test('resolveAIORelPath', async () => {
+test('resolveInputAIORelPath', async () => {
   const resolver = new FileResolver({
     generatePresignURL: (href, { permissions, expiryInSeconds }) => {
       return `https://host/${permissions}/${expiryInSeconds}/${href}`
@@ -56,7 +98,7 @@ test('resolveAIORelPath', async () => {
   })
 })
 
-test('resolveAzureUrl', async () => {
+test('resolveInputAzureUrl', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput('https://accountName.blob.core.windows.net/containerName')
   expect(result).toEqual({
@@ -65,7 +107,7 @@ test('resolveAzureUrl', async () => {
   })
 })
 
-test('resolveDropboxUrl', async () => {
+test('resolveInputDropboxUrl', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput('https://content.dropboxapi.com/xyz')
   expect(result).toEqual({
@@ -74,7 +116,7 @@ test('resolveDropboxUrl', async () => {
   })
 })
 
-test('resolveExternalUrl', async () => {
+test('resolveInputExternalUrl', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput('https://www.adobe.com')
   expect(result).toEqual({
@@ -83,7 +125,7 @@ test('resolveExternalUrl', async () => {
   })
 })
 
-test('resolveHrefAdobeAbsPath', async () => {
+test('resolveInputHrefAdobeAbsPath', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput({ href: '/path/to/file' })
   expect(result).toEqual({
@@ -92,7 +134,7 @@ test('resolveHrefAdobeAbsPath', async () => {
   })
 })
 
-test('resolveHrefAdobeRelPath', async () => {
+test('resolveInputHrefAdobeRelPath', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput({ href: 'path/to/file' })
   expect(result).toEqual({
@@ -101,7 +143,7 @@ test('resolveHrefAdobeRelPath', async () => {
   })
 })
 
-test('resolveHrefAIOPath', async () => {
+test('resolveInputHrefAIOPath', async () => {
   const resolver = new FileResolver({
     generatePresignURL: (href, { permissions, expiryInSeconds }) => {
       return `https://host/${permissions}/${expiryInSeconds}/${href}`
@@ -114,7 +156,7 @@ test('resolveHrefAIOPath', async () => {
   })
 })
 
-test('resolveHrefAzureUrl', async () => {
+test('resolveInputHrefAzureUrl', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput({ href: 'https://accountName.blob.core.windows.net/containerName' })
   expect(result).toEqual({
@@ -123,7 +165,7 @@ test('resolveHrefAzureUrl', async () => {
   })
 })
 
-test('resolveHrefDropboxUrl', async () => {
+test('resolveInputHrefDropboxUrl', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput({ href: 'https://content.dropboxapi.com/xyz' })
   expect(result).toEqual({
@@ -132,7 +174,7 @@ test('resolveHrefDropboxUrl', async () => {
   })
 })
 
-test('resolveHrefExternalUrl', async () => {
+test('resolveInputHrefExternalUrl', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInput({ href: 'https://www.adobe.com' })
   expect(result).toEqual({
@@ -141,19 +183,19 @@ test('resolveHrefExternalUrl', async () => {
   })
 })
 
-test('resolveFileNoHref', async () => {
+test('resolveInputNoHref', async () => {
   await expect(new FileResolver()
     .resolveInput({ })
   ).rejects.toThrow(Error('Missing href: {}'))
 })
 
-test('resolveFileNull', async () => {
+test('resolveInputNull', async () => {
   await expect(new FileResolver()
     .resolveInput(null)
   ).rejects.toThrow(Error('No file provided'))
 })
 
-test('resolveFileUndefined', async () => {
+test('resolveInputUndefined', async () => {
   await expect(new FileResolver()
     .resolveInput()
   ).rejects.toThrow(Error('No file provided'))
@@ -239,6 +281,16 @@ test('resolveOutputTypeTiff', async () => {
   })
 })
 
+test('resolveOutputTypeUnknown', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveOutput('/path/to/file.xxx')
+  expect(result).toEqual({
+    href: '/path/to/file.xxx',
+    storage: 'adobe',
+    type: 'image/png'
+  })
+})
+
 test('resolveOutputTypeAIOPath', async () => {
   const resolver = new FileResolver({
     generatePresignURL: (href, { permissions, expiryInSeconds }) => {
@@ -271,4 +323,101 @@ test('resolveOutputExternalUrl', async () => {
     storage: 'external',
     type: 'image/png'
   })
+})
+
+test('resolveInputsDocumentOptionsUndefined', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsDocumentOptions()
+  expect(result).toEqual(undefined)
+})
+
+test('resolveInputsDocumentOptionsFonts', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsDocumentOptions({
+    fonts: ['https://host/path/to/font.ttf']
+  })
+  expect(result).toEqual({
+    fonts: [{
+      href: 'https://host/path/to/font.ttf',
+      storage: 'external'
+    }]
+  })
+})
+
+test('resolveInputsDocumentOptionsLayersNoInput', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsDocumentOptions({
+    layers: [{}]
+  })
+  expect(result).toEqual({
+    layers: [{}]
+  })
+})
+
+test('resolveInputsDocumentOptionsLayersInput', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsDocumentOptions({
+    layers: [{
+      input: 'https://host/path/to/image.png'
+    }]
+  })
+  expect(result).toEqual({
+    layers: [{
+      input: {
+        href: 'https://host/path/to/image.png',
+        storage: 'external'
+      }
+    }]
+  })
+})
+
+test('resolveInputsValue', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputs('https://host/path/to/file.png')
+  expect(result).toEqual([{
+    href: 'https://host/path/to/file.png',
+    storage: 'external'
+  }])
+})
+
+test('resolveInputsArray', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputs([
+    'https://host/path/to/file.png',
+    'https://accountName.blob.core.windows.net/containerName/file.png'
+  ])
+  expect(result).toEqual([{
+    href: 'https://host/path/to/file.png',
+    storage: 'external'
+  }, {
+    href: 'https://accountName.blob.core.windows.net/containerName/file.png',
+    storage: 'azure'
+  }])
+})
+
+test('resolveOutputsValue', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveOutputs('https://host/path/to/file.png')
+  expect(result).toEqual([{
+    href: 'https://host/path/to/file.png',
+    storage: 'external',
+    type: 'image/png'
+  }])
+})
+
+test('resolveOutputsArray', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveOutputs([
+    'https://host/path/to/file.png',
+    'https://accountName.blob.core.windows.net/containerName/file.png'
+  ])
+  expect(result).toEqual([{
+    href: 'https://host/path/to/file.png',
+    storage: 'external',
+    type: 'image/png'
+  }, {
+    href: 'https://accountName.blob.core.windows.net/containerName/file.png',
+    storage: 'azure',
+    type: 'image/png'
+  }])
 })

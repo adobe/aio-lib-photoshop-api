@@ -606,7 +606,7 @@
       "ApiKeyAuth": {
         "type": "apiKey",
         "in": "header",
-        "name": "X-Api-Key"
+        "name": "x-api-key"
       }
     },
     "parameters": {

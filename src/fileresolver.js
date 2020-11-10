@@ -14,6 +14,8 @@ const validUrl = require('valid-url')
 const { Storage, MimeType } = require('./types')
 require('./types')
 
+/* global File Input Output CreateDocumentOptions ModifyDocumentOptions ReplaceSmartObjectOptions */
+
 const ExtensionMimeTypeMap = {
   '.dng': MimeType.DNG,
   '.jpg': MimeType.JPEG,
@@ -41,9 +43,6 @@ function resolveMimeType (output) {
       pathname = decodeURIComponent(pathname)
     }
     output.type = ExtensionMimeTypeMap[path.extname(pathname)] || MimeType.PNG
-    if (!output.type) {
-      throw Error(`Output without type: ${JSON.stringify(output)}`)
-    }
   }
   return output
 }
@@ -67,6 +66,13 @@ function getStorageFromUrl (href) {
 }
 
 /**
+ * @typedef {object} FileResolverOptions
+ * @description File resolver options
+ * @property {number} [presignExpiryInSeconds=3600] Expiry time of any presigned urls, defaults to 1 hour
+ * @property {boolean} [defaultAdobeCloudPaths] True if paths should be considered references to files in Creative Cloud
+ */
+
+/**
  * Resolves the storage and mime type of files referenced in the API.
  *
  * The storage type storage type is resolved for input and output files using the following heuristic:
@@ -75,18 +81,12 @@ function getStorageFromUrl (href) {
  * - If a URL is provided, the hostname is inspected to determine Azure, Dropbox, or External (default)
  * - If a path is provided, the path resolved to Adobe I/O Files if an instance is provided to the constructor, otherwise it's Creative Cloud
  *
- * Path resolution can be overridden by the `defaultAIOPaths` and `defaultAdobeCloudPaths` options.
+ * Path resolution can be overridden by the `defaultAdobeCloudPaths` option.
  *
  * The mime-type is resolved based on the extension of the pathname of the URL or the path. If no extension can
  * be found or the extension is unknown, the default `image/png` is selected.
  */
 class FileResolver {
-  /**
-   * @typedef {object} FileResolverOptions
-   * @property {number} [presignExpiryInSeconds=3600] Expiry time of any presigned urls, defaults to 1 hour
-   * @property {boolean} [defaultAdobeCloudPaths] True if paths should be considered references to files in Creative Cloud
-   * @property {boolean} [defaultAIOPaths] True if paths should be considered references to Adobe I/O Files
-   */
   /**
    * Construct a file resolver
    *
@@ -96,6 +96,8 @@ class FileResolver {
   constructor (files, options) {
     /**
      * Adobe I/O Files instance
+     *
+     * @private
      */
     this.files = files
 
@@ -118,8 +120,6 @@ class FileResolver {
     this.defaultPathStorage = files ? Storage.AIO : Storage.ADOBE
     if (options && options.defaultAdobeCloudPaths) {
       this.defaultPathStorage = Storage.ADOBE
-    } else if (options && options.defaultAIOPaths) {
-      this.defaultPathStorage = Storage.AIO
     }
   }
 

@@ -9,6 +9,8 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 
+'use strict'
+
 const Swagger = require('swagger-client')
 const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
@@ -18,6 +20,8 @@ const { Job } = require('./job')
 const { FileResolver } = require('./fileresolver')
 const types = require('./types')
 require('./types')
+
+/* global EditPhotoOptions Input Output CreateDocumentOptions MimeType ModifyDocumentOptions ReplaceSmartObjectOptions */
 
 /**
  * Returns a Promise that resolves with a new PhotoshopAPI object.
@@ -44,6 +48,7 @@ async function init (orgId, apiKey, accessToken, files, options) {
 /**
  * Translate and throw error
  *
+ * @private
  * @param {*} err Error response
  */
 function throwError (err) {
@@ -83,17 +88,18 @@ function throwError (err) {
 }
 
 /**
+ * @typedef {object} PhotoshopAPIOptions
+ * @description Photoshop API options
+ * @property {number} [presignExpiryInSeconds=3600] Expiry time of any presigned urls, defaults to 1 hour
+ * @property {boolean} [defaultAdobeCloudPaths] True if paths should be considered references to files in Creative Cloud
+ */
+
+/**
  * This class provides methods to call your PhotoshopAPI APIs.
  * Before calling any method initialize the instance by calling the `init` method on it
  * with valid values for orgId, apiKey and accessToken
  */
 class PhotoshopAPI {
-  /**
-   * @typedef {object} PhotoshopAPIOptions
-   * @property {number} [presignExpiryInSeconds=3600] Expiry time of any presigned urls, defaults to 1 hour
-   * @property {boolean} [defaultAdobeCloudPaths] True if paths should be considered references to files in Creative Cloud
-   * @property {boolean} [defaultAIOPaths] True if paths should be considered references to Adobe I/O Files
-   */
   /**
    * Initializes the PhotoshopAPI object and returns it.
    *
@@ -208,7 +214,9 @@ class PhotoshopAPI {
    */
   async createCutout (input, output) {
     try {
-      const response = await this.sdk.apis.sensei.autoCutout({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.sensei.autoCutout({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         input: await this.fileResolver.resolveInput(input),
         output: await this.fileResolver.resolveOutput(output)
       }))
@@ -252,7 +260,9 @@ class PhotoshopAPI {
    */
   async straighten (input, outputs) {
     try {
-      const response = await this.sdk.apis.lightroom.autoStraighten({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.lightroom.autoStraighten({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: await this.fileResolver.resolveInput(input),
         outputs: await this.fileResolver.resolveOutputs(outputs)
       }))
@@ -273,7 +283,9 @@ class PhotoshopAPI {
    */
   async autoTone (input, output) {
     try {
-      const response = await this.sdk.apis.lightroom.autoTone({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.lightroom.autoTone({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: await this.fileResolver.resolveInput(input),
         outputs: await this.fileResolver.resolveOutputs(output)
       }))
@@ -295,7 +307,9 @@ class PhotoshopAPI {
    */
   async editPhoto (input, output, options) {
     try {
-      const response = await this.sdk.apis.lightroom.editPhoto({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.lightroom.editPhoto({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: {
           source: await this.fileResolver.resolveInput(input)
         },
@@ -320,7 +334,9 @@ class PhotoshopAPI {
    */
   async applyPreset (input, preset, output) {
     try {
-      const response = await this.sdk.apis.lightroom.applyPreset({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.lightroom.applyPreset({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: {
           source: await this.fileResolver.resolveInput(input),
           presets: await this.fileResolver.resolveInputs(preset)
@@ -345,7 +361,9 @@ class PhotoshopAPI {
    */
   async applyPresetXmp (input, output, xmp) {
     try {
-      const response = await this.sdk.apis.lightroom.applyPresetXmp({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.lightroom.applyPresetXmp({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: {
           source: await this.fileResolver.resolveInput(input)
         },
@@ -371,7 +389,9 @@ class PhotoshopAPI {
    */
   async createDocument (outputs, options) {
     try {
-      const response = await this.sdk.apis.photoshop.createDocument({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.photoshop.createDocument({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         outputs: await this.fileResolver.resolveOutputs(outputs),
         options: await this.fileResolver.resolveInputsDocumentOptions(options)
       }))
@@ -389,12 +409,14 @@ class PhotoshopAPI {
    * @param {string|Input} input An object describing an input PSD file.Current support is for files less than 1000MB.
    * @param {object} [options] available options to apply to all input files
    * @param {object} [options.thumbnails] Include presigned GET URLs to small preview thumbnails for any renderable layer.
-   * @param {types.OutputFormat} [options.thumbnails.type] desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff"
+   * @param {MimeType} [options.thumbnails.type] desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff"
    * @returns {Job} Get document manifest job
    */
   async getDocumentManifest (input, options) {
     try {
-      const response = await this.sdk.apis.photoshop.getDocumentManifest({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.photoshop.getDocumentManifest({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: await this.fileResolver.resolveInputs(input),
         options
       }))
@@ -416,7 +438,9 @@ class PhotoshopAPI {
    */
   async modifyDocument (input, outputs, options) {
     try {
-      const response = await this.sdk.apis.photoshop.modifyDocument({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.photoshop.modifyDocument({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: await this.fileResolver.resolveInputs(input),
         outputs: await this.fileResolver.resolveOutputs(outputs),
         options: await this.fileResolver.resolveInputsDocumentOptions(options)
@@ -438,7 +462,9 @@ class PhotoshopAPI {
    */
   async createRendition (input, outputs) {
     try {
-      const response = await this.sdk.apis.photoshop.createRendition({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.photoshop.createRendition({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: await this.fileResolver.resolveInputs(input),
         outputs: await this.fileResolver.resolveOutputs(outputs)
       }))
@@ -460,7 +486,9 @@ class PhotoshopAPI {
    */
   async replaceSmartObject (input, outputs, options) {
     try {
-      const response = await this.sdk.apis.photoshop.replaceSmartObject({}, this.__createRequestOptions({
+      const response = await this.sdk.apis.photoshop.replaceSmartObject({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
         inputs: await this.fileResolver.resolveInputs(input),
         outputs: await this.fileResolver.resolveOutputs(outputs),
         options: await this.fileResolver.resolveInputsDocumentOptions(options)
