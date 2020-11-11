@@ -73,7 +73,7 @@ test('createMask - test bad api key', async () => {
 test('createMask - invalid value', async () => {
   const input = `${testRunId}/createMask-invalidValue-input.jpg`
   const output = `${testRunId}/createMask-invalidValue-output.jpg`
-  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  await container.copy('./testfiles/Example.jpg', input, { localSrc: true })
   const promise = sdkClient.createMask(input, {
     href: output,
     mask: {
@@ -86,7 +86,7 @@ test('createMask - invalid value', async () => {
 test('createMask - invalid type', async () => {
   const input = `${testRunId}/createMask-invalidValue-input.jpg`
   const output = `${testRunId}/createMask-invalidValue-output.jpg`
-  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  await container.copy('./testfiles/Example.jpg', input, { localSrc: true })
   const promise = sdkClient.createMask(input, {
     href: output,
     mask: {
@@ -99,7 +99,7 @@ test('createMask - invalid type', async () => {
 test('createMask - missing value', async () => {
   const input = `${testRunId}/createMask-invalidValue-input.jpg`
   const output = `${testRunId}/createMask-invalidValue-output.jpg`
-  await container.copy('./testfiles/cat-2083492_1920.jpg', input, { localSrc: true })
+  await container.copy('./testfiles/Example.jpg', input, { localSrc: true })
   const promise = sdkClient.createMask(input, {
     href: output,
     mask: { }
