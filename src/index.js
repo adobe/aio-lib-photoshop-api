@@ -21,7 +21,7 @@ const { FileResolver } = require('./fileresolver')
 const types = require('./types')
 require('./types')
 
-/* global EditPhotoOptions Input Output CreateDocumentOptions MimeType ModifyDocumentOptions ReplaceSmartObjectOptions */
+/* global EditPhotoOptions Input Output CreateDocumentOptions MimeType ModifyDocumentOptions ReplaceSmartObjectOptions PhotoshopActionsOptions */
 
 /**
  * Returns a Promise that resolves with a new PhotoshopAPI object.
