@@ -14,7 +14,7 @@ const validUrl = require('valid-url')
 const { Storage, MimeType } = require('./types')
 require('./types')
 
-/* global File Input Output CreateDocumentOptions ModifyDocumentOptions ReplaceSmartObjectOptions */
+/* global File Input Output CreateDocumentOptions ModifyDocumentOptions ReplaceSmartObjectOptions PhotoshopActionsOptions*/
 
 const ExtensionMimeTypeMap = {
   '.dng': MimeType.DNG,
@@ -230,6 +230,29 @@ class FileResolver {
         }
         return layer
       }))
+    }
+    return options
+  }
+
+  /**
+   * Resolve the actions, fonts, and custom presets inputs
+   *
+   * @param {PhotoshopActionsOptions} options Photoshop Actions options
+   * @returns {PhotoshopActionsOptions} Photoshop Actions options
+   */
+  async resolveInputsphotoshopActionsOptions (options) {
+    if (options && options.actions) {
+      // options.actions = await this.resolveInputs(options.actions)
+      options.actions = await Promise.all(options.actions.map(async action => {
+        action = await this.resolveInput(action)
+        return action
+      }))
+    }
+    if (options && options.fonts) {
+      options.fonts = await this.resolveInputs(options.fonts)
+    }
+    if (options && options.patterns) {
+      options.patterns = await this.resolveInputs(options.patterns)
     }
     return options
   }

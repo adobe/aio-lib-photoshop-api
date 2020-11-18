@@ -597,6 +597,63 @@
       }
     }
   },
+  "/pie/psdService/photoshopActions": {
+    "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save a new psd",
+    "post": {
+        "operationId": "photoshopActions",
+        "tags": [
+            "photoshop"
+        ],
+        "parameters": [
+            {
+                "$ref": "#/components/parameters/x-gw-ims-org-id"
+            },
+            {
+                "$ref": "#/components/parameters/json-content-type"
+            }
+        ],
+        "requestBody": {
+            "required": true,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "$ref": "#/components/schemas/photoshopActionsRequest"
+                    }
+                }
+            }
+        },
+        "responses": {
+            "202": {
+                "description": "success",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/jobStatusLinkResponse"
+                        }
+                    }
+                }
+            },
+            "400": {
+                "$ref": "#/components/schemas/errors"
+            },
+            "401": {
+                "$ref": "#/components/schemas/errors"
+            },
+            "403": {
+                "$ref": "#/components/schemas/errors"
+            },
+            "404": {
+                "$ref": "#/components/schemas/errors"
+            },
+            "415": {
+                "$ref": "#/components/schemas/errors"
+            },
+            "500": {
+                "$ref": "#/components/schemas/errors"
+            }
+        }
+    }
+  },
   "components": {
     "securitySchemes": {
       "BearerAuth": {
@@ -699,7 +756,7 @@
               "format": {
                 "type": "string",
                 "description": "soft mask or binary mask",
-                "enum": ["binary", "soft"]    
+                "enum": ["binary", "soft"]
               }
             }
           },
@@ -1356,7 +1413,7 @@
                         "properties": {
                           "input": {
                             "$ref": "#/components/schemas/input"
-                          }  
+                          }
                         }
                       }, {
                         "$ref": "#/components/schemas/layerMask"
@@ -1541,7 +1598,7 @@
                         "properties": {
                           "input": {
                             "$ref": "#/components/schemas/input"
-                          }  
+                          }
                         }
                       }, {
                         "$ref": "#/components/schemas/layerMask"
@@ -1655,6 +1712,39 @@
           }
         }
       },
+      "photoshopActionsRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input objects. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "An array of output objects",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "actions": {
+                "$ref": "#/components/schemas/actions"
+              },
+              "patterns": {
+                "$ref": "#/components/schemas/patterns"
+              },
+              "fonts": {
+                "$ref": "#/components/schemas/fonts"
+              }
+            }
+          }
+        }
+      },
       "document": {
         "type": "object",
         "properties": {
@@ -1761,6 +1851,52 @@
       "font": {
         "type": "object",
         "description": "An object describing the input font to add or replace for a Text layer. Filename should be <font_postscript_name>.otf.\n If the font filename is not in the specified format above, font substitution will occur",
+        "properties": {
+          "storage": {
+            "type": "string",
+            "description": "storage platforms supported",
+            "enum": ["adobe", "external", "azure", "dropbox"],
+            "default": "adobe"
+          },
+          "href": {
+            "type": "string",
+            "description": "Either a Creative Cloud assets path for storage=\"adobe\" OR a presignedGETURL"
+          }
+        }
+      },
+      "actions": {
+        "type": "array",
+        "description": "array of Photoshop Actions to play",
+        "items": {
+          "$ref": "#/components/schemas/action"
+        }
+      },
+      "action": {
+        "type": "object",
+        "description": "An object describing the input Photoshop Actions to play.",
+        "properties": {
+          "storage": {
+            "type": "string",
+            "description": "storage platforms supported",
+            "enum": ["adobe", "external", "azure", "dropbox"],
+            "default": "adobe"
+          },
+          "href": {
+            "type": "string",
+            "description": "Either a Creative Cloud assets path for storage=\"adobe\" OR a presignedGETURL"
+          }
+        }
+      },
+      "patterns": {
+        "type": "array",
+        "description": "array of custom pattern preset to be used in Photoshop Actions",
+        "items": {
+          "$ref": "#/components/schemas/pattern"
+        }
+      },
+      "pattern": {
+        "type": "object",
+        "description": "An object describing the input custom preset for a pattern.",
         "properties": {
           "storage": {
             "type": "string",
