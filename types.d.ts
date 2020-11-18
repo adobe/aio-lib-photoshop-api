@@ -46,6 +46,12 @@ declare class FileResolver {
      */
     resolveInputsDocumentOptions(options: CreateDocumentOptions | ModifyDocumentOptions | ReplaceSmartObjectOptions): CreateDocumentOptions | ModifyDocumentOptions | ReplaceSmartObjectOptions;
     /**
+     * Resolve the actions, fonts, and custom presets inputs
+     * @param options - Photoshop Actions options
+     * @returns Photoshop Actions options
+     */
+    resolveInputsphotoshopActionsOptions(options: PhotoshopActionsOptions): PhotoshopActionsOptions;
+    /**
      * Resolve output from href to an object with href, storage, and type
      * @param output - One or more output files
      * @returns resolved files
@@ -203,6 +209,14 @@ declare class PhotoshopAPI {
      * @returns Replace smart object job
      */
     replaceSmartObject(input: Input, outputs: string | Output | Output[], options: ReplaceSmartObjectOptions): Job;
+    /**
+     * Play Photoshop Actions and then generate renditions and/or save a new psd
+     * @param input - An object describing an input image file. Current support is for files less than 1000MB.
+     * @param outputs - Desired output
+     * @param options - Photoshop Actions options
+     * @returns Photoshop Actions job
+     */
+    photoshopActions(input: Input, outputs: string | Output | Output[], options: PhotoshopActionsOptions): Job;
 }
 
 /**
