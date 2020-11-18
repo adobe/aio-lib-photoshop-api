@@ -234,7 +234,7 @@ class FileResolver {
     return options
   }
 
-  /**
+   /**
    * Resolve the actions, fonts, and custom presets inputs
    *
    * @param {PhotoshopActionsOptions} options Photoshop Actions options

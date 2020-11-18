@@ -500,6 +500,31 @@ class PhotoshopAPI {
       throwError(err)
     }
   }
+
+  /**
+   * Play Photoshop Actions and then generate renditions and/or save a new psd
+   *
+   * @param {Input} input An object describing an input image file. Current support is for files less than 1000MB.
+   * @param {string|Output|Output[]} outputs Desired output
+   * @param {PhotoshopActionsOptions} options Photoshop Actions options
+   * @returns {Job} Photoshop Actions job
+   */
+  async photoshopActions (input, outputs, options) {
+    try {
+      const response = await this.sdk.apis.photoshop.photoshopActions({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInputs(input),
+        outputs: await this.fileResolver.resolveOutputs(outputs),
+        options: await this.fileResolver.resolveInputsphotoshopActionsOptions(options)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
 }
 
 module.exports = {

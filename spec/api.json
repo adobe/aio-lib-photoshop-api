@@ -595,63 +595,63 @@
           }
         }
       }
-    }
-  },
-  "/pie/psdService/photoshopActions": {
-    "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save a new psd",
-    "post": {
+    },
+    "/pie/psdService/photoshopActions": {
+      "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save a new psd",
+      "post": {
         "operationId": "photoshopActions",
         "tags": [
-            "photoshop"
+          "photoshop"
         ],
         "parameters": [
-            {
-                "$ref": "#/components/parameters/x-gw-ims-org-id"
-            },
-            {
-                "$ref": "#/components/parameters/json-content-type"
-            }
+          {
+            "$ref": "#/components/parameters/x-gw-ims-org-id"
+          },
+          {
+            "$ref": "#/components/parameters/json-content-type"
+          }
         ],
         "requestBody": {
-            "required": true,
-            "content": {
-                "application/json": {
-                    "schema": {
-                        "$ref": "#/components/schemas/photoshopActionsRequest"
-                    }
-                }
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/photoshopActionsRequest"
+              }
             }
+          }
         },
         "responses": {
-            "202": {
-                "description": "success",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/jobStatusLinkResponse"
-                        }
-                    }
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
                 }
-            },
-            "400": {
-                "$ref": "#/components/schemas/errors"
-            },
-            "401": {
-                "$ref": "#/components/schemas/errors"
-            },
-            "403": {
-                "$ref": "#/components/schemas/errors"
-            },
-            "404": {
-                "$ref": "#/components/schemas/errors"
-            },
-            "415": {
-                "$ref": "#/components/schemas/errors"
-            },
-            "500": {
-                "$ref": "#/components/schemas/errors"
+              }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "401": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "415": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
+          }
         }
+      }
     }
   },
   "components": {
