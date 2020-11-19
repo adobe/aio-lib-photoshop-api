@@ -8,13 +8,14 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTA
 OF ANY KIND, either express or implied. See the License for the specific language
 governing permissions and limitations under the License.
 */
+
 'use strict'
 const path = require('path')
 const validUrl = require('valid-url')
 const { Storage, MimeType } = require('./types')
 require('./types')
 
-/* global File Input Output CreateDocumentOptions ModifyDocumentOptions ReplaceSmartObjectOptions */
+/* global File Input Output CreateDocumentOptions ModifyDocumentOptions ReplaceSmartObjectOptions ApplyPhotoshopActionsOptions */
 
 const ExtensionMimeTypeMap = {
   '.dng': MimeType.DNG,
@@ -230,6 +231,25 @@ class FileResolver {
         }
         return layer
       }))
+    }
+    return options
+  }
+
+  /**
+   * Resolve the actions, fonts, and custom presets options
+   *
+   * @param {ApplyPhotoshopActionsOptions} options Photoshop Actions options
+   * @returns {ApplyPhotoshopActionsOptions} Photoshop Actions options
+   */
+  async resolveInputsPhotoshopActionsOptions (options) {
+    if (options && options.actions) {
+      options.actions = await this.resolveInputs(options.actions)
+    }
+    if (options && options.fonts) {
+      options.fonts = await this.resolveInputs(options.fonts)
+    }
+    if (options && options.patterns) {
+      options.patterns = await this.resolveInputs(options.patterns)
     }
     return options
   }

@@ -371,6 +371,51 @@ test('resolveInputsDocumentOptionsLayersInput', async () => {
   })
 })
 
+test('resolveInputsPhotoshopActionsOptionsUndefined', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsPhotoshopActionsOptions()
+  expect(result).toEqual(undefined)
+})
+
+test('resolveInputsPhotoshopActionsOptionsActions', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsPhotoshopActionsOptions({
+    actions: ['https://host/path/to/action.atn']
+  })
+  expect(result).toEqual({
+    actions: [{
+      href: 'https://host/path/to/action.atn',
+      storage: 'external'
+    }]
+  })
+})
+
+test('resolveInputsPhotoshopActionsOptionsFonts', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsPhotoshopActionsOptions({
+    fonts: ['https://host/path/to/font.ttf']
+  })
+  expect(result).toEqual({
+    fonts: [{
+      href: 'https://host/path/to/font.ttf',
+      storage: 'external'
+    }]
+  })
+})
+
+test('resolveInputsPhotoshopActionsOptionsPatterns', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsPhotoshopActionsOptions({
+    patterns: ['https://host/path/to/pattern.pat']
+  })
+  expect(result).toEqual({
+    patterns: [{
+      href: 'https://host/path/to/pattern.pat',
+      storage: 'external'
+    }]
+  })
+})
+
 test('resolveInputsValue', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInputs('https://host/path/to/file.png')

@@ -21,7 +21,7 @@ const { FileResolver } = require('./fileresolver')
 const types = require('./types')
 require('./types')
 
-/* global EditPhotoOptions Input Output CreateDocumentOptions MimeType ModifyDocumentOptions ReplaceSmartObjectOptions */
+/* global EditPhotoOptions Input Output CreateDocumentOptions MimeType ModifyDocumentOptions ReplaceSmartObjectOptions ApplyPhotoshopActionsOptions */
 
 /**
  * Returns a Promise that resolves with a new PhotoshopAPI object.
@@ -492,6 +492,31 @@ class PhotoshopAPI {
         inputs: await this.fileResolver.resolveInputs(input),
         outputs: await this.fileResolver.resolveOutputs(outputs),
         options: await this.fileResolver.resolveInputsDocumentOptions(options)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Apply Photoshop Actions and then generate renditions and/or save a new psd
+   *
+   * @param {Input} input An object describing an input image file. Current support is for files less than 1000MB.
+   * @param {string|Output|Output[]} outputs Desired output
+   * @param {ApplyPhotoshopActionsOptions} options Apply Photoshop Actions options
+   * @returns {Job} Photoshop Actions job
+   */
+  async applyPhotoshopActions (input, outputs, options) {
+    try {
+      const response = await this.sdk.apis.photoshop.applyPhotoshopActions({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInputs(input),
+        outputs: await this.fileResolver.resolveOutputs(outputs),
+        options: await this.fileResolver.resolveInputsPhotoshopActionsOptions(options)
       }))
 
       const job = new Job(response.body, this.__getJobStatus.bind(this))
