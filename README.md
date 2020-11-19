@@ -291,7 +291,7 @@ be found or the extension is unknown, the default `image/png` is selected.
     * [.resolveInput(input)](#FileResolver+resolveInput) ⇒ [<code>Input</code>](#Input)
     * [.resolveInputs(inputs)](#FileResolver+resolveInputs) ⇒ [<code>Array.&lt;Input&gt;</code>](#Input)
     * [.resolveInputsDocumentOptions(options)](#FileResolver+resolveInputsDocumentOptions) ⇒ [<code>CreateDocumentOptions</code>](#CreateDocumentOptions) \| [<code>ModifyDocumentOptions</code>](#ModifyDocumentOptions) \| [<code>ReplaceSmartObjectOptions</code>](#ReplaceSmartObjectOptions)
-    * [.resolveInputsphotoshopActionsOptions(options)](#FileResolver+resolveInputsphotoshopActionsOptions) ⇒ <code>PhotoshopActionsOptions</code>
+    * [.resolveInputsPhotoshopActionsOptions(options)](#FileResolver+resolveInputsPhotoshopActionsOptions) ⇒ <code>ApplyPhotoshopActionsOptions</code>
     * [.resolveOutput(output)](#FileResolver+resolveOutput) ⇒ [<code>Output</code>](#Output)
     * [.resolveOutputs(outputs)](#FileResolver+resolveOutputs) ⇒ [<code>Array.&lt;Output&gt;</code>](#Output)
 
@@ -358,17 +358,17 @@ Resolve the font and layer inputs in the document options
 | --- | --- | --- |
 | options | [<code>CreateDocumentOptions</code>](#CreateDocumentOptions) \| [<code>ModifyDocumentOptions</code>](#ModifyDocumentOptions) \| [<code>ReplaceSmartObjectOptions</code>](#ReplaceSmartObjectOptions) | Document options |
 
-<a name="FileResolver+resolveInputsphotoshopActionsOptions"></a>
+<a name="FileResolver+resolveInputsPhotoshopActionsOptions"></a>
 
-### fileResolver.resolveInputsphotoshopActionsOptions(options) ⇒ <code>PhotoshopActionsOptions</code>
-Resolve the actions, fonts, and custom presets inputs
+### fileResolver.resolveInputsPhotoshopActionsOptions(options) ⇒ <code>ApplyPhotoshopActionsOptions</code>
+Resolve the actions, fonts, and custom presets options
 
 **Kind**: instance method of [<code>FileResolver</code>](#FileResolver)  
-**Returns**: <code>PhotoshopActionsOptions</code> - Photoshop Actions options  
+**Returns**: <code>ApplyPhotoshopActionsOptions</code> - Photoshop Actions options  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| options | <code>PhotoshopActionsOptions</code> | Photoshop Actions options |
+| options | <code>ApplyPhotoshopActionsOptions</code> | Photoshop Actions options |
 
 <a name="FileResolver+resolveOutput"></a>
 
@@ -420,7 +420,7 @@ with valid values for orgId, apiKey and accessToken
     * [.modifyDocument(input, outputs, options)](#PhotoshopAPI+modifyDocument) ⇒ [<code>Job</code>](#Job)
     * [.createRendition(input, outputs)](#PhotoshopAPI+createRendition) ⇒ [<code>Job</code>](#Job)
     * [.replaceSmartObject(input, outputs, options)](#PhotoshopAPI+replaceSmartObject) ⇒ [<code>Job</code>](#Job)
-    * [.photoshopActions(input, outputs, options)](#PhotoshopAPI+photoshopActions) ⇒ [<code>Job</code>](#Job)
+    * [.applyPhotoshopActions(input, outputs, options)](#PhotoshopAPI+applyPhotoshopActions) ⇒ [<code>Job</code>](#Job)
 
 <a name="PhotoshopAPI+orgId"></a>
 
@@ -619,10 +619,10 @@ Apply psd edits for replacing embedded smart object and then generate renditions
 | outputs | <code>string</code> \| [<code>Output</code>](#Output) \| [<code>Array.&lt;Output&gt;</code>](#Output) | Desired output |
 | options | [<code>ReplaceSmartObjectOptions</code>](#ReplaceSmartObjectOptions) | Replace smart object options |
 
-<a name="PhotoshopAPI+photoshopActions"></a>
+<a name="PhotoshopAPI+applyPhotoshopActions"></a>
 
-### photoshopAPI.photoshopActions(input, outputs, options) ⇒ [<code>Job</code>](#Job)
-Play Photoshop Actions and then generate renditions and/or save a new psd
+### photoshopAPI.applyPhotoshopActions(input, outputs, options) ⇒ [<code>Job</code>](#Job)
+Apply Photoshop Actions and then generate renditions and/or save a new psd
 
 **Kind**: instance method of [<code>PhotoshopAPI</code>](#PhotoshopAPI)  
 **Returns**: [<code>Job</code>](#Job) - Photoshop Actions job  
@@ -631,7 +631,7 @@ Play Photoshop Actions and then generate renditions and/or save a new psd
 | --- | --- | --- |
 | input | [<code>Input</code>](#Input) | An object describing an input image file. Current support is for files less than 1000MB. |
 | outputs | <code>string</code> \| [<code>Output</code>](#Output) \| [<code>Array.&lt;Output&gt;</code>](#Output) | Desired output |
-| options | <code>PhotoshopActionsOptions</code> | Photoshop Actions options |
+| options | <code>ApplyPhotoshopActionsOptions</code> | Apply Photoshop Actions options |
 
 <a name="Job"></a>
 

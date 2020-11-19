@@ -599,7 +599,7 @@
     "/pie/psdService/photoshopActions": {
       "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save a new psd",
       "post": {
-        "operationId": "photoshopActions",
+        "operationId": "applyPhotoshopActions",
         "tags": [
           "photoshop"
         ],

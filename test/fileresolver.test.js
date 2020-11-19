@@ -371,15 +371,15 @@ test('resolveInputsDocumentOptionsLayersInput', async () => {
   })
 })
 
-test('resolveInputsphotoshopActionsOptionsUndefined', async () => {
+test('resolveInputsPhotoshopActionsOptionsUndefined', async () => {
   const resolver = new FileResolver()
-  const result = await resolver.resolveInputsphotoshopActionsOptions()
+  const result = await resolver.resolveInputsPhotoshopActionsOptions()
   expect(result).toEqual(undefined)
 })
 
-test('resolveInputsphotoshopActionsOptionsActions', async () => {
+test('resolveInputsPhotoshopActionsOptionsActions', async () => {
   const resolver = new FileResolver()
-  const result = await resolver.resolveInputsphotoshopActionsOptions({
+  const result = await resolver.resolveInputsPhotoshopActionsOptions({
     actions: ['https://host/path/to/action.atn']
   })
   expect(result).toEqual({
@@ -390,9 +390,9 @@ test('resolveInputsphotoshopActionsOptionsActions', async () => {
   })
 })
 
-test('resolveInputsphotoshopActionsOptionsFonts', async () => {
+test('resolveInputsPhotoshopActionsOptionsFonts', async () => {
   const resolver = new FileResolver()
-  const result = await resolver.resolveInputsphotoshopActionsOptions({
+  const result = await resolver.resolveInputsPhotoshopActionsOptions({
     fonts: ['https://host/path/to/font.ttf']
   })
   expect(result).toEqual({
@@ -403,9 +403,9 @@ test('resolveInputsphotoshopActionsOptionsFonts', async () => {
   })
 })
 
-test('resolveInputsphotoshopActionsOptionsPatterns', async () => {
+test('resolveInputsPhotoshopActionsOptionsPatterns', async () => {
   const resolver = new FileResolver()
-  const result = await resolver.resolveInputsphotoshopActionsOptions({
+  const result = await resolver.resolveInputsPhotoshopActionsOptions({
     patterns: ['https://host/path/to/pattern.pat']
   })
   expect(result).toEqual({
