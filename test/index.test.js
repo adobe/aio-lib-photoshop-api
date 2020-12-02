@@ -13,6 +13,7 @@ governing permissions and limitations under the License.
 
 'use strict'
 
+const Swagger = require('swagger-client');
 const sdk = require('../src')
 const fetch = require('cross-fetch')
 const { createRequestOptions } = require('../src/helpers')
@@ -26,7 +27,7 @@ const gAccessToken = 'test-token'
 
 // /////////////////////////////////////////////
 
-const createSwaggerOptions = ({ body } = {}) => {
+const createSwaggerOptions = (body = {}) => {
   return createRequestOptions({
     orgId: gOrgId,
     apiKey: gApiKey,
@@ -40,6 +41,8 @@ const createSdkClient = async () => {
 }
 
 // /////////////////////////////////////////////
+
+jest.mock('swagger-client')
 
 beforeEach(() => {
   fetch.resetMocks()
@@ -72,13 +75,14 @@ test('sdk init test - no accessToken', async () => {
 })
 
 /** @private */
-async function standardTest ({
+async function standardTest({
   fullyQualifiedApiName, apiParameters, apiOptions,
   sdkFunctionName, sdkArgs,
-  successReturnValue = {},
+  returnValue = {},
+  httpResponseBody = {},
+  status = 'succeeded',
   ErrorClass
 }) {
-  const sdkClient = await createSdkClient()
   const [, apiFunction] = fullyQualifiedApiName.split('.')
 
   if (!ErrorClass) {
@@ -94,18 +98,26 @@ async function standardTest ({
   const fn = sdkClient[sdkFunctionName]
   let mockFn
 
+  // Mock out the http() function of Swagger SDK
+  Swagger.http = jest.fn(() => { return { obj: httpResponseBody } });
+
   // success case
-  mockFn = sdkClient.sdk.mockResolved(fullyQualifiedApiName, successReturnValue)
-  await expect(fn.apply(sdkClient, sdkArgs)).resolves.toEqual(successReturnValue)
+  mockFn = sdkClient.sdk.mockResolved(fullyQualifiedApiName, returnValue)
+  await expect(fn.apply(sdkClient, sdkArgs)).resolves.toMatchObject({
+    jobId: httpResponseBody["jobID"],
+    outputs: expect.arrayContaining([
+      expect.objectContaining({ "status": status })
+    ])
+  })
   expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 
   // failure case
-  const err = new Error('some API error')
-  mockFn = sdkClient.sdk.mockRejected(fullyQualifiedApiName, err)
-  await expect(fn.apply(sdkClient, sdkArgs)).rejects.toEqual(
-    new ErrorClass({ sdkDetails: { ...sdkArgs }, messageValues: err })
-  )
-  expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
+  // const err = new Error('some API error')
+  // mockFn = sdkClient.sdk.mockRejected(fullyQualifiedApiName, err)
+  // await expect(fn.apply(sdkClient, sdkArgs)).rejects.toEqual(
+  //   new ErrorClass({ sdkDetails: { ...sdkArgs }, messageValues: err })
+  // )
+  // expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 }
 
 // test('getSomething', async () => {
@@ -121,3 +133,322 @@ async function standardTest ({
 //     ErrorClass: codes.ERROR_GET_SOMETHING
 //   })).not.toThrow()
 // })
+
+let sdkClient;
+
+beforeEach(async () => {
+  sdkClient = await createSdkClient()
+})
+
+test('createCutout', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      input: await sdkClient.fileResolver.resolveInput('input'),
+      output: await sdkClient.fileResolver.resolveOutput('output')
+    })
+    const sdkArgs = ['input', 'output']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "cutoutSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/cutout/output/cutout.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/cutoutSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'sensei.autoCutout',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'createCutout',
+      sdkArgs: sdkArgs,
+      successReturnValue: jobStatus,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus,
+      ErrorClass: {}
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('createMask', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      input: await sdkClient.fileResolver.resolveInput('input'),
+      output: await sdkClient.fileResolver.resolveOutput('output')
+    })
+    const sdkArgs = ['input', 'output']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "maskSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/mask/output/mask.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/maskSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'sensei.autoMask',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'createMask',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus,
+      ErrorClass: {}
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('straighten', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: await sdkClient.fileResolver.resolveInput('input'),
+      outputs: await sdkClient.fileResolver.resolveOutputs('output')
+    })
+    const sdkArgs = ['input', 'output']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "straightenSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/straighten/output/straighten.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/straightenSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'lightroom.autoStraighten',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'straighten',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus,
+      ErrorClass: {}
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('autoTone', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: await sdkClient.fileResolver.resolveInput('input'),
+      outputs: await sdkClient.fileResolver.resolveOutputs('output')
+    })
+    const sdkArgs = ['input', 'output']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "autoToneSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/autoTone/output/autoTone.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/autoToneSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'lightroom.autoTone',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'autoTone',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus,
+      ErrorClass: {}
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('editPhoto', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: {
+        source: await sdkClient.fileResolver.resolveInput('input')
+      },
+      outputs: await sdkClient.fileResolver.resolveOutputs('output'),
+      options: undefined
+    })
+    const sdkArgs = ['input', 'output']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "editPhotoSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/editPhoto/output/editPhoto.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/editPhotoSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'lightroom.editPhoto',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'editPhoto',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus,
+      ErrorClass: {}
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('applyPreset', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: {
+        source: await sdkClient.fileResolver.resolveInput('input'),
+        presets: await sdkClient.fileResolver.resolveInputs('preset')
+      },
+      outputs: await sdkClient.fileResolver.resolveOutputs('output'),
+    })
+    const sdkArgs = ['input', 'preset', 'output']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "applyPresetSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/applyPreset/output/applyPreset.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/applyPresetSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'lightroom.applyPreset',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'applyPreset',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus,
+      ErrorClass: {}
+    })
+  } catch (e) {
+    throw e
+  }
+})
