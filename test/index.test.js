@@ -27,6 +27,8 @@ const gAccessToken = 'test-token'
 
 // /////////////////////////////////////////////
 
+jest.mock('swagger-client')
+
 const createSwaggerOptions = (body = {}) => {
   return createRequestOptions({
     orgId: gOrgId,
@@ -41,8 +43,6 @@ const createSdkClient = async () => {
 }
 
 // /////////////////////////////////////////////
-
-jest.mock('swagger-client')
 
 beforeEach(() => {
   fetch.resetMocks()
@@ -85,10 +85,6 @@ async function standardTest({
 }) {
   const [, apiFunction] = fullyQualifiedApiName.split('.')
 
-  if (!ErrorClass) {
-    throw new Error('ErrorClass not defined for standardTest')
-  }
-
   // sdk function name is the same as the apiname (without the namespace) by default
   // so if it is not set, we set it
   // this means in the SDK the namespace is flattened, so functions have to have unique names
@@ -111,13 +107,6 @@ async function standardTest({
   })
   expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 
-  // failure case
-  // const err = new Error('some API error')
-  // mockFn = sdkClient.sdk.mockRejected(fullyQualifiedApiName, err)
-  // await expect(fn.apply(sdkClient, sdkArgs)).rejects.toEqual(
-  //   new ErrorClass({ sdkDetails: { ...sdkArgs }, messageValues: err })
-  // )
-  // expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 }
 
 // test('getSomething', async () => {
@@ -134,28 +123,72 @@ async function standardTest({
 //   })).not.toThrow()
 // })
 
+/** @private */
+async function errorTest({
+  fullyQualifiedApiName, apiParameters, apiOptions,
+  sdkFunctionName, sdkArgs,
+  statusCode, errType, ErrorClass
+}) {
+  const [, apiFunction] = fullyQualifiedApiName.split('.')
+
+  if (!ErrorClass) {
+    throw new Error('ErrorClass not defined for errorTest')
+  }
+
+  // sdk function name is the same as the apiname (without the namespace) by default
+  // so if it is not set, we set it
+  // this means in the SDK the namespace is flattened, so functions have to have unique names
+  if (!sdkFunctionName) {
+    sdkFunctionName = apiFunction
+  }
+  const fn = sdkClient[sdkFunctionName]
+  let mockFn
+
+  // failure case
+  const err = new Error('some API error')
+  if (statusCode) err.status = statusCode
+  if (errType) err.response = { body: { type: errType } }
+  mockFn = sdkClient.sdk.mockRejected(fullyQualifiedApiName, err)
+  await expect(fn.apply(sdkClient, sdkArgs)).rejects.toEqual(
+    new ErrorClass({ sdkDetails: { ...sdkArgs }, messageValues: err })
+  )
+  expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
+}
+
+
+
+
 let sdkClient;
 
 beforeEach(async () => {
   sdkClient = await createSdkClient()
 })
 
-test('createCutout', async () => {
-  try {
-    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
-    const apiOptions = createSwaggerOptions({
+describe('createCutout', () => {
+  let apiParameters
+  let apiOptions
+  let sdkArgs
+  let returnValue
+  let jobStatus
+  beforeEach(async () => {
+
+    apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    apiOptions = createSwaggerOptions({
       input: await sdkClient.fileResolver.resolveInput('input'),
       output: await sdkClient.fileResolver.resolveOutput('output')
     })
-    const sdkArgs = ['input', 'output']
-    const returnValue = {
+
+    sdkArgs = ['input', 'output']
+
+    returnValue = {
       "body": {
         "_links": {
           "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
         }
       }
     }
-    const jobStatus = {
+
+    jobStatus = {
       "jobID": "cutoutSucceededJobId",
       "status": "succeeded",
       "input": "/files/images/input.jpg",
@@ -175,21 +208,242 @@ test('createCutout', async () => {
         }
       }
     }
+  })
 
-    await standardTest({
-      fullyQualifiedApiName: 'sensei.autoCutout',
-      apiParameters: apiParameters,
-      apiOptions: apiOptions,
-      sdkFunctionName: 'createCutout',
-      sdkArgs: sdkArgs,
-      successReturnValue: jobStatus,
-      returnValue: returnValue,
-      httpResponseBody: jobStatus,
-      ErrorClass: {}
-    })
-  } catch (e) {
-    throw e
-  }
+  test('Success Case', async () => {
+    try {
+      await standardTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        successReturnValue: jobStatus,
+        returnValue: returnValue,
+        httpResponseBody: jobStatus
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Failure Case', async () => {
+    try {
+
+      jobStatus.status = "failed"
+
+      await standardTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        successReturnValue: jobStatus,
+        returnValue: returnValue,
+        httpResponseBody: jobStatus,
+        status: 'failed'
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case - Unknown', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        ErrorClass: codes.ERROR_UNKNOWN
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (400) - Default', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 400,
+        ErrorClass: codes.ERROR_BAD_REQUEST
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (400) - InputValidationError', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 400,
+        errType: 'InputValidationError',
+        ErrorClass: codes.ERROR_INPUT_VALIDATION
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (400) - PayloadValidationError', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 400,
+        errType: 'PayloadValidationError',
+        ErrorClass: codes.ERROR_PAYLOAD_VALIDATION
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (400) - RequestBodyError', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 400,
+        errType: 'RequestBodyError',
+        ErrorClass: codes.ERROR_REQUEST_BODY
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (401)', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 401,
+        ErrorClass: codes.ERROR_UNAUTHORIZED
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (403)', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 403,
+        ErrorClass: codes.ERROR_AUTH_FORBIDDEN
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (404) - Default', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 404,
+        ErrorClass: codes.ERROR_RESOURCE_NOT_FOUND
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (404) - FileExistsErrors', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 404,
+        errType: 'FileExistsErrors',
+        ErrorClass: codes.ERROR_FILE_EXISTS
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (404) - InputFileExistsErrors', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 404,
+        errType: 'InputFileExistsErrors',
+        ErrorClass: codes.ERROR_INPUT_FILE_EXISTS
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (415)', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 415,
+        ErrorClass: codes.ERROR_INVALID_CONTENT_TYPE
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
+  test('Error Case (500)', async () => {
+    try {
+      await errorTest({
+        fullyQualifiedApiName: 'sensei.autoCutout',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'createCutout',
+        sdkArgs: sdkArgs,
+        statusCode: 500,
+        ErrorClass: codes.ERROR_UNDEFINED
+      })
+    } catch (e) {
+      throw e
+    }
+  })
+
 })
 
 test('createMask', async () => {
@@ -235,12 +489,12 @@ test('createMask', async () => {
       sdkFunctionName: 'createMask',
       sdkArgs: sdkArgs,
       returnValue: returnValue,
-      httpResponseBody: jobStatus,
-      ErrorClass: {}
+      httpResponseBody: jobStatus
     })
   } catch (e) {
     throw e
   }
+
 })
 
 test('straighten', async () => {
@@ -286,8 +540,7 @@ test('straighten', async () => {
       sdkFunctionName: 'straighten',
       sdkArgs: sdkArgs,
       returnValue: returnValue,
-      httpResponseBody: jobStatus,
-      ErrorClass: {}
+      httpResponseBody: jobStatus
     })
   } catch (e) {
     throw e
@@ -337,8 +590,7 @@ test('autoTone', async () => {
       sdkFunctionName: 'autoTone',
       sdkArgs: sdkArgs,
       returnValue: returnValue,
-      httpResponseBody: jobStatus,
-      ErrorClass: {}
+      httpResponseBody: jobStatus
     })
   } catch (e) {
     throw e
@@ -391,8 +643,7 @@ test('editPhoto', async () => {
       sdkFunctionName: 'editPhoto',
       sdkArgs: sdkArgs,
       returnValue: returnValue,
-      httpResponseBody: jobStatus,
-      ErrorClass: {}
+      httpResponseBody: jobStatus
     })
   } catch (e) {
     throw e
@@ -445,8 +696,365 @@ test('applyPreset', async () => {
       sdkFunctionName: 'applyPreset',
       sdkArgs: sdkArgs,
       returnValue: returnValue,
-      httpResponseBody: jobStatus,
-      ErrorClass: {}
+      httpResponseBody: jobStatus
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('applyPresetXmp', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: {
+        source: await sdkClient.fileResolver.resolveInput('input')
+      },
+      outputs: await sdkClient.fileResolver.resolveOutputs('output'),
+      options: {
+        xmp: 'xmp'
+      }
+    })
+    const sdkArgs = ['input', 'output', 'xmp']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "applyPresetXmpSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/applyPresetXmp/output/applyPresetXmp.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/applyPresetXmpSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'lightroom.applyPresetXmp',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'applyPresetXmp',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('createDocument', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
+      options: await sdkClient.fileResolver.resolveInputsDocumentOptions('options')
+    })
+    const sdkArgs = ['outputs', 'options']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "createDocumentSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/createDocument/output/createDocument.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/createDocumentSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'photoshop.createDocument',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'createDocument',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('getDocumentManifest', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: await sdkClient.fileResolver.resolveInputs('input'),
+      options: 'options'
+    })
+    const sdkArgs = ['input', 'options']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "getDocumentManifestSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/getDocumentManifest/output/getDocumentManifest.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/getDocumentManifestSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'photoshop.getDocumentManifest',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'getDocumentManifest',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('modifyDocument', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: await sdkClient.fileResolver.resolveInputs('input'),
+      outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
+      options: await sdkClient.fileResolver.resolveInputsDocumentOptions('options')
+    })
+    const sdkArgs = ['input', 'outputs', 'options']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "modifyDocumentSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/modifyDocument/output/modifyDocument.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/modifyDocumentSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'photoshop.modifyDocument',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'modifyDocument',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('createRendition', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: await sdkClient.fileResolver.resolveInputs('input'),
+      outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
+    })
+    const sdkArgs = ['input', 'outputs']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "createRenditionSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/createRendition/output/createRendition.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/createRenditionSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'photoshop.createRendition',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'createRendition',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('replaceSmartObject', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: await sdkClient.fileResolver.resolveInputs('input'),
+      outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
+      options: await sdkClient.fileResolver.resolveInputsDocumentOptions('options')
+    })
+    const sdkArgs = ['input', 'outputs', 'options']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "replaceSmartObjectSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/replaceSmartObject/output/replaceSmartObject.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/replaceSmartObjectSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'photoshop.replaceSmartObject',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'replaceSmartObject',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus
+    })
+  } catch (e) {
+    throw e
+  }
+})
+
+test('applyPhotoshopActions', async () => {
+  try {
+    const apiParameters = { 'x-gw-ims-org-id': gOrgId }
+    const apiOptions = createSwaggerOptions({
+      inputs: await sdkClient.fileResolver.resolveInputs('input'),
+      outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
+      options: await sdkClient.fileResolver.resolveInputsDocumentOptions('options')
+    })
+    const sdkArgs = ['input', 'outputs', 'options']
+    const returnValue = {
+      "body": {
+        "_links": {
+          "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        }
+      }
+    }
+    const jobStatus = {
+      "jobID": "applyPhotoshopActionsSucceededJobId",
+      "status": "succeeded",
+      "input": "/files/images/input.jpg",
+      "output": {
+        "storage": "adobe",
+        "href": "/files/applyPhotoshopActions/output/applyPhotoshopActions.png",
+        "mask": {
+          "format": "binary"
+        },
+        "color": {
+          "space": "rgb"
+        }
+      },
+      "_links": {
+        "self": {
+          "href": "https://image.adobe.io/sensei/status/applyPhotoshopActionsSucceededStatusId"
+        }
+      }
+    }
+
+    await standardTest({
+      fullyQualifiedApiName: 'photoshop.applyPhotoshopActions',
+      apiParameters: apiParameters,
+      apiOptions: apiOptions,
+      sdkFunctionName: 'applyPhotoshopActions',
+      sdkArgs: sdkArgs,
+      returnValue: returnValue,
+      httpResponseBody: jobStatus
     })
   } catch (e) {
     throw e
