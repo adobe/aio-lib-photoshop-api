@@ -24,6 +24,7 @@ const { codes } = require('../src/SDKErrors')
 const gOrgId = 'test-orgid'
 const gApiKey = 'test-apikey'
 const gAccessToken = 'test-token'
+let sdkClient;
 
 // /////////////////////////////////////////////
 
@@ -44,12 +45,12 @@ const createSdkClient = async () => {
 
 // /////////////////////////////////////////////
 
-beforeEach(() => {
+beforeEach(async() => {
   fetch.resetMocks()
+  sdkClient = await createSdkClient()
 })
 
 test('sdk init test', async () => {
-  const sdkClient = await createSdkClient()
 
   expect(sdkClient.orgId).toBe(gOrgId)
   expect(sdkClient.apiKey).toBe(gApiKey)
@@ -96,7 +97,7 @@ async function standardTest({
   // Mock out the http() function of Swagger SDK
   Swagger.http = jest.fn(() => { return { obj: httpResponseBody } });
 
-  // success case
+  // Validation
   mockFn = sdkClient.sdk.mockResolved(fullyQualifiedApiName, returnValue)
   await expect(fn.apply(sdkClient, sdkArgs)).resolves.toMatchObject({
     jobId: httpResponseBody["jobID"],
@@ -107,20 +108,6 @@ async function standardTest({
   expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 
 }
-
-// test('getSomething', async () => {
-//   const sdkArgs = []
-//   const apiParameters = {}
-//   const apiOptions = createSwaggerOptions()
-
-//   return expect(() => standardTest({
-//     fullyQualifiedApiName: 'mytag.getSomething',
-//     apiParameters,
-//     apiOptions,
-//     sdkArgs,
-//     ErrorClass: codes.ERROR_GET_SOMETHING
-//   })).not.toThrow()
-// })
 
 /** @private */
 async function errorTest({
@@ -143,7 +130,7 @@ async function errorTest({
   const fn = sdkClient[sdkFunctionName]
   let mockFn
 
-  // failure case
+  // Error Validation
   const err = new Error('some API error')
   if (statusCode) err.status = statusCode
   if (errType) err.response = { body: { type: errType } }
@@ -154,14 +141,6 @@ async function errorTest({
   expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 }
 
-
-
-
-let sdkClient;
-
-beforeEach(async () => {
-  sdkClient = await createSdkClient()
-})
 
 describe('__createRequestOptions', () => {
   test('Empty Body', async () => {
