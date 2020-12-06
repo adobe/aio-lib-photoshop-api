@@ -33,7 +33,7 @@ require('./types')
  * @param {PhotoshopAPIOptions} [options] Options
  * @returns {Promise<PhotoshopAPI>} a Promise with a PhotoshopAPI object
  */
-async function init(orgId, apiKey, accessToken, files, options) {
+async function init (orgId, apiKey, accessToken, files, options) {
   try {
     const clientWrapper = new PhotoshopAPI()
     const initializedSDK = await clientWrapper.init(orgId, apiKey, accessToken, files, options)
@@ -51,7 +51,7 @@ async function init(orgId, apiKey, accessToken, files, options) {
  * @private
  * @param {*} err Error response
  */
-function throwError(err) {
+function throwError (err) {
   const errType = err.response && err.response.body && err.response.body.type
   switch (err.status) {
     case 400:
@@ -110,7 +110,7 @@ class PhotoshopAPI {
    * @param {PhotoshopAPIOptions} [options] Options
    * @returns {Promise<PhotoshopAPI>} a PhotoshopAPI object
    */
-  async init(orgId, apiKey, accessToken, files, options) {
+  async init (orgId, apiKey, accessToken, files, options) {
     // init swagger client
     const spec = require('../spec/api.json')
     this.sdk = await new Swagger({
@@ -162,14 +162,14 @@ class PhotoshopAPI {
     this.accessToken = accessToken
 
     /**
-     * @private
-     */
+         * @private
+         */
     this.fileResolver = new FileResolver(files, options)
 
     return this
   }
 
-  __createRequestOptions(body = {}) {
+  __createRequestOptions (body = {}) {
     return createRequestOptions({
       orgId: this.orgId,
       apiKey: this.apiKey,
@@ -179,18 +179,18 @@ class PhotoshopAPI {
   }
 
   /**
-   * Acquire the current job status
-   *
-   * The APIs for status updates are defined in the OpenAPI spec, however the status is provided
-   * as a url, and not just a jobId. Instead of parsing the url to extract the jobId, this code is
-   * invoking the url directly but routed through the Swagger client to take advantage of the request
-   * and response interceptor for consistency.
-   *
-   * @private
-   * @param {string} url Job status url
-   * @returns {*} Job status response
-   */
-  async __getJobStatus(url) {
+     * Acquire the current job status
+     *
+     * The APIs for status updates are defined in the OpenAPI spec, however the status is provided
+     * as a url, and not just a jobId. Instead of parsing the url to extract the jobId, this code is
+     * invoking the url directly but routed through the Swagger client to take advantage of the request
+     * and response interceptor for consistency.
+     *
+     * @private
+     * @param {string} url Job status url
+     * @returns {*} Job status response
+     */
+  async __getJobStatus (url) {
     const response = await Swagger.http({
       url,
       headers: {
@@ -212,7 +212,7 @@ class PhotoshopAPI {
    * @param {string|Output} output Output file
    * @returns {Job} Auto cutout job
    */
-  async createCutout(input, output) {
+  async createCutout (input, output) {
     try {
       const response = await this.sdk.apis.sensei.autoCutout({
         'x-gw-ims-org-id': this.orgId
@@ -235,7 +235,7 @@ class PhotoshopAPI {
    * @param {string|Output} output Output file
    * @returns {Job} Auto masking job
    */
-  async createMask(input, output) {
+  async createMask (input, output) {
     try {
       const response = await this.sdk.apis.sensei.autoMask({
         'x-gw-ims-org-id': this.orgId
@@ -258,7 +258,7 @@ class PhotoshopAPI {
    * @param {string|Output|Output[]} outputs Output file
    * @returns {Job} Auto straighten job
    */
-  async straighten(input, outputs) {
+  async straighten (input, outputs) {
     try {
       const response = await this.sdk.apis.lightroom.autoStraighten({
         'x-gw-ims-org-id': this.orgId
@@ -281,7 +281,7 @@ class PhotoshopAPI {
    * @param {string|Output} output Output file
    * @returns {Job} Auto tone job
    */
-  async autoTone(input, output) {
+  async autoTone (input, output) {
     try {
       const response = await this.sdk.apis.lightroom.autoTone({
         'x-gw-ims-org-id': this.orgId
@@ -305,7 +305,7 @@ class PhotoshopAPI {
    * @param {EditPhotoOptions} options Edit options
    * @returns {Job} Edit photo job
    */
-  async editPhoto(input, output, options) {
+  async editPhoto (input, output, options) {
     try {
       const response = await this.sdk.apis.lightroom.editPhoto({
         'x-gw-ims-org-id': this.orgId
@@ -332,7 +332,7 @@ class PhotoshopAPI {
    * @param {string|Output} output Output file
    * @returns {Job} Apply preset job
    */
-  async applyPreset(input, preset, output) {
+  async applyPreset (input, preset, output) {
     try {
       const response = await this.sdk.apis.lightroom.applyPreset({
         'x-gw-ims-org-id': this.orgId
@@ -359,7 +359,7 @@ class PhotoshopAPI {
    * @param {string} xmp Lightroom preset XMP file contents
    * @returns {Job} Apply preset job
    */
-  async applyPresetXmp(input, output, xmp) {
+  async applyPresetXmp (input, output, xmp) {
     try {
       const response = await this.sdk.apis.lightroom.applyPresetXmp({
         'x-gw-ims-org-id': this.orgId
@@ -387,7 +387,7 @@ class PhotoshopAPI {
    * @param {CreateDocumentOptions} options Document create options
    * @returns {Job} Create document job
    */
-  async createDocument(outputs, options) {
+  async createDocument (outputs, options) {
     try {
       const response = await this.sdk.apis.photoshop.createDocument({
         'x-gw-ims-org-id': this.orgId
@@ -412,7 +412,7 @@ class PhotoshopAPI {
    * @param {MimeType} [options.thumbnails.type] desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff"
    * @returns {Job} Get document manifest job
    */
-  async getDocumentManifest(input, options) {
+  async getDocumentManifest (input, options) {
     try {
       const response = await this.sdk.apis.photoshop.getDocumentManifest({
         'x-gw-ims-org-id': this.orgId
@@ -436,7 +436,7 @@ class PhotoshopAPI {
    * @param {ModifyDocumentOptions} options Modify document options
    * @returns {Job} Modify document job
    */
-  async modifyDocument(input, outputs, options) {
+  async modifyDocument (input, outputs, options) {
     try {
       const response = await this.sdk.apis.photoshop.modifyDocument({
         'x-gw-ims-org-id': this.orgId
@@ -460,7 +460,7 @@ class PhotoshopAPI {
    * @param {string|string[]|Output|Output[]} outputs Desired output
    * @returns {Job} Create rendition job
    */
-  async createRendition(input, outputs) {
+  async createRendition (input, outputs) {
     try {
       const response = await this.sdk.apis.photoshop.createRendition({
         'x-gw-ims-org-id': this.orgId
@@ -484,7 +484,7 @@ class PhotoshopAPI {
    * @param {ReplaceSmartObjectOptions} options Replace smart object options
    * @returns {Job} Replace smart object job
    */
-  async replaceSmartObject(input, outputs, options) {
+  async replaceSmartObject (input, outputs, options) {
     try {
       const response = await this.sdk.apis.photoshop.replaceSmartObject({
         'x-gw-ims-org-id': this.orgId
@@ -509,7 +509,7 @@ class PhotoshopAPI {
    * @param {ApplyPhotoshopActionsOptions} options Apply Photoshop Actions options
    * @returns {Job} Photoshop Actions job
    */
-  async applyPhotoshopActions(input, outputs, options) {
+  async applyPhotoshopActions (input, outputs, options) {
     try {
       const response = await this.sdk.apis.photoshop.applyPhotoshopActions({
         'x-gw-ims-org-id': this.orgId

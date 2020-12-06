@@ -1,3 +1,5 @@
+/* eslint-disable jest/expect-expect */
+/* eslint-disable no-useless-catch */
 /*
 Copyright 2020 Adobe. All rights reserved.
 This file is licensed to you under the Apache License, Version 2.0 (the "License");
@@ -13,7 +15,7 @@ governing permissions and limitations under the License.
 
 'use strict'
 
-const Swagger = require('swagger-client');
+const Swagger = require('swagger-client')
 const sdk = require('../src')
 const fetch = require('cross-fetch')
 const { createRequestOptions } = require('../src/helpers')
@@ -24,7 +26,7 @@ const { codes } = require('../src/SDKErrors')
 const gOrgId = 'test-orgid'
 const gApiKey = 'test-apikey'
 const gAccessToken = 'test-token'
-let sdkClient;
+let sdkClient
 
 // /////////////////////////////////////////////
 
@@ -45,13 +47,12 @@ const createSdkClient = async () => {
 
 // /////////////////////////////////////////////
 
-beforeEach(async() => {
+beforeEach(async () => {
   fetch.resetMocks()
   sdkClient = await createSdkClient()
 })
 
 test('sdk init test', async () => {
-
   expect(sdkClient.orgId).toBe(gOrgId)
   expect(sdkClient.apiKey).toBe(gApiKey)
   expect(sdkClient.accessToken).toBe(gAccessToken)
@@ -76,9 +77,12 @@ test('sdk init test - no accessToken', async () => {
 })
 
 /** @private */
-async function standardTest({
-  fullyQualifiedApiName, apiParameters, apiOptions,
-  sdkFunctionName, sdkArgs,
+async function standardTest ({
+  fullyQualifiedApiName,
+  apiParameters,
+  apiOptions,
+  sdkFunctionName,
+  sdkArgs,
   returnValue = {},
   httpResponseBody = {},
   status = 'succeeded'
@@ -92,28 +96,31 @@ async function standardTest({
     sdkFunctionName = apiFunction
   }
   const fn = sdkClient[sdkFunctionName]
-  let mockFn
 
   // Mock out the http() function of Swagger SDK
-  Swagger.http = jest.fn(() => { return { obj: httpResponseBody } });
+  Swagger.http = jest.fn(() => { return { obj: httpResponseBody } })
 
   // Validation
-  mockFn = sdkClient.sdk.mockResolved(fullyQualifiedApiName, returnValue)
+  const mockFn = sdkClient.sdk.mockResolved(fullyQualifiedApiName, returnValue)
   await expect(fn.apply(sdkClient, sdkArgs)).resolves.toMatchObject({
-    jobId: httpResponseBody["jobID"],
+    jobId: httpResponseBody.jobID,
     outputs: expect.arrayContaining([
-      expect.objectContaining({ "status": status })
+      expect.objectContaining({ status: status })
     ])
   })
   expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
-
 }
 
 /** @private */
-async function errorTest({
-  fullyQualifiedApiName, apiParameters, apiOptions,
-  sdkFunctionName, sdkArgs,
-  statusCode, errType, ErrorClass
+async function errorTest ({
+  fullyQualifiedApiName,
+  apiParameters,
+  apiOptions,
+  sdkFunctionName,
+  sdkArgs,
+  statusCode,
+  errType,
+  ErrorClass
 }) {
   const [, apiFunction] = fullyQualifiedApiName.split('.')
 
@@ -128,69 +135,66 @@ async function errorTest({
     sdkFunctionName = apiFunction
   }
   const fn = sdkClient[sdkFunctionName]
-  let mockFn
+  const error = {}
 
   // Error Validation
-  const err = new Error('some API error')
-  if (statusCode) err.status = statusCode
-  if (errType) err.response = { body: { type: errType } }
-  mockFn = sdkClient.sdk.mockRejected(fullyQualifiedApiName, err)
+  if (statusCode) error.status = statusCode
+  if (errType) error.response = { body: { type: errType } }
+  const mockFn = sdkClient.sdk.mockRejected(fullyQualifiedApiName, error)
   await expect(fn.apply(sdkClient, sdkArgs)).rejects.toEqual(
-    new ErrorClass({ sdkDetails: { ...sdkArgs }, messageValues: err })
+    new ErrorClass({ sdkDetails: { ...sdkArgs }, messageValues: error })
   )
   expect(mockFn).toHaveBeenCalledWith(apiParameters, apiOptions)
 }
 
-
 describe('__createRequestOptions', () => {
   test('Empty Body', async () => {
     try {
-      let opt = await sdkClient.__createRequestOptions();
+      const opt = await sdkClient.__createRequestOptions()
       expect(opt).toMatchObject({
         requestBody: {},
         securities: {
           authorized: {
-            BearerAuth: { value: "test-token" },
-            ApiKeyAuth: { value: "test-apikey" }
+            BearerAuth: { value: 'test-token' },
+            ApiKeyAuth: { value: 'test-apikey' }
           }
         }
       })
     } catch (e) {
-      throw e;
+      throw e
     }
-  });
+  })
 
   test('Non-Empty Body', async () => {
     try {
-      let opt = await sdkClient.__createRequestOptions({
+      const opt = await sdkClient.__createRequestOptions({
         input: await sdkClient.fileResolver.resolveInput('input'),
         output: await sdkClient.fileResolver.resolveOutput('output')
-      });
+      })
       expect(opt).toMatchObject({
         requestBody: {
-          "input": {
-            "href": "input",
-            "storage": "adobe",
+          input: {
+            href: 'input',
+            storage: 'adobe'
           },
-          "output": {
-            "href": "output",
-            "storage": "adobe",
-            "type": "image/png",
-          },
+          output: {
+            href: 'output',
+            storage: 'adobe',
+            type: 'image/png'
+          }
         },
         securities: {
           authorized: {
-            BearerAuth: { value: "test-token" },
-            ApiKeyAuth: { value: "test-apikey" }
+            BearerAuth: { value: 'test-token' },
+            ApiKeyAuth: { value: 'test-apikey' }
           }
         }
       })
     } catch (e) {
-      throw e;
+      throw e
     }
-  });
-});
-
+  })
+})
 
 describe('Sensei', () => {
   describe('createCutout', () => {
@@ -201,7 +205,6 @@ describe('Sensei', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         input: await sdkClient.fileResolver.resolveInput('input'),
@@ -215,38 +218,38 @@ describe('Sensei', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'createCutout',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "cutoutSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/cutout/output/cutout.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'cutoutSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/cutout/output/cutout.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/cutoutSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/cutoutSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -259,12 +262,11 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -276,7 +278,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -287,7 +289,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (400) - Default', async () => {
       try {
@@ -312,7 +314,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (400) - PayloadValidationError', async () => {
       try {
@@ -325,7 +327,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (400) - RequestBodyError', async () => {
       try {
@@ -338,7 +340,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (401)', async () => {
       try {
@@ -350,7 +352,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (403)', async () => {
       try {
@@ -362,7 +364,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (404) - Default', async () => {
       try {
@@ -374,7 +376,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (404) - FileExistsErrors', async () => {
       try {
@@ -387,7 +389,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (404) - InputFileExistsErrors', async () => {
       try {
@@ -400,7 +402,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (415)', async () => {
       try {
@@ -412,7 +414,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case (500)', async () => {
       try {
@@ -424,8 +426,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
-
+    })
   })
 
   describe('createMask', () => {
@@ -436,7 +437,6 @@ describe('Sensei', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         input: await sdkClient.fileResolver.resolveInput('input'),
@@ -450,38 +450,38 @@ describe('Sensei', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'createMask',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "maskSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/mask/output/mask.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'maskSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/mask/output/mask.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/maskSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/maskSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -493,12 +493,11 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -509,7 +508,7 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -520,10 +519,9 @@ describe('Sensei', () => {
       } catch (e) {
         throw e
       }
-    });
-
-  });
-});
+    })
+  })
+})
 
 describe('Lightroom', () => {
   describe('straighten', () => {
@@ -534,7 +532,6 @@ describe('Lightroom', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: await sdkClient.fileResolver.resolveInput('input'),
@@ -548,38 +545,38 @@ describe('Lightroom', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'straighten',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "straightenSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/straighten/output/straighten.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'straightenSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/straighten/output/straighten.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/straightenSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/straightenSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -591,12 +588,11 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -607,7 +603,7 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -618,9 +614,8 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
-
-  });
+    })
+  })
 
   describe('autoTone', () => {
     let spec
@@ -630,7 +625,6 @@ describe('Lightroom', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: await sdkClient.fileResolver.resolveInput('input'),
@@ -644,38 +638,38 @@ describe('Lightroom', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'autoTone',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "autoToneSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/autoTone/output/autoTone.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'autoToneSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/autoTone/output/autoTone.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/autoToneSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/autoToneSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -687,12 +681,11 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -703,7 +696,7 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -715,8 +708,7 @@ describe('Lightroom', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('editPhoto', () => {
     let spec
@@ -726,7 +718,6 @@ describe('Lightroom', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: {
@@ -743,38 +734,38 @@ describe('Lightroom', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'editPhoto',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "editPhotoSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/editPhoto/output/editPhoto.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'editPhotoSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/editPhoto/output/editPhoto.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/editPhotoSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/editPhotoSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -786,12 +777,11 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -802,7 +792,7 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -814,8 +804,7 @@ describe('Lightroom', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('applyPreset', () => {
     let spec
@@ -825,14 +814,13 @@ describe('Lightroom', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: {
           source: await sdkClient.fileResolver.resolveInput('input'),
           presets: await sdkClient.fileResolver.resolveInputs('preset')
         },
-        outputs: await sdkClient.fileResolver.resolveOutputs('output'),
+        outputs: await sdkClient.fileResolver.resolveOutputs('output')
       })
       sdkArgs = ['input', 'preset', 'output']
 
@@ -841,38 +829,38 @@ describe('Lightroom', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'applyPreset',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "applyPresetSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/applyPreset/output/applyPreset.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'applyPresetSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/applyPreset/output/applyPreset.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/applyPresetSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/applyPresetSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -884,12 +872,11 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -900,7 +887,7 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -912,8 +899,7 @@ describe('Lightroom', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('applyPresetXmp', () => {
     let spec
@@ -923,7 +909,6 @@ describe('Lightroom', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: {
@@ -941,38 +926,38 @@ describe('Lightroom', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'applyPresetXmp',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "applyPresetXmpSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/applyPresetXmp/output/applyPresetXmp.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'applyPresetXmpSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/applyPresetXmp/output/applyPresetXmp.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/applyPresetXmpSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/applyPresetXmpSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -984,12 +969,11 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -1000,7 +984,7 @@ describe('Lightroom', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -1012,10 +996,8 @@ describe('Lightroom', () => {
         throw e
       }
     })
-
-  });
-
-});
+  })
+})
 
 describe('Photoshop', () => {
   describe('createDocument', () => {
@@ -1026,7 +1008,6 @@ describe('Photoshop', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
@@ -1039,38 +1020,38 @@ describe('Photoshop', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'createDocument',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "createDocumentSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/createDocument/output/createDocument.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'createDocumentSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/createDocument/output/createDocument.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/createDocumentSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/createDocumentSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -1082,12 +1063,11 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -1098,7 +1078,7 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -1110,8 +1090,7 @@ describe('Photoshop', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('getDocumentManifest', () => {
     let spec
@@ -1121,7 +1100,6 @@ describe('Photoshop', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: await sdkClient.fileResolver.resolveInputs('input'),
@@ -1134,38 +1112,38 @@ describe('Photoshop', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'getDocumentManifest',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "getDocumentManifestSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/getDocumentManifest/output/getDocumentManifest.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'getDocumentManifestSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/getDocumentManifest/output/getDocumentManifest.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/getDocumentManifestSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/getDocumentManifestSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -1177,12 +1155,11 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -1193,7 +1170,7 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -1205,8 +1182,7 @@ describe('Photoshop', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('modifyDocument', () => {
     let spec
@@ -1216,7 +1192,6 @@ describe('Photoshop', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: await sdkClient.fileResolver.resolveInputs('input'),
@@ -1230,38 +1205,38 @@ describe('Photoshop', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'modifyDocument',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "modifyDocumentSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/modifyDocument/output/modifyDocument.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'modifyDocumentSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/modifyDocument/output/modifyDocument.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/modifyDocumentSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/modifyDocumentSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -1273,12 +1248,11 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -1289,7 +1263,7 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -1301,8 +1275,7 @@ describe('Photoshop', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('createRendition', () => {
     let spec
@@ -1312,11 +1285,10 @@ describe('Photoshop', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: await sdkClient.fileResolver.resolveInputs('input'),
-        outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
+        outputs: await sdkClient.fileResolver.resolveOutputs('outputs')
       })
       sdkArgs = ['input', 'outputs']
 
@@ -1325,38 +1297,38 @@ describe('Photoshop', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'createRendition',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "createRenditionSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/createRendition/output/createRendition.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'createRenditionSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/createRendition/output/createRendition.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/createRenditionSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/createRenditionSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -1368,12 +1340,11 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -1384,7 +1355,7 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -1396,8 +1367,7 @@ describe('Photoshop', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('replaceSmartObject', () => {
     let spec
@@ -1407,7 +1377,6 @@ describe('Photoshop', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: await sdkClient.fileResolver.resolveInputs('input'),
@@ -1421,38 +1390,38 @@ describe('Photoshop', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'replaceSmartObject',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "replaceSmartObjectSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/replaceSmartObject/output/replaceSmartObject.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'replaceSmartObjectSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/replaceSmartObject/output/replaceSmartObject.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/replaceSmartObjectSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/replaceSmartObjectSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -1464,12 +1433,11 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -1480,7 +1448,7 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -1492,8 +1460,7 @@ describe('Photoshop', () => {
         throw e
       }
     })
-
-  });
+  })
 
   describe('applyPhotoshopActions', () => {
     let spec
@@ -1503,7 +1470,6 @@ describe('Photoshop', () => {
     let returnValue
     let jobStatus
     beforeEach(async () => {
-
       apiParameters = { 'x-gw-ims-org-id': gOrgId }
       apiOptions = createSwaggerOptions({
         inputs: await sdkClient.fileResolver.resolveInputs('input'),
@@ -1517,38 +1483,38 @@ describe('Photoshop', () => {
         apiParameters: apiParameters,
         apiOptions: apiOptions,
         sdkFunctionName: 'applyPhotoshopActions',
-        sdkArgs: sdkArgs,
+        sdkArgs: sdkArgs
       }
 
       returnValue = {
-        "body": {
-          "_links": {
-            "self": { "href": "https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67" }
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/f54e0fcb-260b-47c3-b520-de0d17dc2b67' }
           }
         }
       }
 
       jobStatus = {
-        "jobID": "applyPhotoshopActionsSucceededJobId",
-        "status": "succeeded",
-        "input": "/files/images/input.jpg",
-        "output": {
-          "storage": "adobe",
-          "href": "/files/applyPhotoshopActions/output/applyPhotoshopActions.png",
-          "mask": {
-            "format": "binary"
+        jobID: 'applyPhotoshopActionsSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/applyPhotoshopActions/output/applyPhotoshopActions.png',
+          mask: {
+            format: 'binary'
           },
-          "color": {
-            "space": "rgb"
+          color: {
+            space: 'rgb'
           }
         },
-        "_links": {
-          "self": {
-            "href": "https://image.adobe.io/sensei/status/applyPhotoshopActionsSucceededStatusId"
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/applyPhotoshopActionsSucceededStatusId'
           }
         }
       }
-    });
+    })
 
     test('Success Case', async () => {
       try {
@@ -1560,12 +1526,11 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Failure Case', async () => {
       try {
-
-        jobStatus.status = "failed"
+        jobStatus.status = 'failed'
 
         await standardTest({
           ...spec,
@@ -1576,7 +1541,7 @@ describe('Photoshop', () => {
       } catch (e) {
         throw e
       }
-    });
+    })
 
     test('Error Case - Unknown', async () => {
       try {
@@ -1588,7 +1553,5 @@ describe('Photoshop', () => {
         throw e
       }
     })
-
-  });
-
-});
+  })
+})

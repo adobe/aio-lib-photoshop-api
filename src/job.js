@@ -25,7 +25,7 @@ class Job {
    * @param {*} response Service response
    * @param {Function} getJobStatus Async function to get job status
    */
-  constructor(response, getJobStatus) {
+  constructor (response, getJobStatus) {
     this.getJobStatus = getJobStatus
 
     /**
@@ -60,7 +60,7 @@ class Job {
    *
    * @returns {boolean} True if the job is done, or false if it is still pending/running
    */
-  isDone() {
+  isDone () {
     for (const output of this.outputs) {
       if ((output.status !== 'succeeded') && (output.status !== 'failed')) {
         return false
@@ -75,7 +75,7 @@ class Job {
    *
    * @returns {Job} Job instance
    */
-  async poll() {
+  async poll () {
     const response = await this.getJobStatus(this.url)
 
     // Image cutout and mask APIs only support a single output, map the input, status, errors fields to
@@ -121,7 +121,7 @@ class Job {
    * @param {number} [pollTimeMs=2000] Polling time
    * @returns {Job} Job instance
    */
-  async pollUntilDone(pollTimeMs = 2000) {
+  async pollUntilDone (pollTimeMs = 2000) {
     while (!this.isDone()) {
       await sleep(pollTimeMs)
       await this.poll()

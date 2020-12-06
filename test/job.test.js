@@ -30,14 +30,14 @@ test('missing-links', async () => {
 test('missing-self', async () => {
   await expect(() => {
     // eslint-disable-next-line no-new
-    new Job({ _links: { } })
+    new Job({ _links: {} })
   }).toThrow('[PhotoshopSDK:ERROR_STATUS_URL_MISSING] Status URL is missing in the response: {"_links":{}}')
 })
 
 test('missing-href', async () => {
   await expect(() => {
     // eslint-disable-next-line no-new
-    new Job({ _links: { self: { } } })
+    new Job({ _links: { self: {} } })
   }).toThrow('[PhotoshopSDK:ERROR_STATUS_URL_MISSING] Status URL is missing in the response: {"_links":{"self":{}}}')
 })
 
@@ -202,12 +202,10 @@ test('poll-response-cutout-failed', async () => {
       type: '<errorType>',
       code: '<errorCode>',
       title: '<errorDescription>',
-      '<errorDetails>': [
-        {
-          name: '<paramName>',
-          reason: '<error>'
-        }
-      ]
+      '<errorDetails>': [{
+        name: '<paramName>',
+        reason: '<error>'
+      }]
     },
     _links: {
       self: {
@@ -234,12 +232,10 @@ test('poll-response-cutout-failed', async () => {
         type: '<errorType>',
         code: '<errorCode>',
         title: '<errorDescription>',
-        '<errorDetails>': [
-          {
-            name: '<paramName>',
-            reason: '<error>'
-          }
-        ]
+        '<errorDetails>': [{
+          name: '<paramName>',
+          reason: '<error>'
+        }]
       }
     }],
     url: 'http://host/status'
