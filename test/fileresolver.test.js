@@ -185,7 +185,7 @@ test('resolveInputHrefExternalUrl', async () => {
 
 test('resolveInputNoHref', async () => {
   await expect(new FileResolver()
-    .resolveInput({})
+    .resolveInput({ })
   ).rejects.toThrow(Error('Missing href: {}'))
 })
 

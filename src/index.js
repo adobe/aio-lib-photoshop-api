@@ -162,8 +162,8 @@ class PhotoshopAPI {
     this.accessToken = accessToken
 
     /**
-         * @private
-         */
+     * @private
+     */
     this.fileResolver = new FileResolver(files, options)
 
     return this
@@ -179,17 +179,17 @@ class PhotoshopAPI {
   }
 
   /**
-     * Acquire the current job status
-     *
-     * The APIs for status updates are defined in the OpenAPI spec, however the status is provided
-     * as a url, and not just a jobId. Instead of parsing the url to extract the jobId, this code is
-     * invoking the url directly but routed through the Swagger client to take advantage of the request
-     * and response interceptor for consistency.
-     *
-     * @private
-     * @param {string} url Job status url
-     * @returns {*} Job status response
-     */
+   * Acquire the current job status
+   *
+   * The APIs for status updates are defined in the OpenAPI spec, however the status is provided
+   * as a url, and not just a jobId. Instead of parsing the url to extract the jobId, this code is
+   * invoking the url directly but routed through the Swagger client to take advantage of the request
+   * and response interceptor for consistency.
+   *
+   * @private
+   * @param {string} url Job status url
+   * @returns {*} Job status response
+   */
   async __getJobStatus (url) {
     const response = await Swagger.http({
       url,
