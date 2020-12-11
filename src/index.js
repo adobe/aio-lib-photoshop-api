@@ -125,9 +125,6 @@ class PhotoshopAPI {
     })
 
     const initErrors = []
-    if (!orgId) {
-      initErrors.push('orgId')
-    }
     if (!apiKey) {
       initErrors.push('apiKey')
     }
