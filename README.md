@@ -38,8 +38,12 @@ $ npm install @adobe/aio-lib-photoshop-api
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  //initialize sdk
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
+  try {
+    //initialize sdk
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
+  } catch (e) {
+    console.error(e)
+  }
 }
 ```
 
@@ -51,11 +55,11 @@ This is the example of using the storage type of `http://host/input.jpg` (Extern
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  // initialize sdk
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
-
-  // call methods
   try {
+    // initialize sdk
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
+
+    // call methods
     const result = await client.createCutout({
       href: 'http://host/input.jpg',
       storage: sdk.Storage.EXTERNAL
@@ -64,7 +68,6 @@ async function sdkTest() {
       storage: sdk.Storage.ADOBE,
       type: sdk.MimeType.JPEG
     })
-
   } catch (e) {
     console.error(e)
   }
@@ -82,9 +85,13 @@ const libFiles = require('@adobe/aio-lib-files')
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  // initialize sdk
-  const files = await libFiles.init();
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
+  try {
+    // initialize sdk
+    const files = await libFiles.init();
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
+  } catch (e) {
+    console.error(e)
+  }
 }
 ```
 
@@ -97,12 +104,12 @@ const libFiles = require('@adobe/aio-lib-files')
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  // initialize sdk
-  const files = await libFiles.init();
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
-
-  // call methods
   try {
+    // initialize sdk
+    const files = await libFiles.init();
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
+
+    // call methods
     // auto cutout...
     const result = await client.createCutout('http://host/input.jpg', 'path/output.jpg')
     console.log(result)
@@ -751,9 +758,9 @@ Compression level for PNG: small, medium or large.
 
 | Name | Default |
 | --- | --- |
-| SMALL | <code>small</code> | 
-| MEDIUM | <code>medium</code> | 
-| LARGE | <code>large</code> | 
+| SMALL | <code>small</code> |
+| MEDIUM | <code>medium</code> |
+| LARGE | <code>large</code> |
 
 <a name="Colorspace"></a>
 
@@ -766,14 +773,14 @@ Color space
 
 | Name | Default |
 | --- | --- |
-| BITMAP | <code>bitmap</code> | 
-| GREYSCALE | <code>greyscale</code> | 
-| INDEXED | <code>indexed</code> | 
-| RGB | <code>rgb</code> | 
-| CMYK | <code>cmyk</code> | 
-| MULTICHANNEL | <code>multichannel</code> | 
-| DUOTONE | <code>duotone</code> | 
-| LAB | <code>lab</code> | 
+| BITMAP | <code>bitmap</code> |
+| GREYSCALE | <code>greyscale</code> |
+| INDEXED | <code>indexed</code> |
+| RGB | <code>rgb</code> |
+| CMYK | <code>cmyk</code> |
+| MULTICHANNEL | <code>multichannel</code> |
+| DUOTONE | <code>duotone</code> |
+| LAB | <code>lab</code> |
 
 <a name="StandardIccProfileNames"></a>
 
@@ -786,17 +793,17 @@ Standard ICC profile names
 
 | Name | Default |
 | --- | --- |
-| ADOBE_RGB_1998 | <code>Adobe RGB (1998)</code> | 
-| APPLE_RGB | <code>Apple RGB</code> | 
-| COLORMATCH_RGB | <code>ColorMatch RGB</code> | 
-| SRGB | <code>sRGB IEC61966-2.1</code> | 
-| DOTGAIN_10 | <code>Dot Gain 10%</code> | 
-| DOTGAIN_15 | <code>Dot Gain 15%</code> | 
-| DOTGAIN_20 | <code>Dot Gain 20%</code> | 
-| DOTGAIN_25 | <code>Dot Gain 25%</code> | 
-| DOTGAIN_30 | <code>Dot Gain 30%</code> | 
-| GRAY_GAMMA_18 | <code>Gray Gamma 1.8</code> | 
-| GRAY_GAMMA_22 | <code>Gray Gamma 2.2</code> | 
+| ADOBE_RGB_1998 | <code>Adobe RGB (1998)</code> |
+| APPLE_RGB | <code>Apple RGB</code> |
+| COLORMATCH_RGB | <code>ColorMatch RGB</code> |
+| SRGB | <code>sRGB IEC61966-2.1</code> |
+| DOTGAIN_10 | <code>Dot Gain 10%</code> |
+| DOTGAIN_15 | <code>Dot Gain 15%</code> |
+| DOTGAIN_20 | <code>Dot Gain 20%</code> |
+| DOTGAIN_25 | <code>Dot Gain 25%</code> |
+| DOTGAIN_30 | <code>Dot Gain 30%</code> |
+| GRAY_GAMMA_18 | <code>Gray Gamma 1.8</code> |
+| GRAY_GAMMA_22 | <code>Gray Gamma 2.2</code> |
 
 <a name="CreateMaskType"></a>
 
@@ -823,15 +830,15 @@ White balance enum
 
 | Name | Default |
 | --- | --- |
-| AS_SHOT | <code>As Shot</code> | 
-| AUTO | <code>Auto</code> | 
-| CLOUDY | <code>Cloudy</code> | 
-| CUSTOM | <code>Custom</code> | 
-| DAYLIGHT | <code>Daylight</code> | 
-| FLASH | <code>Flash</code> | 
-| FLUORESCENT | <code>Fluorescent</code> | 
-| SHADE | <code>Shade</code> | 
-| TUNGSTEN | <code>Tungsten</code> | 
+| AS_SHOT | <code>As Shot</code> |
+| AUTO | <code>Auto</code> |
+| CLOUDY | <code>Cloudy</code> |
+| CUSTOM | <code>Custom</code> |
+| DAYLIGHT | <code>Daylight</code> |
+| FLASH | <code>Flash</code> |
+| FLUORESCENT | <code>Fluorescent</code> |
+| SHADE | <code>Shade</code> |
+| TUNGSTEN | <code>Tungsten</code> |
 
 <a name="ManageMissingFonts"></a>
 
@@ -858,9 +865,9 @@ Background fill
 
 | Name | Default |
 | --- | --- |
-| WHITE | <code>white</code> | 
-| BACKGROUND_COLOR | <code>backgroundColor</code> | 
-| TRANSPARENT | <code>transparent</code> | 
+| WHITE | <code>white</code> |
+| BACKGROUND_COLOR | <code>backgroundColor</code> |
+| TRANSPARENT | <code>transparent</code> |
 
 <a name="LayerType"></a>
 
@@ -892,33 +899,33 @@ Blend modes
 
 | Name | Default |
 | --- | --- |
-| NORMAL | <code>normal</code> | 
-| DISSOLVE | <code>dissolve</code> | 
-| DARKEN | <code>darken</code> | 
-| MULTIPLY | <code>multiply</code> | 
-| COLOR_BURN | <code>colorBurn</code> | 
-| LINEAR_BURN | <code>linearBurn</code> | 
-| DARKER_COLOR | <code>darkerColor</code> | 
-| LIGHTEN | <code>lighten</code> | 
-| SCREEN | <code>screen</code> | 
-| COLOR_DODGE | <code>colorDodge</code> | 
-| LINEAR_DODGE | <code>linearDodge</code> | 
-| LIGHTER_COLOR | <code>lighterColor</code> | 
-| OVERLAY | <code>overlay</code> | 
-| SOFT_LIGHT | <code>softLight</code> | 
-| HARD_LIGHT | <code>hardLight</code> | 
-| VIVID_LIGHT | <code>vividLight</code> | 
-| LINEAR_LIGHT | <code>linearLight</code> | 
-| PIN_LIGHT | <code>pinLight</code> | 
-| HARD_MIX | <code>hardMix</code> | 
-| DIFFERENCE | <code>difference</code> | 
-| EXCLUSION | <code>exclusion</code> | 
-| SUBTRACT | <code>subtract</code> | 
-| DIVIDE | <code>divide</code> | 
-| HUE | <code>hue</code> | 
-| SATURATION | <code>saturation</code> | 
-| COLOR | <code>color</code> | 
-| LUMINOSITY | <code>luminosity</code> | 
+| NORMAL | <code>normal</code> |
+| DISSOLVE | <code>dissolve</code> |
+| DARKEN | <code>darken</code> |
+| MULTIPLY | <code>multiply</code> |
+| COLOR_BURN | <code>colorBurn</code> |
+| LINEAR_BURN | <code>linearBurn</code> |
+| DARKER_COLOR | <code>darkerColor</code> |
+| LIGHTEN | <code>lighten</code> |
+| SCREEN | <code>screen</code> |
+| COLOR_DODGE | <code>colorDodge</code> |
+| LINEAR_DODGE | <code>linearDodge</code> |
+| LIGHTER_COLOR | <code>lighterColor</code> |
+| OVERLAY | <code>overlay</code> |
+| SOFT_LIGHT | <code>softLight</code> |
+| HARD_LIGHT | <code>hardLight</code> |
+| VIVID_LIGHT | <code>vividLight</code> |
+| LINEAR_LIGHT | <code>linearLight</code> |
+| PIN_LIGHT | <code>pinLight</code> |
+| HARD_MIX | <code>hardMix</code> |
+| DIFFERENCE | <code>difference</code> |
+| EXCLUSION | <code>exclusion</code> |
+| SUBTRACT | <code>subtract</code> |
+| DIVIDE | <code>divide</code> |
+| HUE | <code>hue</code> |
+| SATURATION | <code>saturation</code> |
+| COLOR | <code>color</code> |
+| LUMINOSITY | <code>luminosity</code> |
 
 <a name="TextOrientation"></a>
 
@@ -931,8 +938,8 @@ Text orientation
 
 | Name | Default |
 | --- | --- |
-| HORIZONTAL | <code>horizontal</code> | 
-| VERTICAL | <code>vertical</code> | 
+| HORIZONTAL | <code>horizontal</code> |
+| VERTICAL | <code>vertical</code> |
 
 <a name="ParagraphAlignment"></a>
 
@@ -945,13 +952,13 @@ Paragraph alignment
 
 | Name | Default |
 | --- | --- |
-| LEFT | <code>left</code> | 
-| CENTER | <code>center</code> | 
-| RIGHT | <code>right</code> | 
-| JUSTIFY | <code>justify</code> | 
-| JUSTIFY_LEFT | <code>justifyLeft</code> | 
-| JUSTIFY_CENTER | <code>justifyCenter</code> | 
-| JUSTIFY_RIGHT | <code>justifyRight</code> | 
+| LEFT | <code>left</code> |
+| CENTER | <code>center</code> |
+| RIGHT | <code>right</code> |
+| JUSTIFY | <code>justify</code> |
+| JUSTIFY_LEFT | <code>justifyLeft</code> |
+| JUSTIFY_CENTER | <code>justifyCenter</code> |
+| JUSTIFY_RIGHT | <code>justifyRight</code> |
 
 <a name="HorizontalAlignment"></a>
 
@@ -964,9 +971,9 @@ Horizontal alignment
 
 | Name | Default |
 | --- | --- |
-| LEFT | <code>left</code> | 
-| CENTER | <code>center</code> | 
-| RIGHT | <code>right</code> | 
+| LEFT | <code>left</code> |
+| CENTER | <code>center</code> |
+| RIGHT | <code>right</code> |
 
 <a name="VerticalAlignment"></a>
 
@@ -979,9 +986,9 @@ Vertical alignment
 
 | Name | Default |
 | --- | --- |
-| TOP | <code>top</code> | 
-| CENTER | <code>center</code> | 
-| BOTTOM | <code>bottom</code> | 
+| TOP | <code>top</code> |
+| CENTER | <code>center</code> |
+| BOTTOM | <code>bottom</code> |
 
 <a name="JobOutputStatus"></a>
 
