@@ -53,15 +53,8 @@ beforeEach(async () => {
 })
 
 test('sdk init test', async () => {
-  expect(sdkClient.orgId).toBe(gOrgId)
   expect(sdkClient.apiKey).toBe(gApiKey)
   expect(sdkClient.accessToken).toBe(gAccessToken)
-})
-
-test('sdk init test - no orgId', async () => {
-  return expect(sdk.init(null, gApiKey, gAccessToken)).rejects.toEqual(
-    new codes.ERROR_SDK_INITIALIZATION({ messageValues: 'orgId' })
-  )
 })
 
 test('sdk init test - no apiKey', async () => {
