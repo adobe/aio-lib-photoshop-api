@@ -12,11 +12,11 @@ governing permissions and limitations under the License.
 
 [![Version](https://img.shields.io/npm/v/@adobe/aio-lib-photoshop-api.svg)](https://npmjs.org/package/@adobe/aio-lib-photoshop-api)
 [![Downloads/week](https://img.shields.io/npm/dw/@adobe/aio-lib-photoshop-api.svg)](https://npmjs.org/package/@adobe/aio-lib-photoshop-api)
-![Node.js CI](https://github.com/adobe/aio-lib-photoshop-api/workflows/Node.js%20CI/badge.svg)
+[![Build Status](https://travis-ci.com/adobe/aio-lib-photoshop-api.svg?branch=master)](https://travis-ci.com/adobe/aio-lib-photoshop-api)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Codecov Coverage](https://img.shields.io/codecov/c/github/adobe/aio-lib-photoshop-api/master.svg?style=flat-square)](https://codecov.io/gh/adobe/aio-lib-photoshop-api/)
 
-# Adobe I/O Photoshop API Lib
+# Adobe I/O Photoshop API SDK
 
 ### Rest API
 
@@ -64,9 +64,9 @@ async function sdkTest() {
       href: 'http://host/input.jpg',
       storage: sdk.Storage.EXTERNAL
     }, {
-      href: 'path/output.jpg',
+      href: 'path/output.png',
       storage: sdk.Storage.ADOBE,
-      type: sdk.MimeType.JPEG
+      type: sdk.MimeType.PNG
     })
   } catch (e) {
     console.error(e)
@@ -119,11 +119,10 @@ async function sdkTest() {
       href: 'http://host/input.jpg',
       storage: sdk.Storage.EXTERNAL
     }, {
-      href: 'path/output.jpg',
+      href: 'path/output.png',
       storage: sdk.Storage.AIO,
-      type: sdk.MimeType.JPEG
+      type: sdk.MimeType.PNG
     })
-
   } catch (e) {
     console.error(e)
   }
@@ -758,9 +757,9 @@ Compression level for PNG: small, medium or large.
 
 | Name | Default |
 | --- | --- |
-| SMALL | <code>small</code> |
-| MEDIUM | <code>medium</code> |
-| LARGE | <code>large</code> |
+| SMALL | <code>small</code> | 
+| MEDIUM | <code>medium</code> | 
+| LARGE | <code>large</code> | 
 
 <a name="Colorspace"></a>
 
@@ -773,14 +772,14 @@ Color space
 
 | Name | Default |
 | --- | --- |
-| BITMAP | <code>bitmap</code> |
-| GREYSCALE | <code>greyscale</code> |
-| INDEXED | <code>indexed</code> |
-| RGB | <code>rgb</code> |
-| CMYK | <code>cmyk</code> |
-| MULTICHANNEL | <code>multichannel</code> |
-| DUOTONE | <code>duotone</code> |
-| LAB | <code>lab</code> |
+| BITMAP | <code>bitmap</code> | 
+| GREYSCALE | <code>greyscale</code> | 
+| INDEXED | <code>indexed</code> | 
+| RGB | <code>rgb</code> | 
+| CMYK | <code>cmyk</code> | 
+| MULTICHANNEL | <code>multichannel</code> | 
+| DUOTONE | <code>duotone</code> | 
+| LAB | <code>lab</code> | 
 
 <a name="StandardIccProfileNames"></a>
 
@@ -793,17 +792,17 @@ Standard ICC profile names
 
 | Name | Default |
 | --- | --- |
-| ADOBE_RGB_1998 | <code>Adobe RGB (1998)</code> |
-| APPLE_RGB | <code>Apple RGB</code> |
-| COLORMATCH_RGB | <code>ColorMatch RGB</code> |
-| SRGB | <code>sRGB IEC61966-2.1</code> |
-| DOTGAIN_10 | <code>Dot Gain 10%</code> |
-| DOTGAIN_15 | <code>Dot Gain 15%</code> |
-| DOTGAIN_20 | <code>Dot Gain 20%</code> |
-| DOTGAIN_25 | <code>Dot Gain 25%</code> |
-| DOTGAIN_30 | <code>Dot Gain 30%</code> |
-| GRAY_GAMMA_18 | <code>Gray Gamma 1.8</code> |
-| GRAY_GAMMA_22 | <code>Gray Gamma 2.2</code> |
+| ADOBE_RGB_1998 | <code>Adobe RGB (1998)</code> | 
+| APPLE_RGB | <code>Apple RGB</code> | 
+| COLORMATCH_RGB | <code>ColorMatch RGB</code> | 
+| SRGB | <code>sRGB IEC61966-2.1</code> | 
+| DOTGAIN_10 | <code>Dot Gain 10%</code> | 
+| DOTGAIN_15 | <code>Dot Gain 15%</code> | 
+| DOTGAIN_20 | <code>Dot Gain 20%</code> | 
+| DOTGAIN_25 | <code>Dot Gain 25%</code> | 
+| DOTGAIN_30 | <code>Dot Gain 30%</code> | 
+| GRAY_GAMMA_18 | <code>Gray Gamma 1.8</code> | 
+| GRAY_GAMMA_22 | <code>Gray Gamma 2.2</code> | 
 
 <a name="CreateMaskType"></a>
 
@@ -830,15 +829,15 @@ White balance enum
 
 | Name | Default |
 | --- | --- |
-| AS_SHOT | <code>As Shot</code> |
-| AUTO | <code>Auto</code> |
-| CLOUDY | <code>Cloudy</code> |
-| CUSTOM | <code>Custom</code> |
-| DAYLIGHT | <code>Daylight</code> |
-| FLASH | <code>Flash</code> |
-| FLUORESCENT | <code>Fluorescent</code> |
-| SHADE | <code>Shade</code> |
-| TUNGSTEN | <code>Tungsten</code> |
+| AS_SHOT | <code>As Shot</code> | 
+| AUTO | <code>Auto</code> | 
+| CLOUDY | <code>Cloudy</code> | 
+| CUSTOM | <code>Custom</code> | 
+| DAYLIGHT | <code>Daylight</code> | 
+| FLASH | <code>Flash</code> | 
+| FLUORESCENT | <code>Fluorescent</code> | 
+| SHADE | <code>Shade</code> | 
+| TUNGSTEN | <code>Tungsten</code> | 
 
 <a name="ManageMissingFonts"></a>
 
@@ -865,9 +864,9 @@ Background fill
 
 | Name | Default |
 | --- | --- |
-| WHITE | <code>white</code> |
-| BACKGROUND_COLOR | <code>backgroundColor</code> |
-| TRANSPARENT | <code>transparent</code> |
+| WHITE | <code>white</code> | 
+| BACKGROUND_COLOR | <code>backgroundColor</code> | 
+| TRANSPARENT | <code>transparent</code> | 
 
 <a name="LayerType"></a>
 
@@ -899,33 +898,33 @@ Blend modes
 
 | Name | Default |
 | --- | --- |
-| NORMAL | <code>normal</code> |
-| DISSOLVE | <code>dissolve</code> |
-| DARKEN | <code>darken</code> |
-| MULTIPLY | <code>multiply</code> |
-| COLOR_BURN | <code>colorBurn</code> |
-| LINEAR_BURN | <code>linearBurn</code> |
-| DARKER_COLOR | <code>darkerColor</code> |
-| LIGHTEN | <code>lighten</code> |
-| SCREEN | <code>screen</code> |
-| COLOR_DODGE | <code>colorDodge</code> |
-| LINEAR_DODGE | <code>linearDodge</code> |
-| LIGHTER_COLOR | <code>lighterColor</code> |
-| OVERLAY | <code>overlay</code> |
-| SOFT_LIGHT | <code>softLight</code> |
-| HARD_LIGHT | <code>hardLight</code> |
-| VIVID_LIGHT | <code>vividLight</code> |
-| LINEAR_LIGHT | <code>linearLight</code> |
-| PIN_LIGHT | <code>pinLight</code> |
-| HARD_MIX | <code>hardMix</code> |
-| DIFFERENCE | <code>difference</code> |
-| EXCLUSION | <code>exclusion</code> |
-| SUBTRACT | <code>subtract</code> |
-| DIVIDE | <code>divide</code> |
-| HUE | <code>hue</code> |
-| SATURATION | <code>saturation</code> |
-| COLOR | <code>color</code> |
-| LUMINOSITY | <code>luminosity</code> |
+| NORMAL | <code>normal</code> | 
+| DISSOLVE | <code>dissolve</code> | 
+| DARKEN | <code>darken</code> | 
+| MULTIPLY | <code>multiply</code> | 
+| COLOR_BURN | <code>colorBurn</code> | 
+| LINEAR_BURN | <code>linearBurn</code> | 
+| DARKER_COLOR | <code>darkerColor</code> | 
+| LIGHTEN | <code>lighten</code> | 
+| SCREEN | <code>screen</code> | 
+| COLOR_DODGE | <code>colorDodge</code> | 
+| LINEAR_DODGE | <code>linearDodge</code> | 
+| LIGHTER_COLOR | <code>lighterColor</code> | 
+| OVERLAY | <code>overlay</code> | 
+| SOFT_LIGHT | <code>softLight</code> | 
+| HARD_LIGHT | <code>hardLight</code> | 
+| VIVID_LIGHT | <code>vividLight</code> | 
+| LINEAR_LIGHT | <code>linearLight</code> | 
+| PIN_LIGHT | <code>pinLight</code> | 
+| HARD_MIX | <code>hardMix</code> | 
+| DIFFERENCE | <code>difference</code> | 
+| EXCLUSION | <code>exclusion</code> | 
+| SUBTRACT | <code>subtract</code> | 
+| DIVIDE | <code>divide</code> | 
+| HUE | <code>hue</code> | 
+| SATURATION | <code>saturation</code> | 
+| COLOR | <code>color</code> | 
+| LUMINOSITY | <code>luminosity</code> | 
 
 <a name="TextOrientation"></a>
 
@@ -938,8 +937,8 @@ Text orientation
 
 | Name | Default |
 | --- | --- |
-| HORIZONTAL | <code>horizontal</code> |
-| VERTICAL | <code>vertical</code> |
+| HORIZONTAL | <code>horizontal</code> | 
+| VERTICAL | <code>vertical</code> | 
 
 <a name="ParagraphAlignment"></a>
 
@@ -952,13 +951,13 @@ Paragraph alignment
 
 | Name | Default |
 | --- | --- |
-| LEFT | <code>left</code> |
-| CENTER | <code>center</code> |
-| RIGHT | <code>right</code> |
-| JUSTIFY | <code>justify</code> |
-| JUSTIFY_LEFT | <code>justifyLeft</code> |
-| JUSTIFY_CENTER | <code>justifyCenter</code> |
-| JUSTIFY_RIGHT | <code>justifyRight</code> |
+| LEFT | <code>left</code> | 
+| CENTER | <code>center</code> | 
+| RIGHT | <code>right</code> | 
+| JUSTIFY | <code>justify</code> | 
+| JUSTIFY_LEFT | <code>justifyLeft</code> | 
+| JUSTIFY_CENTER | <code>justifyCenter</code> | 
+| JUSTIFY_RIGHT | <code>justifyRight</code> | 
 
 <a name="HorizontalAlignment"></a>
 
@@ -971,9 +970,9 @@ Horizontal alignment
 
 | Name | Default |
 | --- | --- |
-| LEFT | <code>left</code> |
-| CENTER | <code>center</code> |
-| RIGHT | <code>right</code> |
+| LEFT | <code>left</code> | 
+| CENTER | <code>center</code> | 
+| RIGHT | <code>right</code> | 
 
 <a name="VerticalAlignment"></a>
 
@@ -986,9 +985,9 @@ Vertical alignment
 
 | Name | Default |
 | --- | --- |
-| TOP | <code>top</code> |
-| CENTER | <code>center</code> |
-| BOTTOM | <code>bottom</code> |
+| TOP | <code>top</code> | 
+| CENTER | <code>center</code> | 
+| BOTTOM | <code>bottom</code> | 
 
 <a name="JobOutputStatus"></a>
 
