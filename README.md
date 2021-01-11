@@ -38,8 +38,12 @@ $ npm install @adobe/aio-lib-photoshop-api
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  //initialize sdk
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
+  try {
+    //initialize sdk
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
+  } catch (e) {
+    console.error(e)
+  }
 }
 ```
 
@@ -51,11 +55,11 @@ This is the example of using the storage type of `http://host/input.jpg` (Extern
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  // initialize sdk
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
-
-  // call methods
   try {
+    // initialize sdk
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>')
+
+    // call methods
     const result = await client.createCutout({
       href: 'http://host/input.jpg',
       storage: sdk.Storage.EXTERNAL
@@ -64,7 +68,6 @@ async function sdkTest() {
       storage: sdk.Storage.ADOBE,
       type: sdk.MimeType.PNG
     })
-
   } catch (e) {
     console.error(e)
   }
@@ -82,9 +85,13 @@ const libFiles = require('@adobe/aio-lib-files')
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  // initialize sdk
-  const files = await libFiles.init();
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
+  try {
+    // initialize sdk
+    const files = await libFiles.init();
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
+  } catch (e) {
+    console.error(e)
+  }
 }
 ```
 
@@ -97,12 +104,12 @@ const libFiles = require('@adobe/aio-lib-files')
 const sdk = require('@adobe/aio-lib-photoshop-api')
 
 async function sdkTest() {
-  // initialize sdk
-  const files = await libFiles.init();
-  const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
-
-  // call methods
   try {
+    // initialize sdk
+    const files = await libFiles.init();
+    const client = await sdk.init('<ims org id>', '<api key>', '<valid auth token>', files)
+
+    // call methods
     // auto cutout...
     const result = await client.createCutout('http://host/input.jpg', 'path/output.jpg')
     console.log(result)
@@ -116,7 +123,6 @@ async function sdkTest() {
       storage: sdk.Storage.AIO,
       type: sdk.MimeType.PNG
     })
-
   } catch (e) {
     console.error(e)
   }
