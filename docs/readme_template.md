@@ -16,7 +16,7 @@ governing permissions and limitations under the License.
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Codecov Coverage](https://img.shields.io/codecov/c/github/adobe/aio-lib-photoshop-api/master.svg?style=flat-square)](https://codecov.io/gh/adobe/aio-lib-photoshop-api/)
 
-# Adobe I/O Photoshop API Lib
+# Adobe I/O Photoshop API SDK
 
 ### Rest API
 
@@ -60,9 +60,9 @@ async function sdkTest() {
       href: 'http://host/input.jpg',
       storage: sdk.Storage.EXTERNAL
     }, {
-      href: 'path/output.jpg',
+      href: 'path/output.png',
       storage: sdk.Storage.ADOBE,
-      type: sdk.MimeType.JPEG
+      type: sdk.MimeType.PNG
     })
 
   } catch (e) {
@@ -112,9 +112,9 @@ async function sdkTest() {
       href: 'http://host/input.jpg',
       storage: sdk.Storage.EXTERNAL
     }, {
-      href: 'path/output.jpg',
+      href: 'path/output.png',
       storage: sdk.Storage.AIO,
-      type: sdk.MimeType.JPEG
+      type: sdk.MimeType.PNG
     })
 
   } catch (e) {
