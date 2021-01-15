@@ -9,7 +9,11 @@ OF ANY KIND, either express or implied. See the License for the specific languag
 governing permissions and limitations under the License.
 */
 'use strict'
-const sleep = require('util').promisify(setTimeout)
+const sleep = (delay) => {
+  return new Promise(resolve => {
+    setTimeout(resolve, delay)
+  })
+}
 const { codes } = require('./SDKErrors')
 require('./types')
 
