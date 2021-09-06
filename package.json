@@ -31,7 +31,6 @@
   "dependencies": {
     "@adobe/aio-lib-core-errors": "^3.0.0",
     "@adobe/aio-lib-core-logging": "1.0.0",
-    "@adobe/aio-lib-core-networking": "^1.0.1",
     "cross-fetch": "^3.0.4",
     "swagger-client": "3.9.6",
     "valid-url": "^1.0.9"
