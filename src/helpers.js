@@ -13,6 +13,7 @@ governing permissions and limitations under the License.
 
 const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
+const NodeFetchRetry = require('@adobe/node-fetch-retry')
 
 /**
  * Reduce an Error to a string
@@ -30,6 +31,28 @@ function reduceError (error = {}) {
   }
 
   return error
+}
+
+/**
+ * Fetch a URL, with retry options provided or default retry options otherwise
+ * By default retries will happen for 14 seconds (3 retries at 1, 2 and then 4 seconds -- there cannot be enough time for anotehr retry after that)
+ * Retry will occur if error code 429 or >= 500 occurs.
+ *
+ * @param {string} url to fetch
+ * @param {*} options Fetch options object, which can also include retryOptions described here https://github.com/adobe/node-fetch-retry
+ * @returns {object} json response of calling fetch
+ */
+function nodeFetchRetry (url, options) {
+  const retryOptions = {
+    retryInitialDelay: 1000,
+    retryOnHttpResponse: response => (response.status >= 500) || response.status === 429,
+    retryMaxDuration: 14000
+  }
+  options.retryOptions = {
+    ...retryOptions,
+    ...options.retryOptions
+  }
+  return NodeFetchRetry(url, options)
 }
 
 /**
@@ -124,6 +147,11 @@ function requestToString (request) {
  * @returns {Request} the request object
  */
 function requestInterceptor (request) {
+  request.retryWait = 1000
+  request.retryCodes = [
+    429, 502, 503, 504
+  ]
+  request.maxAttempts = 5
   logger.debug(`REQUEST:\n ${requestToString(request)}`)
   return request
 }
@@ -146,5 +174,6 @@ module.exports = {
   createRequestOptions,
   requestInterceptor,
   responseInterceptor,
+  nodeFetchRetry,
   reduceError
 }

@@ -420,6 +420,20 @@ describe('Sensei', () => {
         throw e
       }
     })
+
+    test('Retry 429 case', async () => {
+      try {
+        await errorTest({
+          ...spec,
+          statusCode: [429, 429, 200],
+          successReturnValue: jobStatus,
+          returnValue: returnValue,
+          httpResponseBody: jobStatus
+        })
+      } catch (e) {
+        throw e
+      }
+    })
   })
 
   describe('createMask', () => {
