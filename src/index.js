@@ -130,10 +130,13 @@ class PhotoshopAPI {
 
     if (options !== undefined && options.useSwaggerFetch) {
       // Do nothing because this overrides customized fetch
+      console.log('Using swagger fetch')
     } else if (options !== undefined && options.userFetch !== undefined) {
       swaggerOptions.userFetch = options.userFetch
+      console.log('Using custom fetch')
     } else {
       swaggerOptions.userFetch = nodeFetchRetry
+      console.log('Using node-fetch-retry')
     }
 
     this.sdk = await new Swagger(swaggerOptions)

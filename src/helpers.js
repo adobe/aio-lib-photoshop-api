@@ -147,11 +147,6 @@ function requestToString (request) {
  * @returns {Request} the request object
  */
 function requestInterceptor (request) {
-  request.retryWait = 1000
-  request.retryCodes = [
-    429, 502, 503, 504
-  ]
-  request.maxAttempts = 5
   logger.debug(`REQUEST:\n ${requestToString(request)}`)
   return request
 }
