@@ -16,7 +16,6 @@ const { stdout } = require('stdout-stderr')
 process.env.CI = true
 
 jest.setTimeout(30000)
-// jest.useFakeTimers()
 
 // trap console log
 beforeEach(() => { stdout.start() })

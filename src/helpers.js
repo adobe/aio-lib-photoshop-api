@@ -34,25 +34,54 @@ function reduceError (error = {}) {
 }
 
 /**
+ * Determine if we should retry fetch due to Server errors (server busy or other application errors)
+ *
+ * @param {*} response Fetch response object, should at least have a status property which is the HTTP status code received
+ * @returns {boolean} true if we should retry or false if not
+ */
+function shouldRetryFetch (response = {}) {
+  return (response.status >= 500) || response.status === 429
+}
+
+/**
  * Fetch a URL, with retry options provided or default retry options otherwise
  * By default retries will happen for 14 seconds (3 retries at 1, 2 and then 4 seconds -- there cannot be enough time for anotehr retry after that)
  * Retry will occur if error code 429 or >= 500 occurs.
  *
- * @param {string} url to fetch
  * @param {*} options Fetch options object, which can also include retryOptions described here https://github.com/adobe/node-fetch-retry
- * @returns {object} json response of calling fetch
+ * @returns {Function} Wrapped node fetch retry function which takes our preferred default options
  */
-function nodeFetchRetry (url, options) {
-  const retryOptions = {
-    retryInitialDelay: 1000,
-    retryOnHttpResponse: response => (response.status >= 500) || response.status === 429,
-    retryMaxDuration: 14000
-  }
+function nodeFetchRetry (options = {}) {
+  const retryOptions = 'retryOptions' in options ? options.retryOptions : {}
   options.retryOptions = {
-    ...retryOptions,
-    ...options.retryOptions
+    retryInitialDelay: 1000,
+    retryMaxDuration: 14000,
+    retryOnHttpResponse: shouldRetryFetch,
+    ...retryOptions
   }
-  return NodeFetchRetry(url, options)
+  const fetchFunction = (url, opts) => NodeFetchRetry(url, { ...options, ...opts })
+  // This is helpful for unit testing purposes
+  fetchFunction.isNodeFetchRetry = true
+  return fetchFunction
+}
+
+/**
+ * Parse through options object and determine correct parameters to Swagger for desired fetch approach
+ *
+ * @param {*} options Photoshop API options object
+ * @returns {*} Swagger options object with relevant settings for fetch module
+ */
+function getFetchOptions (options) {
+  if (options !== undefined && options.useSwaggerFetch) { // << TEST
+    logger.debug('Using swagger fetch')
+    return {}
+  } else if (options !== undefined && options.userFetch !== undefined) { // << TEST
+    logger.debug('Using custom fetch')
+    return { userFetch: options.userFetch }
+  } else {
+    logger.debug('Using node-fetch-retry')
+    return { userFetch: nodeFetchRetry(options) }
+  }
 }
 
 /**
@@ -170,5 +199,7 @@ module.exports = {
   requestInterceptor,
   responseInterceptor,
   nodeFetchRetry,
+  shouldRetryFetch,
+  getFetchOptions,
   reduceError
 }

@@ -14,7 +14,7 @@ governing permissions and limitations under the License.
 const Swagger = require('swagger-client')
 const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
-const { reduceError, requestInterceptor, responseInterceptor, createRequestOptions, nodeFetchRetry } = require('./helpers')
+const { reduceError, requestInterceptor, responseInterceptor, createRequestOptions, getFetchOptions } = require('./helpers')
 const { codes } = require('./SDKErrors')
 const { Job } = require('./job')
 const { FileResolver } = require('./fileresolver')
@@ -125,18 +125,8 @@ class PhotoshopAPI {
         BearerAuth: { value: accessToken },
         ApiKeyAuth: { value: apiKey }
       },
-      usePromise: true
-    }
-
-    if (options !== undefined && options.useSwaggerFetch) {
-      // Do nothing because this overrides customized fetch
-      console.log('Using swagger fetch')
-    } else if (options !== undefined && options.userFetch !== undefined) {
-      swaggerOptions.userFetch = options.userFetch
-      console.log('Using custom fetch')
-    } else {
-      swaggerOptions.userFetch = nodeFetchRetry
-      console.log('Using node-fetch-retry')
+      usePromise: true,
+      ...getFetchOptions(options)
     }
 
     this.sdk = await new Swagger(swaggerOptions)

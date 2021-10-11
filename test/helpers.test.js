@@ -11,7 +11,7 @@ governing permissions and limitations under the License.
 
 'use strict'
 
-const { responseBodyToString, requestToString, reduceError, requestInterceptor, responseInterceptor, createRequestOptions } = require('../src/helpers')
+const { responseBodyToString, requestToString, reduceError, requestInterceptor, responseInterceptor, createRequestOptions, shouldRetryFetch, getFetchOptions } = require('../src/helpers')
 
 test('reduceError', () => {
   // no args produces empty object
@@ -111,4 +111,39 @@ test('requestToString', async () => {
   const error = new Error('foo')
   req = { headers: { forEach: () => { throw error } } }
   await expect(requestToString(req)).toEqual(error.toString())
+})
+
+test('default retry handler', async () => {
+  expect(shouldRetryFetch()).toBe(false)
+  for (let code = 200; code < 429; code++) {
+    expect(shouldRetryFetch({ status: code })).toBe(false)
+  }
+  expect(shouldRetryFetch({ status: 429 })).toBe(true)
+  for (let code = 430; code < 500; code++) {
+    expect(shouldRetryFetch({ status: code })).toBe(false)
+  }
+  for (let code = 500; code < 600; code++) {
+    expect(shouldRetryFetch({ status: code })).toBe(true)
+  }
+})
+
+test('Use Swagger fetch', async () => {
+  const opts = getFetchOptions({
+    useSwaggerFetch: true
+  })
+  expect(opts.userFetch).toBe(undefined)
+})
+
+test('Use custom fetch', async () => {
+  const myFunction = (url, options) => 'Hello!'
+  const opts = getFetchOptions({
+    userFetch: myFunction
+  })
+  expect(opts.userFetch).toBe(myFunction)
+})
+
+test('Use node-fetch-retry', async () => {
+  expect(getFetchOptions().userFetch.isNodeFetchRetry).toBe(true)
+  expect(getFetchOptions({}).userFetch.isNodeFetchRetry).toBe(true)
+  expect(getFetchOptions({ retryOptions: {} }).userFetch.isNodeFetchRetry).toBe(true)
 })
