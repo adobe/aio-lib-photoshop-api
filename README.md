@@ -1047,6 +1047,8 @@ Photoshop API options
 | --- | --- | --- | --- |
 | [presignExpiryInSeconds] | <code>number</code> | <code>3600</code> | Expiry time of any presigned urls, defaults to 1 hour |
 | [defaultAdobeCloudPaths] | <code>boolean</code> |  | True if paths should be considered references to files in Creative Cloud |
+| [userFetch] | <code>function</code> | | If provided, will be used as the Fetch function instead of @adobe/node-fetch-retry |
+| [useSwaggerFetch] | <code>boolean</code> | false | If provided, will use the legacy Swagger client fetch module, cross-fetch -- if false will use @adobe-node-fetch-retry or custom userFetch function if provided |
 
 <a name="Input"></a>
 
