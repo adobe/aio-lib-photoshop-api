@@ -15,6 +15,12 @@ const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
 const NodeFetchRetry = require('@adobe/node-fetch-retry')
 
+// Wait 1 second for first retry, then 2, 4, etc
+const RETRY_INITIAL_DELAY = 1000
+
+// Retry for up to 14 seconds
+const RETRY_MAX_DURATON = 14000
+
 /**
  * Reduce an Error to a string
  *
@@ -54,8 +60,8 @@ function shouldRetryFetch (response = {}) {
 function nodeFetchRetry (options = {}) {
   const retryOptions = 'retryOptions' in options ? options.retryOptions : {}
   options.retryOptions = {
-    retryInitialDelay: 1000,
-    retryMaxDuration: 14000,
+    retryInitialDelay: RETRY_INITIAL_DELAY,
+    retryMaxDuration: RETRY_MAX_DURATON,
     retryOnHttpResponse: shouldRetryFetch,
     ...retryOptions
   }
