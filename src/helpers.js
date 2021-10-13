@@ -46,7 +46,7 @@ function reduceError (error = {}) {
  * @returns {boolean} true if we should retry or false if not
  */
 function shouldRetryFetch (response = {}) {
-  return (response.status >= 500) || response.status === 429
+  return (response.status >= 500) || (response.status === 429)
 }
 
 /**
