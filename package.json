@@ -32,7 +32,7 @@
     "@adobe/aio-lib-core-errors": "^3.0.0",
     "@adobe/aio-lib-core-logging": "1.0.0",
     "@adobe/aio-lib-core-networking": "^1.0.1",
-    "@adobe/node-fetch-retry": "^1.1.2",
+    "@adobe/node-fetch-retry": "^2.0.0",
     "cross-fetch": "^3.0.4",
     "swagger-client": "3.9.6",
     "valid-url": "^1.0.9"
