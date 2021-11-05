@@ -157,6 +157,17 @@ with valid values for orgId, apiKey and accessToken</p>
 ## Functions
 
 <dl>
+<dt><a href="#shouldRetryFetch">shouldRetryFetch(response)</a> ⇒ <code>boolean</code></dt>
+<dd><p>Determine if we should retry fetch due to Server errors (server busy or other application errors)</p>
+</dd>
+<dt><a href="#nodeFetchRetry">nodeFetchRetry(options)</a> ⇒ <code>function</code></dt>
+<dd><p>Fetch a URL, with retry options provided or default retry options otherwise
+By default retries will happen for 14 seconds (3 retries at 1, 2 and then 4 seconds -- there cannot be enough time for anotehr retry after that)
+Retry will occur if error code 429 or &gt;= 500 occurs.</p>
+</dd>
+<dt><a href="#getFetchOptions">getFetchOptions(options)</a> ⇒ <code>*</code></dt>
+<dd><p>Parse through options object and determine correct parameters to Swagger for desired fetch approach</p>
+</dd>
 <dt><a href="#init">init(orgId, apiKey, accessToken, [files], [options])</a> ⇒ <code><a href="#PhotoshopAPI">Promise.&lt;PhotoshopAPI&gt;</a></code></dt>
 <dd><p>Returns a Promise that resolves with a new PhotoshopAPI object.</p>
 </dd>
@@ -1006,6 +1017,44 @@ Output status
 | SUCCEEDED | <code>succeeded</code> | the child job has succeeded |
 | FAILED | <code>failed</code> | the child job has failed |
 
+<a name="shouldRetryFetch"></a>
+
+## shouldRetryFetch(response) ⇒ <code>boolean</code>
+Determine if we should retry fetch due to Server errors (server busy or other application errors)
+
+**Kind**: global function  
+**Returns**: <code>boolean</code> - true if we should retry or false if not  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| response | <code>\*</code> | Fetch response object, should at least have a status property which is the HTTP status code received |
+
+<a name="nodeFetchRetry"></a>
+
+## nodeFetchRetry(options) ⇒ <code>function</code>
+Fetch a URL, with retry options provided or default retry options otherwise
+By default retries will happen for 14 seconds (3 retries at 1, 2 and then 4 seconds -- there cannot be enough time for anotehr retry after that)
+Retry will occur if error code 429 or >= 500 occurs.
+
+**Kind**: global function  
+**Returns**: <code>function</code> - Wrapped node fetch retry function which takes our preferred default options  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>\*</code> | Fetch options object, which can also include retryOptions described here https://github.com/adobe/node-fetch-retry |
+
+<a name="getFetchOptions"></a>
+
+## getFetchOptions(options) ⇒ <code>\*</code>
+Parse through options object and determine correct parameters to Swagger for desired fetch approach
+
+**Kind**: global function  
+**Returns**: <code>\*</code> - Swagger options object with relevant settings for fetch module  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| options | <code>\*</code> | Photoshop API options object |
+
 <a name="init"></a>
 
 ## init(orgId, apiKey, accessToken, [files], [options]) ⇒ [<code>Promise.&lt;PhotoshopAPI&gt;</code>](#PhotoshopAPI)
@@ -1047,8 +1096,8 @@ Photoshop API options
 | --- | --- | --- | --- |
 | [presignExpiryInSeconds] | <code>number</code> | <code>3600</code> | Expiry time of any presigned urls, defaults to 1 hour |
 | [defaultAdobeCloudPaths] | <code>boolean</code> |  | True if paths should be considered references to files in Creative Cloud |
-| [userFetch] | <code>function</code> | | If provided, will be used as the Fetch function instead of @adobe/node-fetch-retry |
-| [useSwaggerFetch] | <code>boolean</code> | false | If provided, will use the legacy Swagger client fetch module, cross-fetch -- if false will use @adobe-node-fetch-retry or custom userFetch function if provided |
+| [useSwaggerFetch] | <code>boolean</code> | <code>false</code> | True if Swagger's fetch implementation should be used, otherwise will use userFetch if provided or @adobe/node-fetch-retry if nothing else. |
+| [userFetch] | <code>function</code> |  | Fetch function to use replacing Swagger's fetch and node-fetch-retry.  Useful for mocking, etc |
 
 <a name="Input"></a>
 
