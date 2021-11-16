@@ -66,6 +66,29 @@ declare class FileResolver {
 }
 
 /**
+ * Determine if we should retry fetch due to Server errors (server busy or other application errors)
+ * @param response - Fetch response object, should at least have a status property which is the HTTP status code received
+ * @returns true if we should retry or false if not
+ */
+declare function shouldRetryFetch(response: any): boolean;
+
+/**
+ * Fetch a URL, with retry options provided or default retry options otherwise
+ * By default retries will happen for 14 seconds (3 retries at 1, 2 and then 4 seconds -- there cannot be enough time for anotehr retry after that)
+ * Retry will occur if error code 429 or >= 500 occurs.
+ * @param options - Fetch options object, which can also include retryOptions described here https://github.com/adobe/node-fetch-retry
+ * @returns Wrapped node fetch retry function which takes our preferred default options
+ */
+declare function nodeFetchRetry(options: any): (...params: any[]) => any;
+
+/**
+ * Parse through options object and determine correct parameters to Swagger for desired fetch approach
+ * @param options - Photoshop API options object
+ * @returns Swagger options object with relevant settings for fetch module
+ */
+declare function getFetchOptions(options: any): any;
+
+/**
  * Returns a Promise that resolves with a new PhotoshopAPI object.
  * @param orgId - IMS organization id
  * @param apiKey - the API key for your integration
@@ -80,10 +103,14 @@ declare function init(orgId: string, apiKey: string, accessToken: string, files?
  * Photoshop API options
  * @property [presignExpiryInSeconds = 3600] - Expiry time of any presigned urls, defaults to 1 hour
  * @property [defaultAdobeCloudPaths] - True if paths should be considered references to files in Creative Cloud
+ * @property [useSwaggerFetch = false] - True if Swagger's fetch implementation should be used, otherwise will use userFetch if provided or @adobe/node-fetch-retry if nothing else.
+ * @property [userFetch] - Fetch function to use replacing Swagger's fetch and node-fetch-retry.  Useful for mocking, etc
  */
 declare type PhotoshopAPIOptions = {
     presignExpiryInSeconds?: number;
     defaultAdobeCloudPaths?: boolean;
+    useSwaggerFetch?: boolean;
+    userFetch?: (...params: any[]) => any;
 };
 
 /**

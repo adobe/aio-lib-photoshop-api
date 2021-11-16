@@ -17,7 +17,7 @@ governing permissions and limitations under the License.
 
 const Swagger = require('swagger-client')
 const sdk = require('../src')
-const fetch = require('cross-fetch')
+const fetch = require('@adobe/node-fetch-retry')
 const { createRequestOptions } = require('../src/helpers')
 const { codes } = require('../src/SDKErrors')
 
@@ -415,6 +415,21 @@ describe('Sensei', () => {
           ...spec,
           statusCode: 500,
           ErrorClass: codes.ERROR_UNDEFINED
+        })
+      } catch (e) {
+        throw e
+      }
+    })
+
+    test('Retry 429 case', async () => {
+      try {
+        await errorTest({
+          ...spec,
+          statusCode: 429,
+          successReturnValue: jobStatus,
+          returnValue: returnValue,
+          httpResponseBody: jobStatus,
+          ErrorClass: codes.ERROR_TOO_MANY_REQUESTS
         })
       } catch (e) {
         throw e
@@ -1535,7 +1550,6 @@ describe('Photoshop', () => {
         throw e
       }
     })
-
     test('Error Case - Unknown', async () => {
       try {
         await errorTest({

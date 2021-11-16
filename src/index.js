@@ -14,7 +14,7 @@ governing permissions and limitations under the License.
 const Swagger = require('swagger-client')
 const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
-const { reduceError, requestInterceptor, responseInterceptor, createRequestOptions } = require('./helpers')
+const { reduceError, requestInterceptor, responseInterceptor, createRequestOptions, getFetchOptions } = require('./helpers')
 const { codes } = require('./SDKErrors')
 const { Job } = require('./job')
 const { FileResolver } = require('./fileresolver')
@@ -80,6 +80,8 @@ function throwError (err) {
       }
     case 415:
       throw new codes.ERROR_INVALID_CONTENT_TYPE({ messageValues: reduceError(err) })
+    case 429:
+      throw new codes.ERROR_TOO_MANY_REQUESTS({ messageValues: reduceError(err) })
     case 500:
       throw new codes.ERROR_UNDEFINED({ messageValues: reduceError(err) })
     default:
@@ -92,6 +94,8 @@ function throwError (err) {
  * @description Photoshop API options
  * @property {number} [presignExpiryInSeconds=3600] Expiry time of any presigned urls, defaults to 1 hour
  * @property {boolean} [defaultAdobeCloudPaths] True if paths should be considered references to files in Creative Cloud
+ * @property {boolean} [useSwaggerFetch=false] True if Swagger's fetch implementation should be used, otherwise will use userFetch if provided or @adobe/node-fetch-retry if nothing else.
+ * @property {Function} [userFetch] Fetch function to use replacing Swagger's fetch and node-fetch-retry.  Useful for mocking, etc
  */
 
 /**
@@ -113,7 +117,7 @@ class PhotoshopAPI {
   async init (orgId, apiKey, accessToken, files, options) {
     // init swagger client
     const spec = require('../spec/api.json')
-    this.sdk = await new Swagger({
+    const swaggerOptions = {
       spec: spec,
       requestInterceptor,
       responseInterceptor,
@@ -121,8 +125,11 @@ class PhotoshopAPI {
         BearerAuth: { value: accessToken },
         ApiKeyAuth: { value: apiKey }
       },
-      usePromise: true
-    })
+      usePromise: true,
+      ...getFetchOptions(options)
+    }
+
+    this.sdk = await new Swagger(swaggerOptions)
 
     const initErrors = []
     if (!apiKey) {

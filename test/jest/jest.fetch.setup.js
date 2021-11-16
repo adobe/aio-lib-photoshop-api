@@ -14,3 +14,4 @@ governing permissions and limitations under the License.
 const fetch = require('jest-fetch-mock')
 
 jest.setMock('cross-fetch', fetch)
+jest.setMock('@adobe/node-fetch-retry', fetch)
