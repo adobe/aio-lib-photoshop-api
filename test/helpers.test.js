@@ -146,4 +146,5 @@ test('Use node-fetch-retry', async () => {
   expect(getFetchOptions().userFetch.isNodeFetchRetry).toBe(true)
   expect(getFetchOptions({}).userFetch.isNodeFetchRetry).toBe(true)
   expect(getFetchOptions({ retryOptions: {} }).userFetch.isNodeFetchRetry).toBe(true)
+  expect(getFetchOptions().userFetch('url', 'options')).toMatchObject({})
 })
