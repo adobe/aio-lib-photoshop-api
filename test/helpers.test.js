@@ -11,7 +11,7 @@ governing permissions and limitations under the License.
 
 'use strict'
 
-const { responseBodyToString, requestToString, reduceError, requestInterceptor, responseInterceptor, createRequestOptions, shouldRetryFetch, getFetchOptions } = require('../src/helpers')
+const { responseBodyToString, requestToString, reduceError, responseInterceptor, createRequestOptions, shouldRetryFetch, getFetchOptions } = require('../src/helpers')
 
 test('reduceError', () => {
   // no args produces empty object
