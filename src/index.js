@@ -21,7 +21,7 @@ const { FileResolver } = require('./fileresolver')
 const types = require('./types')
 require('./types')
 
-const { description, version } = require('../package.json');
+const { description, version } = require('../package.json')
 const defaultUserAgentHeader = `${description}/${version}`
 
 /* global EditPhotoOptions Input Output CreateDocumentOptions MimeType ModifyDocumentOptions ReplaceSmartObjectOptions ApplyPhotoshopActionsOptions */
@@ -47,7 +47,6 @@ async function init (orgId, apiKey, accessToken, files, options) {
     throw err
   }
 }
-
 
 /**
  * Translate and throw error
