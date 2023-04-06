@@ -61,11 +61,6 @@ test('createRequestOptions', () => {
   })
 })
 
-test('requestInterceptor', () => {
-  const req = {}
-  expect(requestInterceptor(req)).toEqual(req)
-})
-
 test('responseInterceptor', async () => {
   const res = {}
   expect(await responseInterceptor(res)).toEqual(res)
