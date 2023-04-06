@@ -15,6 +15,9 @@ const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
 const NodeFetchRetry = require('@adobe/node-fetch-retry')
 
+const { version } = require('../package.json');
+const sdkUserAgentHeader = `Adobe I/O Photoshop API SDK/${version}`
+
 // Wait 1 second for first retry, then 2, 4, etc
 const RETRY_INITIAL_DELAY = 1000
 
@@ -182,6 +185,7 @@ function requestToString (request) {
  * @returns {Request} the request object
  */
 function requestInterceptor (request) {
+  request.headers['User-Agent'] = sdkUserAgentHeader
   logger.debug(`REQUEST:\n ${requestToString(request)}`)
   return request
 }

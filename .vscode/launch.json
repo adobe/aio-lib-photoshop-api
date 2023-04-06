@@ -24,6 +24,17 @@
       "request": "attach",
       "name": "Attach",
       "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch File",
+      "skipFiles": [
+          "<node_internals>/**"
+      ],
+      "program": "${file}"
+      // ex: "program": "./src/sample/psapi/01_createCutout.js"
+      // ex: "program": "./src/sample/batch_job/remove-background-batch.js"
     }
   ]
 }
