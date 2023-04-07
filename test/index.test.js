@@ -69,6 +69,19 @@ test('sdk init test - no accessToken', async () => {
   )
 })
 
+test('sdk init test - userAgentHeader not empty', async () => {
+  return expect(Boolean(sdkClient.userAgentHeader)).toBe(true)
+})
+
+test('sdk requestInterceptor test - expected User-Agent header added', async () => {
+  const request = sdkClient.requestInterceptor({
+    url: 'https://foo.bar',
+    headers: {},
+    method: 'PUT'
+  })
+  return expect(Boolean(request.headers['User-Agent'])).toBe(true)
+})
+
 /** @private */
 async function standardTest ({
   fullyQualifiedApiName,
