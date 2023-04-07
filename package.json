@@ -26,7 +26,7 @@
     "redoc-bundle": "redoc-cli bundle spec/api.json -o docs/index.html"
   },
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=16.0.0"
   },
   "dependencies": {
     "@adobe/aio-lib-core-errors": "^3.0.0",
