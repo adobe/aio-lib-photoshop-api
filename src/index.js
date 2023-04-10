@@ -139,7 +139,7 @@ class PhotoshopAPI {
 
     this.sdk = await new Swagger(swaggerOptions)
 
-    this.userAgentHeader = (options && options['User-Agent']) || defaultUserAgentHeader
+    this.userAgentHeader = (options && options['User-Agent']) ? options['User-Agent'] : defaultUserAgentHeader
 
     const initErrors = []
     if (!apiKey) {
