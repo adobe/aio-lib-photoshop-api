@@ -139,7 +139,7 @@ class PhotoshopAPI {
 
     this.sdk = await new Swagger(swaggerOptions)
 
-    this.userAgentHeader = (options && options['User-Agent']) ? options['User-Agent'] : defaultUserAgentHeader
+    this.userAgentHeader = (options && options['User-Agent']) || defaultUserAgentHeader
 
     const initErrors = []
     if (!apiKey) {
@@ -200,6 +200,10 @@ class PhotoshopAPI {
    * @returns {Request} the request object
    */
   requestInterceptor (request) {
+    if (!request.headers) {
+      request.headers = {}
+    }
+
     request.headers['User-Agent'] = this.userAgentHeader
     logger.debug(`REQUEST:\n ${requestToString(request)}`)
     return request

@@ -41,8 +41,8 @@ const createSwaggerOptions = (body = {}) => {
   })
 }
 
-const createSdkClient = async () => {
-  return sdk.init(gOrgId, gApiKey, gAccessToken)
+const createSdkClient = async (options) => {
+  return sdk.init(gOrgId, gApiKey, gAccessToken, undefined, options)
 }
 
 // /////////////////////////////////////////////
@@ -69,8 +69,19 @@ test('sdk init test - no accessToken', async () => {
   )
 })
 
-test('sdk init test - userAgentHeader not empty', async () => {
+test('sdk init test - userAgentHeader w/o options', async () => {
   return expect(Boolean(sdkClient.userAgentHeader)).toBe(true)
+})
+
+test('sdk init test - with options, but w/o User-Agent', async () => {
+  sdkClient = await createSdkClient({})
+  return expect(Boolean(sdkClient.userAgentHeader)).toBe(true)
+})
+
+test('sdk requestInterceptor test - expected User-Agent header from options', async () => {
+  const ua = 'ua'
+  sdkClient = await createSdkClient({ 'User-Agent': ua })
+  return expect(sdkClient.userAgentHeader).toBe(ua)
 })
 
 test('sdk requestInterceptor test - expected User-Agent header added', async () => {
