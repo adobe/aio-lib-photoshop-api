@@ -14,12 +14,15 @@ governing permissions and limitations under the License.
 const Swagger = require('swagger-client')
 const loggerNamespace = 'aio-lib-photoshop-api'
 const logger = require('@adobe/aio-lib-core-logging')(loggerNamespace, { level: process.env.LOG_LEVEL })
-const { reduceError, requestInterceptor, responseInterceptor, createRequestOptions, getFetchOptions } = require('./helpers')
+const { reduceError, responseInterceptor, createRequestOptions, getFetchOptions, requestToString } = require('./helpers')
 const { codes } = require('./SDKErrors')
 const { Job } = require('./job')
 const { FileResolver } = require('./fileresolver')
 const types = require('./types')
 require('./types')
+
+const { description, version } = require('../package.json')
+const defaultUserAgentHeader = `${description}/${version}`
 
 /* global EditPhotoOptions Input Output CreateDocumentOptions MimeType ModifyDocumentOptions ReplaceSmartObjectOptions ApplyPhotoshopActionsOptions */
 
@@ -117,6 +120,11 @@ class PhotoshopAPI {
   async init (orgId, apiKey, accessToken, files, options) {
     // init swagger client
     const spec = require('../spec/api.json')
+
+    const requestInterceptor = request => {
+      return this.requestInterceptor(request)
+    }
+
     const swaggerOptions = {
       spec: spec,
       requestInterceptor,
@@ -130,6 +138,8 @@ class PhotoshopAPI {
     }
 
     this.sdk = await new Swagger(swaggerOptions)
+
+    this.userAgentHeader = (options && options['User-Agent']) || defaultUserAgentHeader
 
     const initErrors = []
     if (!apiKey) {
@@ -183,6 +193,23 @@ class PhotoshopAPI {
   }
 
   /**
+   * A request interceptor that updates User-Agent header and logs the request
+   *
+   * @private
+   * @param {Request} request the request object
+   * @returns {Request} the request object
+   */
+  requestInterceptor (request) {
+    if (!request.headers) {
+      request.headers = {}
+    }
+
+    request.headers['User-Agent'] = this.userAgentHeader
+    logger.debug(`REQUEST:\n ${requestToString(request)}`)
+    return request
+  }
+
+  /**
    * Acquire the current job status
    *
    * The APIs for status updates are defined in the OpenAPI spec, however the status is provided
@@ -195,6 +222,10 @@ class PhotoshopAPI {
    * @returns {*} Job status response
    */
   async __getJobStatus (url) {
+    const requestInterceptor = request => {
+      return this.requestInterceptor(request)
+    }
+
     const response = await Swagger.http({
       url,
       headers: {

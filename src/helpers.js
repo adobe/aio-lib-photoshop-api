@@ -178,18 +178,6 @@ function requestToString (request) {
  * A request interceptor that logs the request
  *
  * @private
- * @param {Request} request the request object
- * @returns {Request} the request object
- */
-function requestInterceptor (request) {
-  logger.debug(`REQUEST:\n ${requestToString(request)}`)
-  return request
-}
-
-/**
- * A request interceptor that logs the request
- *
- * @private
  * @param {Response} response the response object
  * @returns {Response} the response object
  */
@@ -202,7 +190,6 @@ module.exports = {
   responseBodyToString,
   requestToString,
   createRequestOptions,
-  requestInterceptor,
   responseInterceptor,
   nodeFetchRetry,
   shouldRetryFetch,

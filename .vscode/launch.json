@@ -24,6 +24,15 @@
       "request": "attach",
       "name": "Attach",
       "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch File",
+      "skipFiles": [
+          "<node_internals>/**"
+      ],
+      "program": "${file}"
     }
   ]
 }
