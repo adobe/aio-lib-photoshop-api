@@ -121,9 +121,9 @@ class PhotoshopAPI {
     // init swagger client
     const spec = require('../spec/api.json')
 
-    const requestInterceptor = function (request) {
+    const requestInterceptor = request => {
       return this.requestInterceptor(request)
-    }.bind(this)
+    }
 
     const swaggerOptions = {
       spec: spec,
@@ -222,9 +222,9 @@ class PhotoshopAPI {
    * @returns {*} Job status response
    */
   async __getJobStatus (url) {
-    const requestInterceptor = function (request) {
+    const requestInterceptor = request => {
       return this.requestInterceptor(request)
-    }.bind(this)
+    }
 
     const response = await Swagger.http({
       url,
