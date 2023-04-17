@@ -1,7 +1,7 @@
 {
   "name": "@adobe/aio-lib-photoshop-api",
-  "version": "0.0.4-beta.6",
-  "description": "Adobe I/O Photoshop Automation SDK",
+  "version": "0.0.4-beta.7",
+  "description": "Adobe I/O Photoshop API Library",
   "author": "Adobe Inc.",
   "homepage": "https://github.com/AdobeDocs/photoshop-api-docs",
   "repository": "https://github.com/adobe/aio-lib-photoshop-api",
