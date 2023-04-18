@@ -4,24 +4,20 @@ on:
     branches:
       - master
 jobs:
-  npm-publish:
-    name: npm-publish
+  semantic-release:
     runs-on: ubuntu-latest
+    needs: [build]
+    if: ${{  !contains(github.event.head_commit.message, '[ci skip]') && github.ref == 'refs/heads/master' }}
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@master
-    - name: Set up Node.js
-      uses: actions/setup-node@master
-      with:
-        node-version: 10.0.0
-    - name: Publish if version has been updated
-      uses: mkiki/npm-publish-action@c4315ef5790b7bcec2cbb75b34e37681a409d78d
-      with:
-        tag_name: "v%s"
-        tag_message: "v%s"
-        commit_pattern: "^Release (\\S+)"
-        workspace: "."
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_AUTH_TOKEN: ${{ secrets.ADOBE_BOT_NPM_TOKEN }}
-        NPM_AUTH: ${{ secrets.ADOBE_BOT_NPM_TOKEN }}
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Use Node.js 14.18
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14.18'
+      - run: npm install
+      - run: npm run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.ADOBE_BOT_GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.ADOBE_BOT_NPM_TOKEN }}
