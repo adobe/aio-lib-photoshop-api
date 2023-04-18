@@ -23,7 +23,8 @@
     "unit-tests": "jest --config test/jest.config.js --maxWorkers=2",
     "validate": "node bin/validate_spec.js spec/api.json",
     "redoc-serve": "redoc-cli serve spec/api.json",
-    "redoc-bundle": "redoc-cli bundle spec/api.json -o docs/index.html"
+    "redoc-bundle": "redoc-cli bundle spec/api.json -o docs/index.html",
+    "semantic-release": "semantic-release"
   },
   "engines": {
     "node": ">=10.0.0"
