@@ -11,7 +11,7 @@
   "license": "Apache-2.0",
   "main": "src/index.js",
   "private": false,
-  "bundleDependencies": false,
+  "bundleDependencies": [],
   "deprecated": false,
   "scripts": {
     "e2e": "jest --config e2e/jest.config.js",
@@ -48,10 +48,11 @@
   "devDependencies": {
     "@adobe/eslint-config-aio-lib-config": "^1.3.0",
     "@azure/storage-blob": "^12.2.1",
-    "@semantic-release/git": "^9.0.1",
+    "@semantic-release/git": "^10.0.1",
     "@types/node-fetch": "^2.5.4",
     "babel-runtime": "^6.26.0",
     "codecov": "^3.5.0",
+    "conventional-changelog-eslint": "^3.0.9",
     "dotenv": "^8.1.0",
     "eol": "^0.9.1",
     "eslint": "^6.2.2",
@@ -73,7 +74,7 @@
     "jsdoc-to-markdown": "^5.0.0",
     "openapi-schema-validator": "^3.0.3",
     "redoc-cli": "^0.9.12",
-    "semantic-release": "^17.4.7",
+    "semantic-release": "^21.0.1",
     "stdout-stderr": "^0.1.9",
     "tsd-jsdoc": "^2.4.0",
     "uuid": "^8.3.0"
