@@ -416,6 +416,19 @@ test('resolveInputsPhotoshopActionsOptionsPatterns', async () => {
   })
 })
 
+test('resolveInputsPhotoshopActionsOptionsBrushes', async () => {
+  const resolver = new FileResolver()
+  const result = await resolver.resolveInputsPhotoshopActionsOptions({
+    brushes: ['https://host/path/to/brush.abr']
+  })
+  expect(result).toEqual({
+    brushes: [{
+      href: 'https://host/path/to/brush.abr',
+      storage: 'external'
+    }]
+  })
+})
+
 test('resolveInputsValue', async () => {
   const resolver = new FileResolver()
   const result = await resolver.resolveInputs('https://host/path/to/file.png')

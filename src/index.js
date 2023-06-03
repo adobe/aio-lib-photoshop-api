@@ -537,7 +537,7 @@ class PhotoshopAPI {
   }
 
   /**
-   * Apply Photoshop Actions and then generate renditions and/or save a new psd
+   * Apply Photoshop Actions and then generate renditions and/or save a new image
    *
    * @param {Input} input An object describing an input image file. Current support is for files less than 1000MB.
    * @param {string|Output|Output[]} outputs Desired output
@@ -547,6 +547,31 @@ class PhotoshopAPI {
   async applyPhotoshopActions (input, outputs, options) {
     try {
       const response = await this.sdk.apis.photoshop.applyPhotoshopActions({
+        'x-gw-ims-org-id': this.orgId
+      }, this.__createRequestOptions({
+        inputs: await this.fileResolver.resolveInputs(input),
+        outputs: await this.fileResolver.resolveOutputs(outputs),
+        options: await this.fileResolver.resolveInputsPhotoshopActionsOptions(options)
+      }))
+
+      const job = new Job(response.body, this.__getJobStatus.bind(this))
+      return await job.pollUntilDone()
+    } catch (err) {
+      throwError(err)
+    }
+  }
+
+  /**
+   * Apply JSON-formatted Photoshop Actions and then generate renditions and/or save a new image
+   *
+   * @param {Input} input An object describing an input image file. Current support is for files less than 1000MB.
+   * @param {string|Output|Output[]} outputs Desired output
+   * @param {ApplyPhotoshopActionsJsonOptions} options Apply Photoshop Actions JSON options
+   * @returns {Job} Photoshop Actions job
+   */
+  async applyPhotoshopActionsJson (input, outputs, options) {
+    try {
+      const response = await this.sdk.apis.photoshop.applyPhotoshopActionsJson({
         'x-gw-ims-org-id': this.orgId
       }, this.__createRequestOptions({
         inputs: await this.fileResolver.resolveInputs(input),

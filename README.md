@@ -438,6 +438,7 @@ with valid values for orgId, apiKey and accessToken
     * [.createRendition(input, outputs)](#PhotoshopAPI+createRendition) ⇒ [<code>Job</code>](#Job)
     * [.replaceSmartObject(input, outputs, options)](#PhotoshopAPI+replaceSmartObject) ⇒ [<code>Job</code>](#Job)
     * [.applyPhotoshopActions(input, outputs, options)](#PhotoshopAPI+applyPhotoshopActions) ⇒ [<code>Job</code>](#Job)
+    * [.applyPhotoshopActionsJson(input, outputs, options)](#PhotoshopAPI+applyPhotoshopActionsJson) ⇒ [<code>Job</code>](#Job)
 
 <a name="PhotoshopAPI+orgId"></a>
 
@@ -639,7 +640,7 @@ Apply psd edits for replacing embedded smart object and then generate renditions
 <a name="PhotoshopAPI+applyPhotoshopActions"></a>
 
 ### photoshopAPI.applyPhotoshopActions(input, outputs, options) ⇒ [<code>Job</code>](#Job)
-Apply Photoshop Actions and then generate renditions and/or save a new psd
+Apply Photoshop Actions and then generate renditions and/or save a new image
 
 **Kind**: instance method of [<code>PhotoshopAPI</code>](#PhotoshopAPI)  
 **Returns**: [<code>Job</code>](#Job) - Photoshop Actions job  
@@ -649,6 +650,20 @@ Apply Photoshop Actions and then generate renditions and/or save a new psd
 | input | [<code>Input</code>](#Input) | An object describing an input image file. Current support is for files less than 1000MB. |
 | outputs | <code>string</code> \| [<code>Output</code>](#Output) \| [<code>Array.&lt;Output&gt;</code>](#Output) | Desired output |
 | options | <code>ApplyPhotoshopActionsOptions</code> | Apply Photoshop Actions options |
+
+<a name="PhotoshopAPI+applyPhotoshopActionsJson"></a>
+
+### photoshopAPI.applyPhotoshopActionsJson(input, outputs, options) ⇒ [<code>Job</code>](#Job)
+Apply JSON-formatted Photoshop Actions and then generate renditions and/or save a new image
+
+**Kind**: instance method of [<code>PhotoshopAPI</code>](#PhotoshopAPI)  
+**Returns**: [<code>Job</code>](#Job) - Photoshop Actions job  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| input | [<code>Input</code>](#Input) | An object describing an input image file. Current support is for files less than 1000MB. |
+| outputs | <code>string</code> \| [<code>Output</code>](#Output) \| [<code>Array.&lt;Output&gt;</code>](#Output) | Desired output |
+| options | <code>ApplyPhotoshopActionsJsonOptions</code> | Apply Photoshop Actions JSON options |
 
 <a name="Job"></a>
 

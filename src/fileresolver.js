@@ -251,6 +251,9 @@ class FileResolver {
     if (options && options.patterns) {
       options.patterns = await this.resolveInputs(options.patterns)
     }
+    if (options && options.brushes) {
+      options.brushes = await this.resolveInputs(options.brushes)
+    }
     return options
   }
 

@@ -237,13 +237,21 @@ declare class PhotoshopAPI {
      */
     replaceSmartObject(input: Input, outputs: string | Output | Output[], options: ReplaceSmartObjectOptions): Job;
     /**
-     * Apply Photoshop Actions and then generate renditions and/or save a new psd
+     * Apply Photoshop Actions and then generate renditions and/or save a new image
      * @param input - An object describing an input image file. Current support is for files less than 1000MB.
      * @param outputs - Desired output
      * @param options - Apply Photoshop Actions options
      * @returns Photoshop Actions job
      */
     applyPhotoshopActions(input: Input, outputs: string | Output | Output[], options: ApplyPhotoshopActionsOptions): Job;
+    /**
+     * Apply JSON-formatted Photoshop Actions and then generate renditions and/or save a new image
+     * @param input - An object describing an input image file. Current support is for files less than 1000MB.
+     * @param outputs - Desired output
+     * @param options - Apply Photoshop Actions JSON options
+     * @returns Photoshop Actions job
+     */
+    applyPhotoshopActionsJson(input: Input, outputs: string | Output | Output[], options: ApplyPhotoshopActionsJsonOptions): Job;
 }
 
 /**
