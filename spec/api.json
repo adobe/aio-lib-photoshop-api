@@ -441,7 +441,7 @@
       }
     },
     "/pie/psdService/documentOperations": {
-      "summary": "Initiates an asynchronous job to apply (optional) psd edits and then generate renditions and/or save as a new image",
+      "summary": "Initiates an asynchronous job to apply (optional) psd edits and then generate renditions and/or save as a new psd",
       "post": {
         "operationId": "modifyDocument",
         "tags": ["photoshop"],
@@ -545,7 +545,7 @@
       }
     },
     "/pie/psdService/smartObject": {
-      "summary": "Initiates an asynchronous job to apply psd edits for replacing embedded smart object and then generate renditions and/or save as a new image",
+      "summary": "Initiates an asynchronous job to apply psd edits for replacing embedded smart object and then generate renditions and/or save as a new psd",
       "post": {
         "operationId": "replaceSmartObject",
         "tags": ["photoshop"],
@@ -1807,7 +1807,6 @@
         "properties": {
           "inputs": {
             "type": "array",
-            "required": "true",
             "description": "An array of input objects. We currently only support one input object",
             "items": {
               "$ref": "#/components/schemas/input"
@@ -1815,7 +1814,6 @@
           },
           "outputs": {
             "type": "array",
-            "required": "true",
             "description": "An array of output objects",
             "items": {
               "$ref": "#/components/schemas/photoshopOutput"
@@ -1823,10 +1821,8 @@
           },
           "options": {
             "type": "object",
-            "required": "true",
             "properties": {
               "actionJSON": {
-                "required": "true",
                 "$ref": "#/components/schemas/actions_json"
               },
               "patterns": {
@@ -1838,7 +1834,7 @@
               "brushes": {
                 "$ref": "#/components/schemas/brushes"
               },
-              "additionalImagess": {
+              "additionalImages": {
                 "$ref": "#/components/schemas/additional_images"
               }
 
@@ -1988,7 +1984,7 @@
       },
       "options_asset": {
         "type": "object",
-        "description": "An object describing the input custom font, brush, pattern or.",
+        "description": "An object describing the input custom font, brush or pattern.",
         "properties": {
           "storage": {
             "type": "string",
@@ -2004,7 +2000,6 @@
       },
       "actions_json": {
         "type": "array",
-        "required": "true",
         "description": "array of Photoshop JSON-formatted Actions to play",
         "items": {
           "$ref": "#/components/schemas/action_json"
