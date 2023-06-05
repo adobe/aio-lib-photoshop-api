@@ -545,7 +545,7 @@
       }
     },
     "/pie/psdService/smartObject": {
-      "summary": "Initiates an asynchronous job to apply psd edits for replacing embedded smart object and then generate renditions and/or save as a new psd",
+      "summary": "Initiates an asynchronous job to apply psd edits for replacing embedded smart object and then generate renditions and/or save a new psd",
       "post": {
         "operationId": "replaceSmartObject",
         "tags": ["photoshop"],

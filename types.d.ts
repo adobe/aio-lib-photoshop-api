@@ -251,7 +251,7 @@ declare class PhotoshopAPI {
      * @param options - Apply Photoshop Actions JSON options
      * @returns Photoshop Actions job
      */
-    applyPhotoshopActionsJson(input: Input, outputs: string | Output | Output[], options: ApplyPhotoshopActionsJsonOptions): Job;
+    applyPhotoshopActionsJson(input: Input, outputs: string | Output | Output[], options: ApplyPhotoshopActionsOptions): Job;
 }
 
 /**

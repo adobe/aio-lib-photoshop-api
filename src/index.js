@@ -566,7 +566,7 @@ class PhotoshopAPI {
    *
    * @param {Input} input An object describing an input image file. Current support is for files less than 1000MB.
    * @param {string|Output|Output[]} outputs Desired output
-   * @param {ApplyPhotoshopActionsJsonOptions} options Apply Photoshop Actions JSON options
+   * @param {ApplyPhotoshopActionsOptions} options Apply Photoshop Actions options
    * @returns {Job} Photoshop Actions job
    */
   async applyPhotoshopActionsJson (input, outputs, options) {
