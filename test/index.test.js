@@ -1585,4 +1585,96 @@ describe('Photoshop', () => {
       }
     })
   })
+
+  describe('applyPhotoshopActionsJson', () => {
+    let spec
+    let apiParameters
+    let apiOptions
+    let sdkArgs
+    let returnValue
+    let jobStatus
+    beforeEach(async () => {
+      apiParameters = { 'x-gw-ims-org-id': gOrgId }
+      apiOptions = createSwaggerOptions({
+        inputs: await sdkClient.fileResolver.resolveInputs('input'),
+        outputs: await sdkClient.fileResolver.resolveOutputs('outputs'),
+        options: await sdkClient.fileResolver.resolveInputsDocumentOptions('options')
+      })
+      sdkArgs = ['input', 'outputs', 'options']
+
+      spec = {
+        fullyQualifiedApiName: 'photoshop.applyPhotoshopActionsJson',
+        apiParameters: apiParameters,
+        apiOptions: apiOptions,
+        sdkFunctionName: 'applyPhotoshopActionsJson',
+        sdkArgs: sdkArgs
+      }
+
+      returnValue = {
+        body: {
+          _links: {
+            self: { href: 'https://image.adobe.io/sensei/status/fcc4e0fcb-260b-47c3-b520-de0d17dc2b67' }
+          }
+        }
+      }
+
+      jobStatus = {
+        jobID: 'applyPhotoshopActionsJsonSucceededJobId',
+        status: 'succeeded',
+        input: '/files/images/input.jpg',
+        output: {
+          storage: 'adobe',
+          href: '/files/applyPhotoshopActionsJson/output/applyPhotoshopActionsJson.png',
+          mask: {
+            format: 'binary'
+          },
+          color: {
+            space: 'rgb'
+          }
+        },
+        _links: {
+          self: {
+            href: 'https://image.adobe.io/sensei/status/applyPhotoshopJsonActionsSucceededStatusId'
+          }
+        }
+      }
+    })
+
+    test('Success Case', async () => {
+      try {
+        await standardTest({
+          ...spec,
+          returnValue: returnValue,
+          httpResponseBody: jobStatus
+        })
+      } catch (e) {
+        throw e
+      }
+    })
+
+    test('Failure Case', async () => {
+      try {
+        jobStatus.status = 'failed'
+
+        await standardTest({
+          ...spec,
+          returnValue: returnValue,
+          httpResponseBody: jobStatus,
+          status: 'failed'
+        })
+      } catch (e) {
+        throw e
+      }
+    })
+    test('Error Case - Unknown', async () => {
+      try {
+        await errorTest({
+          ...spec,
+          ErrorClass: codes.ERROR_UNKNOWN
+        })
+      } catch (e) {
+        throw e
+      }
+    })
+  })
 })

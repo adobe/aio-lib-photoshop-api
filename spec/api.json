@@ -441,7 +441,7 @@
       }
     },
     "/pie/psdService/documentOperations": {
-      "summary": "Initiates an asynchronous job to apply (optional) psd edits and then generate renditions and/or save a new psd",
+      "summary": "Initiates an asynchronous job to apply (optional) psd edits and then generate renditions and/or save as a new psd",
       "post": {
         "operationId": "modifyDocument",
         "tags": ["photoshop"],
@@ -597,7 +597,7 @@
       }
     },
     "/pie/psdService/photoshopActions": {
-      "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save a new psd",
+      "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save as a new image",
       "post": {
         "operationId": "applyPhotoshopActions",
         "tags": [
@@ -617,6 +617,63 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/photoshopActionsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "401": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "415": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/actionJSON": {
+      "summary": "Initiates an asynchronous job to play JSON-formatted Photoshop Actions and then generate renditions and/or save as a new image",
+      "post": {
+        "operationId": "applyPhotoshopActionsJson",
+        "tags": [
+          "photoshop"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/x-gw-ims-org-id"
+          },
+          {
+            "$ref": "#/components/parameters/json-content-type"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/photoshopActionJsonRequest"
               }
             }
           }
@@ -1745,6 +1802,46 @@
           }
         }
       },
+      "photoshopActionJsonRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input objects. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "An array of output objects",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "actionJSON": {
+                "$ref": "#/components/schemas/actions_json"
+              },
+              "patterns": {
+                "$ref": "#/components/schemas/patterns"
+              },
+              "fonts": {
+                "$ref": "#/components/schemas/fonts"
+              },
+              "brushes": {
+                "$ref": "#/components/schemas/brushes"
+              },
+              "additionalImages": {
+                "$ref": "#/components/schemas/additional_images"
+              }
+
+            }
+          }
+        }
+      },
       "document": {
         "type": "object",
         "properties": {
@@ -1845,23 +1942,14 @@
         "type": "array",
         "description": "array of custom fonts needed in this document",
         "items": {
-          "$ref": "#/components/schemas/font"
+          "$ref": "#/components/schemas/options_asset"
         }
       },
-      "font": {
-        "type": "object",
-        "description": "An object describing the input font to add or replace for a Text layer. Filename should be <font_postscript_name>.otf.\n If the font filename is not in the specified format above, font substitution will occur",
-        "properties": {
-          "storage": {
-            "type": "string",
-            "description": "storage platforms supported",
-            "enum": ["adobe", "external", "azure", "dropbox"],
-            "default": "adobe"
-          },
-          "href": {
-            "type": "string",
-            "description": "Either a Creative Cloud assets path for storage=\"adobe\" OR a presignedGETURL"
-          }
+      "brushes": {
+        "type": "array",
+        "description": "array of custom brushes needed in this document",
+        "items": {
+          "$ref": "#/components/schemas/options_asset"
         }
       },
       "actions": {
@@ -1891,12 +1979,12 @@
         "type": "array",
         "description": "array of custom pattern preset to be used in Photoshop Actions",
         "items": {
-          "$ref": "#/components/schemas/pattern"
+          "$ref": "#/components/schemas/options_asset"
         }
       },
-      "pattern": {
+      "options_asset": {
         "type": "object",
-        "description": "An object describing the input custom preset for a pattern.",
+        "description": "An object describing the input custom font, brush or pattern.",
         "properties": {
           "storage": {
             "type": "string",
@@ -1906,8 +1994,27 @@
           },
           "href": {
             "type": "string",
-            "description": "Either a Creative Cloud assets path for storage=\"adobe\" OR a presignedGETURL"
+            "description": "Either a Creative Cloud assets path for storage=\"adobe\" OR a presigned GET URL"
           }
+        }
+      },
+      "actions_json": {
+        "type": "array",
+        "description": "array of Photoshop JSON-formatted Actions to play",
+        "items": {
+          "$ref": "#/components/schemas/action_json"
+        }
+      },
+      "action_json": {
+        "type": "object",
+        "description": "An object describing a single Photoshop Actions JSON command."
+      },
+      "additional_images": {
+        "type": "array",
+        "minItems": 1,
+        "description": "array of references to additional images, which can be referred by actionJson commands",
+        "items": {
+          "$ref": "#/components/schemas/input"
         }
       },
       "adjustmentLayer": {
