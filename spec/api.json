@@ -836,7 +836,7 @@
         }
       }
     },
-    "/pie/psdService/actionJsonCreate": {
+    "/pie/psdService/ActionJsonCreate": {
       "summary": "Converts an atn file to actionJSON.",
       "post": {
         "operationId": "actionJsonCreate",
