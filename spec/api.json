@@ -1,4 +1,4 @@
-{ 
+{
   "openapi": "3.0.2",
   "info": {
     "title": "Adobe Photoshop and Imaging APIs",
@@ -44,7 +44,7 @@
         }
       }
     },
-    "/sensei/cutout": {
+    "/sensei/Cutout": {
       "summary": "Initiate an asynchronous job to generate a PNG file in 4 channel RGBA format with the generated cutout mask applied to the input image",
       "post": {
         "operationId": "autoCutout",
@@ -74,11 +74,29 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
           }
         }
       }
     },
-    "/sensei/mask": {
+    "/sensei/Mask": {
       "summary": "Initiate an asynchronous job to generate a mask PNG",
       "post": {
         "operationId": "autoMask",
@@ -108,6 +126,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
           }
         }
       }
@@ -142,7 +178,7 @@
         }
       }
     },
-    "/lrService/autoStraighten": {
+    "/lrService/AutoStraighten": {
       "summary": "Initiates an asynchronous job to auto straighten an image",
       "post": {
         "operationId": "autoStraighten",
@@ -172,11 +208,29 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
           }
         }
       }
     },
-    "/lrService/autoTone": {
+    "/lrService/AutoTone": {
       "summary": "Initiates an asynchronous job to auto tone an image",
       "post": {
         "operationId": "autoTone",
@@ -206,11 +260,29 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
           }
         }
       }
     },
-    "/lrService/edit": {
+    "/lrService/Edit": {
       "summary": "Initiates an asynchronous job to apply a set of edit parameters on an image",
       "post": {
         "operationId": "editPhoto",
@@ -240,11 +312,29 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
           }
         }
       }
     },
-    "/lrService/presets": {
+    "/lrService/Presets": {
       "summary": "Initiates an asynchronous job to apply a preset on an image",
       "post": {
         "operationId": "applyPreset",
@@ -274,11 +364,29 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
           }
         }
       }
     },
-    "/lrService/xmp": {
+    "/lrService/Xmp": {
       "summary": "Initiates an asynchronous job to apply an XMP setting to an image",
       "post": {
         "operationId": "applyPresetXmp",
@@ -354,7 +462,7 @@
         }
       }
     },
-    "/pie/psdService/documentManifest": {
+    "/pie/psdService/DocumentManifest": {
       "summary": "Initiates an asynchronous job to extract and return a psd file's layer information",
       "post": {
         "operationId": "getDocumentManifest",
@@ -384,11 +492,29 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
           }
         }
       }
     },
-    "/pie/psdService/documentCreate": {
+    "/pie/psdService/DocumentCreate": {
       "summary": "Initiates an asynchronous job to create a new psd, optionally with layers, and then generate renditions and/or save as a psd",
       "post": {
         "operationId": "createDocument",
@@ -422,7 +548,7 @@
           "400": {
             "$ref": "#/components/schemas/errors"
           },
-          "401": {
+          "402": {
             "$ref": "#/components/schemas/errors"
           },
           "403": {
@@ -431,7 +557,7 @@
           "404": {
             "$ref": "#/components/schemas/errors"
           },
-          "415": {
+          "410": {
             "$ref": "#/components/schemas/errors"
           },
           "500": {
@@ -440,7 +566,7 @@
         }
       }
     },
-    "/pie/psdService/documentOperations": {
+    "/pie/psdService/DocumentOperations": {
       "summary": "Initiates an asynchronous job to apply (optional) psd edits and then generate renditions and/or save as a new psd",
       "post": {
         "operationId": "modifyDocument",
@@ -474,7 +600,7 @@
           "400": {
             "$ref": "#/components/schemas/errors"
           },
-          "401": {
+          "402": {
             "$ref": "#/components/schemas/errors"
           },
           "403": {
@@ -483,7 +609,7 @@
           "404": {
             "$ref": "#/components/schemas/errors"
           },
-          "415": {
+          "410": {
             "$ref": "#/components/schemas/errors"
           },
           "500": {
@@ -492,7 +618,7 @@
         }
       }
     },
-    "/pie/psdService/renditionCreate": {
+    "/pie/psdService/RenditionCreate": {
       "summary": "Initiates an asynchronous job to create renditions",
       "post": {
         "operationId": "createRendition",
@@ -526,7 +652,7 @@
           "400": {
             "$ref": "#/components/schemas/errors"
           },
-          "401": {
+          "402": {
             "$ref": "#/components/schemas/errors"
           },
           "403": {
@@ -535,7 +661,7 @@
           "404": {
             "$ref": "#/components/schemas/errors"
           },
-          "415": {
+          "410": {
             "$ref": "#/components/schemas/errors"
           },
           "500": {
@@ -544,7 +670,7 @@
         }
       }
     },
-    "/pie/psdService/smartObject": {
+    "/pie/psdService/SmartObject": {
       "summary": "Initiates an asynchronous job to apply psd edits for replacing embedded smart object and then generate renditions and/or save a new psd",
       "post": {
         "operationId": "replaceSmartObject",
@@ -578,7 +704,7 @@
           "400": {
             "$ref": "#/components/schemas/errors"
           },
-          "401": {
+          "402": {
             "$ref": "#/components/schemas/errors"
           },
           "403": {
@@ -587,7 +713,7 @@
           "404": {
             "$ref": "#/components/schemas/errors"
           },
-          "415": {
+          "410": {
             "$ref": "#/components/schemas/errors"
           },
           "500": {
@@ -596,7 +722,7 @@
         }
       }
     },
-    "/pie/psdService/photoshopActions": {
+    "/pie/psdService/PhotoshopActions": {
       "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save as a new image",
       "post": {
         "operationId": "applyPhotoshopActions",
@@ -635,7 +761,7 @@
           "400": {
             "$ref": "#/components/schemas/errors"
           },
-          "401": {
+          "402": {
             "$ref": "#/components/schemas/errors"
           },
           "403": {
@@ -644,7 +770,7 @@
           "404": {
             "$ref": "#/components/schemas/errors"
           },
-          "415": {
+          "410": {
             "$ref": "#/components/schemas/errors"
           },
           "500": {
@@ -653,7 +779,7 @@
         }
       }
     },
-    "/pie/psdService/actionJSON": {
+    "/pie/psdService/ActionJson": {
       "summary": "Initiates an asynchronous job to play JSON-formatted Photoshop Actions and then generate renditions and/or save as a new image",
       "post": {
         "operationId": "applyPhotoshopActionsJson",
@@ -692,7 +818,7 @@
           "400": {
             "$ref": "#/components/schemas/errors"
           },
-          "401": {
+          "402": {
             "$ref": "#/components/schemas/errors"
           },
           "403": {
@@ -701,10 +827,295 @@
           "404": {
             "$ref": "#/components/schemas/errors"
           },
-          "415": {
+          "410": {
             "$ref": "#/components/schemas/errors"
           },
           "500": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/actionJsonCreate": {
+      "summary": "Converts an atn file to actionJSON.",
+      "post": {
+        "operationId": "actionJsonCreate",
+        "tags": [
+          "photoshop"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/x-gw-ims-org-id"
+          },
+          {
+            "$ref": "#/components/parameters/json-content-type"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/photoshopActionJsonCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "500": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/ProductCrop": {
+      "summary": "Executes Product Crop on a given image.",
+      "post": {
+        "operationId": "productCrop",
+        "tags": [
+          "photoshop"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/x-gw-ims-org-id"
+          },
+          {
+            "$ref": "#/components/parameters/json-content-type"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/productCropRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/DepthBlur": {
+      "summary": "Executes Depth Blur on a given image. ",
+      "post": {
+        "operationId": "depthBlur",
+        "tags": [
+          "photoshop"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/x-gw-ims-org-id"
+          },
+          {
+            "$ref": "#/components/parameters/json-content-type"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/depthBlurRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/Text": {
+      "summary": "Edit one or more text layers.",
+      "post": {
+        "operationId": "text",
+        "tags": [
+          "photoshop"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/x-gw-ims-org-id"
+          },
+          {
+            "$ref": "#/components/parameters/json-content-type"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/textRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
+            "$ref": "#/components/schemas/errors"
+          }
+        }
+      }
+    },
+    "/pie/psdService/ArtboardCreate": {
+      "summary": "Creates an artboard.",
+      "post": {
+        "operationId": "text",
+        "tags": [
+          "photoshop"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/x-gw-ims-org-id"
+          },
+          {
+            "$ref": "#/components/parameters/json-content-type"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/artboardRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/jobStatusLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "402": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "403": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "404": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "409": {
+            "$ref": "#/components/schemas/errors"
+          },
+          "410": {
             "$ref": "#/components/schemas/errors"
           }
         }
@@ -878,6 +1289,37 @@
           "input": {
             "$ref": "#/components/schemas/input"
           },
+          "options":{
+            "type":"object",
+            "properties":{
+              "optimize": {
+                "type": "string",
+                "enum":["performance","batch"],
+                "default": "performance",
+                "description": "The value 'performance' optimizes for speed. 'batch' ensures the job will ultimately run regardless of wait time"
+              },
+              "process": {
+                "type": "object",
+                "x-internal": true,
+                "description": "process is not available for the integrations created with JWT authentication or Service Principle.",
+                "properties": {
+                  "postprocess": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "service": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type":"string",
+                    "default": "4.0",
+                    "description": "Version of the service"
+                  }
+                }
+              }
+            }
+          },
           "output": {
             "$ref": "#/components/schemas/senseiOutput"
           }
@@ -908,12 +1350,19 @@
             "type": "string",
             "description": "outputs.type desired image format.",
             "default": "image/jpeg",
-            "enum": ["image/jpeg", "image/x-adobe-dng", "image/png"]
+            "enum": ["image/jpeg", "image/x-adobe-dng", "image/png", "application/rdf+xml"]
           },
           "overwrite": {
             "type": "boolean",
             "description": "If the file already exists, indicates if the output file should be overwritten. Will eventually support eTags. Only applies to CC Storage",
             "default": true
+          },
+          "quality": {
+            "description": "Quality of the JPEG outputs (will be ignored for other output types). Ranges from 0 to 12, with 12 as the highest quality.",
+            "type": "number",
+            "default": 12,
+            "minimum": 0,
+            "maximum": 12
           }
         }
       },
@@ -970,6 +1419,29 @@
         "properties": {
           "inputs": {
             "$ref": "#/components/schemas/input"
+          },
+          "options": {
+            "type": "object",
+            "required": [
+              "uprightMode"
+            ],
+            "properties": {
+              "uprightMode": {
+                "type": "string",
+                "enum": [
+                  "auto",
+                  "full",
+                  "level",
+                  "vertical"
+                ],
+                "description": "The upright mode to use. If you have the options block, then this is a required field. If options block is not specified, then the appropriate upright mode will automatically be selected."
+              },
+              "constrainCrop": {
+                "type": "boolean",
+                "description": "If the straightened image should be constrain cropped, to remove all blank edges around an image.",
+                "default" : true
+              }
+            }
           },
           "outputs": {
             "type": "array",
@@ -1142,6 +1614,12 @@
               "xmp": {
                 "type": "string",
                 "description": "The XMP to apply"
+              },
+              "orientation":{
+                "type":"number",
+                "description": "The combination of flip and/or rotate to apply",
+                "minimum": 1,
+                "maximum": 8
               }
             }
           },
@@ -1221,6 +1699,11 @@
             "description": "width, in pixels, of the renditions. Width of 0 generates a full size rendition. Height is not necessary as the rendition generate will automatically figure out the correct width-to-height aspect ratio. Only supported for image rendition",
             "default": 0
           },
+          "maxWidth": {
+            "type": "integer",
+            "description": "size, in pixels, of the renditions. When width is 0, maxWidth can be provided to get the rendition size. maxWidth when less than document width gets precedence over width. Height is not neccessary as the rendition generate will automatically maintain the aspect ratio.",
+            "default": 0
+          },
           "quality": {
             "type": "integer",
             "description": "quality of the renditions for JPEG. Range from 1 to 7, with 7 as the highest quality.",
@@ -1230,15 +1713,21 @@
           },
           "compression": {
             "type": "string",
-            "description": "compression level for PNG: small, medium or large.",
-            "enum": ["small", "medium", "large"],
-            "default": "large"
+            "description": "Desired PNG compression level.",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ]
           },
           "trimToCanvas": {
-            "type": "string",
-            "description": "'false' generates renditions that are the actual size of the layer (as seen by View > Show > Layer Edges within the Photoshop desktop app) but will remove any extra transparent pixel padding. 'true' generates renditions that are the size of the canvas, either trimming the layer to the visible portion of the canvas or padding extra space. If the requested file format supports transparency than transparent pixels will be used for padding, otherwise white pixels will be used.",
-            "default": "false",
-            "enum": ["true", "false"]
+            "description": "If the renditions needs to be of Canvas size. True, trims the renditions to Canvas size, while false makes the renditions to Layer Size",
+            "type": "boolean",
+            "enum": [
+              false,
+              true
+            ],
+            "default": false
           },
           "layers": {
             "$ref": "#/components/schemas/photoshopOutputLayers"
@@ -1797,6 +2286,9 @@
               },
               "fonts": {
                 "$ref": "#/components/schemas/fonts"
+              },
+              "brushes": {
+                "$ref": "#/components/schemas/brushes"
               }
             }
           }
@@ -1842,34 +2334,408 @@
           }
         }
       },
+      "photoshopActionJsonCreateRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input action sets in ATN format. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+           "options": {
+            "type": "object",
+            "description": "This block is needed only if you want to specify whcih action to convert from the ActionSet ",
+            "required": ["actions"],
+            "properties": {
+              "actions": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 1,
+                "items": {
+                  "$ref": "#/components/schemas/action_object"
+                }
+              }
+            }
+          }
+        }
+      },
+      "productCropRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input objects. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "An array of output objects",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "unit": {
+                "type": "string",
+                "enum": ["Pixels", "Percent"],
+                "description": "Unit for width and height"
+              },
+              "width": {
+                "type": "integer",
+                "description": "The width to be added as padding."
+              },
+              "height": {
+                "type": "integer",
+                "description": "The height to be added as padding."
+              }
+            }
+          }
+        }
+      },
+      "depthBlurRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input objects. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "An array of output objects",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+                "focalDistance": {
+                    "type": "integer",
+                    "description": "The distance of the point to be in focus. 0 would be the nearest point, 100 would be the furthest point",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                "focalRange": {
+                    "type": "integer",
+                    "description": "The range of the focal point",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 100
+                },
+               "focalSelector": {
+                    "type": "object",
+                    "description": "Co-ordinates of the specific focal point to select",
+                    "allOf": [{
+                        "properties": {
+                            "x": {
+                                "type": "number",
+                                "description": "X co-ordinate"
+                            },
+                            "y": {
+                                "type": "number",
+                                "description": "Y co-ordinate"
+                            }
+                        },
+                        "additionalProperties": false,
+                        "minProperties": 2
+                    }]
+                },
+                "focusSubject": {
+                    "type": "boolean",
+                    "description": "If enabled uses selectsubject to automatically select the prominent subject for focus. Also would override focalDistance",
+                    "default": false
+                },
+                "blurStrength": {
+                    "type": "integer",
+                    "description": "The amount of blur to apply",
+                    "default": 50,
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                "haze": {
+                    "type": "integer",
+                    "description": "The amount of haze to apply",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                "temp": {
+                    "type": "integer",
+                    "description": "The value of the temperature to apply. -50 would be coldest and 50 would be the warmest setting",
+                    "default": 0,
+                    "minimum": -50,
+                    "maximum": 50
+                },
+                "tint": {
+                    "type": "integer",
+                    "description": "The amount of the tint to apply",
+                    "default": 0,
+                    "minimum": -50,
+                    "maximum": 50
+                },
+                "saturation": {
+                    "type": "integer",
+                    "description": "The amount of the saturation to apply. -50 implies fully unsaturated colors and 50 will fully saturate the colors",
+                    "default": 0,
+                    "minimum": -50,
+                    "maximum": 50
+                },
+                "brightness": {
+                    "type": "integer",
+                    "description": "The amount of the brightness to apply",
+                    "default": 0,
+                    "minimum": -50,
+                    "maximum": 50
+                },
+                "grain": {
+                    "type": "integer",
+                    "description": "The amount of the graining to add to the image",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 100
+                }
+            },
+            "allOf": [
+                {
+                    "not": {
+                        "required": [
+                            "focusSubject", "focalSelector"
+                        ]
+                    }
+                }
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "textRequest": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "description": "An array of input objects. We currently only support one input object",
+            "items": {
+              "$ref": "#/components/schemas/input"
+            }
+          },
+          "outputs": {
+            "type": "array",
+            "description": "An array of output objects",
+            "items": {
+              "$ref": "#/components/schemas/photoshopOutput"
+            }
+          },
+          "options": {
+            "type": "object",
+            "minProperties": 1,
+            "required": ["layers"],
+            "description": "User can update properties related to text layers and fonts using options block",
+            "allOf": [{
+              "properties": {
+                "manageMissingFonts": {
+                  "enum": [
+                    "fail",
+                    "useDefault"
+                  ],
+                  "description": "Action to take if there are one or more missing fonts in the document. If not provided it takes the default font."
+                },
+                "globalFont": {
+                  "type": "string",
+                  "description": "The full postscript name of the font to be used as the global default for the document. This font will be used for any text layer which has a missing font and no other font has been specifically provided for that layer. If this font itself is missing, the option specified for manageMissingFonts from above will take effect."
+                },
+                "layers": {
+                  "type": "array",
+                  "minItems": 1,
+                  "description": "Array of text layer objects you wish to act upon",
+                  "items": {
+                    "type": "object",
+                    "allOf": [{
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "The name of the layer you want to insert. Use either id OR name"
+                        },
+                        "id": {
+                          "type": "integer",
+                          "description": "The id of the layer you want to insert. Use either id OR name."
+                        },
+                        "bounds": {
+                          "$ref": "#/components/schemas/bounds"
+                        },
+                        "locked": {
+                          "type": "boolean",
+                          "description": "Is the layer editable"
+                        },
+                        "visible": {
+                          "type": "boolean",
+                          "description": "Is the layer visible"
+                        },
+                        "text": {
+                          "type": "object",
+                          "description": "Supported text layer attributes.",
+                          "minProperties": 1,
+                          "properties": {
+                            "contents": {
+                              "type": "string",
+                              "description": "The contents of the text layer (deprecated, please use content)"
+                            },
+                            "content": {
+                              "type": "string",
+                              "description": "The content of the text layer"
+                            },
+                            "orientation": {
+                              "type": "string",
+                              "description": "The text's orientation",
+                              "enum": ["horizontal", "vertical"]
+                            },
+                            "rotate": {
+                              "type": "integer",
+                              "description": "The text's rotation in angle",
+                              "minimum": -180,
+                              "maximum": 180
+                            },
+                            "antiAlias": {
+                              "type": "string",
+                              "description": "The text's aliasing type which determines the smoothness of the jagged edges of the text.",
+                              "enum": ["antiAliasNone", "antiAliasSharp", "antiAliasCrisp", "antiAliasStrong", "antiAliasSmooth", "antiAliasPlatformLCD", "antiAliasPlatformGray"]
+                            },
+                            "eastAsianFeatures": {
+                              "type": "object",
+                              "description": "Text features specifically for eastAsian languages",
+                              "minProperties": 1,
+                              "properties": {
+                                "textStyle": {
+                                  "type": "string",
+                                  "description": "Base line direction for text style",
+                                  "enum": ["cross", "rotated", "withSream"]
+                                }
+                              }
+                            },
+                            "characterStyles": {
+                              "$ref": "#/components/schemas/character_styles"
+                            },
+                            "paragraphStyles": {
+                              "$ref": "#/components/schemas/paragraph_styles"
+                            },
+                            "textType": {
+                              "type": "string",
+                              "description": "The type of text's contents, point or paragraph",
+                              "enum": ["point", "paragraph"]
+                            }
+                          },
+                          "additionalProperties": false
+                        }
+                      },
+                      "additionalProperties": false
+                    }],
+                    "oneOf": [{
+                        "required": [
+                          "name"
+                        ]
+                      },
+                      {
+                        "required": [
+                          "id"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              "additionalProperties": false
+            }]
+          }
+        }
+      },
+      "artboardRequest": {
+         "type": "object",
+          "properties": {
+            "options": {
+              "type": "object",
+              "properties": {
+                "artboard": {
+                  "$ref": "#/components/schemas/artboard_objects"
+                }
+              }
+            },
+            "outputs": {
+              "type": "array",
+              "description": "An array of output objects",
+              "items": {
+                "$ref": "#/components/schemas/photoshopOutput"
+              }
+            }
+        }
+      },
+      "artboard_objects": {
+        "type": "array",
+        "minLength": 1,
+        "description": "An array of hashes describing the input files to edit. each input object will be either 'external', 'adobe', 'azure' or 'dropbox'",
+        "items": {
+          "$ref": "#/components/schemas/input_object"
+        }
+      },
       "document": {
         "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "description": "name of the input file"
+          "height": {
+            "type": "integer",
+            "description": "In pixels"
           },
           "width": {
             "type": "integer",
-            "description": "in pixels"
+            "description": "In pixels"
           },
-          "height": {
+          "resolution": {
             "type": "integer",
-            "description": "in pixels"
+            "minimum": 72,
+            "maximum": 300,
+            "description": "In pixels per inch"
           },
-          "photoshopBuild": {
+          "fill": {
             "type": "string",
-            "description": "the name of the application that created the PSD"
+            "enum": [
+              "white",
+              "backgroundColor",
+              "transparent"
+            ],
+            "description": "Type of fill for the background layer"
           },
-          "imageMode": {
+          "mode": {
             "type": "string",
-            "description": "the document's image mode",
-            "enum": ["bitmap", "greyscale", "indexed", "rgb", "cmyk", "hsl", "hsb", "multichannel", "duotone", "lab", "xyz"]
+            "enum": [
+              "bitmap",
+              "greyscale",
+              "indexed",
+              "rgb",
+              "cmyk",
+              "hsl",
+              "hsb",
+              "multichannel",
+              "duotone",
+              "lab",
+              "xyz"
+            ],
+            "description": "Color space"
           },
-          "bitDepth": {
+          "depth": {
             "type": "integer",
-            "description": "the document's bit/channel depth",
-            "enum": [8, 16, 32]
+            "enum": [
+              8,
+              16,
+              32
+            ],
+            "description": "Bit depth, this is either 8, 16 or 32 bit"
           }
         }
       },
@@ -2015,6 +2881,16 @@
         "description": "array of references to additional images, which can be referred by actionJson commands",
         "items": {
           "$ref": "#/components/schemas/input"
+        }
+      },
+      "action_object": {
+        "type": "object",
+        "minProperties": 1,
+        "properties": {
+          "actionName": {
+            "description": "If you only want to execute a particular action, you may specify whcih action to convert from the ActionSet",
+            "type": "string"
+          }
         }
       },
       "adjustmentLayer": {
@@ -2168,6 +3044,174 @@
             "description": "in pixels"
           }
         }
+      },
+      "character_styles": {
+        "type": "array",
+        "minItems": 1,
+        "description": "Array of character_style objects. Any of the `characterStyles` property is required.",
+        "items": {
+          "$ref": "#/components/schemas/character_style"
+        }
+      },
+      "character_style": {
+        "type": "object",
+        "description": "character style settings",
+        "minProperties": 1,
+        "properties": {
+          "size": {
+            "type": "number",
+            "description": "The font size, in pixels",
+            "minimum": 0.04,
+            "maximum": 5400
+          },
+          "fontPostScriptName": {
+            "type": "string",
+            "description": "the font's postscript name to be used to set the font for this layer."
+          },
+          "color": {
+            "type": "object",
+            "required": [
+              "red",
+              "green",
+              "blue"
+            ],
+            "description": "FontColor in rgb format",
+            "properties": {
+              "red": {
+                "type": "integer",
+                "description": "The color red value",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "green": {
+                "type": "integer",
+                "description": "The color green value",
+                "minimum": 0,
+                "maximum": 65535
+              },
+              "blue": {
+                "type": "integer",
+                "description": "The color blue value",
+                "minimum": 0,
+                "maximum": 65535
+              }
+            }
+          },
+          "leading": {
+            "type": "number",
+            "description": "The font's leading value, where leading is the distance between each line of text."
+          },
+          "tracking": {
+            "type": "number",
+            "description": "The font's tracking value, where tracking is the horizontal spacing between a range of characters."
+          },
+          "baseline": {
+            "type": "string",
+            "description": "Indicates if the text is raised or lowered in relation to a font’s baseline",
+            "enum": ["subScript", "superScript"]
+          },
+          "fontCaps": {
+            "type": "string",
+            "description": "The text's capitalization values",
+            "enum": ["allCaps", "smallCaps"]
+          },
+          "autoKern": {
+            "type": "string",
+            "description": "The text's kerning setting. Optical: set based on the shape of the font. Metrics: uses kern pairs included in fonts",
+            "enum": ["opticalKern", "metricsKern"]
+          },
+          "strikethrough": {
+            "type": "boolean",
+            "description": "Toggle strikethrough for selected text"
+          },
+          "syntheticBold": {
+            "type": "boolean",
+            "description": "Toggle bold for selected text"
+          },
+          "syntheticItalic": {
+            "type": "boolean",
+            "description": "Toggle italic for selected text"
+          },
+          "underline": {
+            "type": "boolean",
+            "description": "Toggle underlining of text"
+          },
+          "ligature": {
+            "type": "boolean",
+            "description": "Toggle text ligature, which are special characters in a font that combine two (or more)"
+          },
+          "fractions": {
+            "type": "boolean",
+            "description": "Toggle automatic formatting of fractions: numbers separated by a slash (such as 1/2)"
+          },
+          "stylisticAlternates": {
+            "type": "boolean",
+            "description": "Toggle stylisticAlternates, which formats stylized characters that create a purely aesthetic effect"
+          },
+          "verticalScale": {
+            "type": "number",
+            "description": "The amount of vertical scaling to apply to the font",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "horizontalScale": {
+            "type": "number",
+            "description": "The amount of horizontal scaling to apply to the font",
+            "minimum": 0,
+            "maximum": 1000
+          }
+        },
+        "additionalProperties": false
+      },
+      "paragraph_styles": {
+        "type": "array",
+        "minItems": 1,
+        "description": "Array of paragraph_style objects. Any of the `paragraphStyles` properties is required.",
+        "items": {
+          "$ref": "#/components/schemas/paragraph_style"
+        }
+      },
+      "paragraph_style": {
+        "type": "object",
+        "minProperties": 1,
+        "description": "Paragraph style settings",
+        "properties": {
+          "align": {
+            "type": "string",
+            "description": "The paragraph alignment (deprecated, please use alignment)",
+            "enum": ["left", "center", "right", "justify", "justifyLeft", "justifyCenter", "justifyRight", "justifyAll"]
+          },
+          "alignment": {
+            "type": "string",
+            "description": "The paragraph alignment",
+            "enum": ["left", "center", "right", "justify", "justifyLeft", "justifyCenter", "justifyRight", "justifyAll"]
+          },
+          "startIndent": {
+            "type": "number",
+            "description": "The amount of indent to add to the left margin"
+          },
+          "endIndent": {
+            "type": "number",
+            "description": "The amount of indent to add to the right margin"
+          },
+          "hyphenate": {
+            "type": "boolean",
+            "description": "Toggle hyphenate for paragraph text"
+          },
+          "firstLineIndent": {
+            "type": "number",
+            "description": "The amount of indent to add to the first line of the paragraph"
+          },
+          "spaceBefore": {
+            "type": "number",
+            "description": "The amount of space to add before the paragraph"
+          },
+          "spaceAfter": {
+            "type": "number",
+            "description": "The amount of inspace to add after the paragraph"
+          }
+        },
+        "additionalProperties": false
       },
       "layerMask": {
         "type": "object",
@@ -2382,10 +3426,6 @@
           "fontName": {
             "type": "string",
             "description": "the font's postscript name. The list of supported fonts is at https://github.com/AdobeDocs/photoshop-api-docs/blob/master/SupportedFonts.md"
-          },
-          "fontAvailable": {
-            "type": "string",
-            "description": "is the font missing"
           },
           "orientation": {
             "type": "string",
