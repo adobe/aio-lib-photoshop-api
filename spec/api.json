@@ -1681,7 +1681,7 @@
     "/pie/psdService/artboardCreate": {
       "summary": "Creates an artboard.",
       "post": {
-        "operationId": "text",
+        "operationId": "artboardCreate",
         "tags": [
           "photoshop"
         ],
