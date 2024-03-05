@@ -44,7 +44,7 @@
         }
       }
     },
-    "/sensei/Cutout": {
+    "/sensei/cutout": {
       "summary": "Initiate an asynchronous job to generate a PNG file in 4 channel RGBA format with the generated cutout mask applied to the input image",
       "post": {
         "operationId": "autoCutout",
@@ -128,7 +128,7 @@
         }
       }
     },
-    "/sensei/Mask": {
+    "/sensei/mask": {
       "summary": "Initiate an asynchronous job to generate a mask PNG",
       "post": {
         "operationId": "autoMask",
@@ -242,7 +242,7 @@
         }
       }
     },
-    "/lrService/AutoStraighten": {
+    "/lrService/autoStraighten": {
       "summary": "Initiates an asynchronous job to auto straighten an image",
       "post": {
         "operationId": "autoStraighten",
@@ -336,7 +336,7 @@
         }
       }
     },
-    "/lrService/AutoTone": {
+    "/lrService/autoTone": {
       "summary": "Initiates an asynchronous job to auto tone an image",
       "post": {
         "operationId": "autoTone",
@@ -430,7 +430,7 @@
         }
       }
     },
-    "/lrService/Edit": {
+    "/lrService/edit": {
       "summary": "Initiates an asynchronous job to apply a set of edit parameters on an image",
       "post": {
         "operationId": "editPhoto",
@@ -524,7 +524,7 @@
         }
       }
     },
-    "/lrService/Presets": {
+    "/lrService/presets": {
       "summary": "Initiates an asynchronous job to apply a preset on an image",
       "post": {
         "operationId": "applyPreset",
@@ -618,7 +618,7 @@
         }
       }
     },
-    "/lrService/Xmp": {
+    "/lrService/xmp": {
       "summary": "Initiates an asynchronous job to apply an XMP setting to an image",
       "post": {
         "operationId": "applyPresetXmp",
@@ -694,7 +694,7 @@
         }
       }
     },
-    "/pie/psdService/DocumentManifest": {
+    "/pie/psdService/documentManifest": {
       "summary": "Initiates an asynchronous job to extract and return a psd file's layer information",
       "post": {
         "operationId": "getDocumentManifest",
@@ -778,7 +778,7 @@
         }
       }
     },
-    "/pie/psdService/DocumentCreate": {
+    "/pie/psdService/documentCreate": {
       "summary": "Initiates an asynchronous job to create a new psd, optionally with layers, and then generate renditions and/or save as a psd",
       "post": {
         "operationId": "createDocument",
@@ -862,7 +862,7 @@
         }
       }
     },
-    "/pie/psdService/DocumentOperations": {
+    "/pie/psdService/documentOperations": {
       "summary": "Initiates an asynchronous job to apply (optional) psd edits and then generate renditions and/or save as a new psd",
       "post": {
         "operationId": "modifyDocument",
@@ -946,7 +946,7 @@
         }
       }
     },
-    "/pie/psdService/RenditionCreate": {
+    "/pie/psdService/renditionCreate": {
       "summary": "Initiates an asynchronous job to create renditions",
       "post": {
         "operationId": "createRendition",
@@ -1030,7 +1030,7 @@
         }
       }
     },
-    "/pie/psdService/SmartObject": {
+    "/pie/psdService/smartObject": {
       "summary": "Initiates an asynchronous job to apply psd edits for replacing embedded smart object and then generate renditions and/or save a new psd",
       "post": {
         "operationId": "replaceSmartObject",
@@ -1114,7 +1114,7 @@
         }
       }
     },
-    "/pie/psdService/PhotoshopActions": {
+    "/pie/psdService/photoshopActions": {
       "summary": "Initiates an asynchronous job to play Photoshop Actions and then generate renditions and/or save as a new image",
       "post": {
         "operationId": "applyPhotoshopActions",
@@ -1203,7 +1203,7 @@
         }
       }
     },
-    "/pie/psdService/ActionJson": {
+    "/pie/psdService/actionJson": {
       "summary": "Initiates an asynchronous job to play JSON-formatted Photoshop Actions and then generate renditions and/or save as a new image",
       "post": {
         "operationId": "applyPhotoshopActionsJson",
@@ -1292,7 +1292,7 @@
         }
       }
     },
-    "/pie/psdService/ActionJsonCreate": {
+    "/pie/psdService/actionJsonCreate": {
       "summary": "Converts an atn file to actionJSON.",
       "post": {
         "operationId": "actionJsonCreate",
@@ -1381,7 +1381,7 @@
         }
       }
     },
-    "/pie/psdService/ProductCrop": {
+    "/pie/psdService/productCrop": {
       "summary": "Executes Product Crop on a given image.",
       "post": {
         "operationId": "productCrop",
@@ -1480,7 +1480,7 @@
         }
       }
     },
-    "/pie/psdService/DepthBlur": {
+    "/pie/psdService/depthBlur": {
       "summary": "Executes Depth Blur on a given image. ",
       "post": {
         "operationId": "depthBlur",
@@ -1579,7 +1579,7 @@
         }
       }
     },
-    "/pie/psdService/Text": {
+    "/pie/psdService/text": {
       "summary": "Edit one or more text layers.",
       "post": {
         "operationId": "text",
@@ -1678,7 +1678,7 @@
         }
       }
     },
-    "/pie/psdService/ArtboardCreate": {
+    "/pie/psdService/artboardCreate": {
       "summary": "Creates an artboard.",
       "post": {
         "operationId": "text",
