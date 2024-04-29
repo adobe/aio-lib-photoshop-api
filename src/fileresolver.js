@@ -130,7 +130,7 @@ class FileResolver {
    * @private
    * @param {Input|Output} file Input or output reference
    * @param {'r'|'rwd'} permissions Permissions required for file
-   * @returns {Input|Output} Resolved input or output reference with storage
+   * @returns {Promise<Input|Output>} Resolved input or output reference with storage
    */
   async __resolveStorage (file, permissions) {
     if (validUrl.isWebUri(file.href)) {
@@ -159,7 +159,7 @@ class FileResolver {
    * @private
    * @param {string|Input|Output} file Input, output, or href to resolve
    * @param {'r'|'rwd'} permissions Permissions required for file
-   * @returns {Input|Output} resolved input or output with storage
+   * @returns {Promise<Input|Output>} resolved input or output with storage
    */
   async __resolveFile (file, permissions) {
     if (!file) {
@@ -183,7 +183,7 @@ class FileResolver {
    * @private
    * @param {string|string[]|Input|Input[]|Output|Output[]} files One or more files
    * @param {'r'|'rwd'} permissions Permissions required for file
-   * @returns {Input[]|Output[]} resolved files
+   * @returns {Promise<Input[]|Output[]>} resolved files
    */
   async __resolveFiles (files, permissions) {
     if (Array.isArray(files)) {
@@ -198,7 +198,7 @@ class FileResolver {
    * Resolve input file from href to an object with href and storage
    *
    * @param {string|Input} input Input or href to resolve
-   * @returns {Input} resolved input
+   * @returns {Promise<Input>} resolved input
    */
   async resolveInput (input) {
     return this.__resolveFile(input, 'r')
@@ -208,7 +208,7 @@ class FileResolver {
    * Resolve input files from hrefs to an array of objects with href and storage
    *
    * @param {string|string[]|Input|Input[]} inputs One or more files
-   * @returns {Input[]} resolved files
+   * @returns {Promise<Input[]>} resolved files
    */
   async resolveInputs (inputs) {
     return this.__resolveFiles(inputs, 'r')
@@ -218,7 +218,7 @@ class FileResolver {
    * Resolve the font and layer inputs in the document options
    *
    * @param {CreateDocumentOptions|ModifyDocumentOptions|ReplaceSmartObjectOptions} options Document options
-   * @returns {CreateDocumentOptions|ModifyDocumentOptions|ReplaceSmartObjectOptions} Document options
+   * @returns {Promise<CreateDocumentOptions|ModifyDocumentOptions|ReplaceSmartObjectOptions>} Document options
    */
   async resolveInputsDocumentOptions (options) {
     if (options && options.fonts) {
@@ -239,7 +239,7 @@ class FileResolver {
    * Resolve the actions, fonts, and custom presets options
    *
    * @param {ApplyPhotoshopActionsOptions} options Photoshop Actions options
-   * @returns {ApplyPhotoshopActionsOptions} Photoshop Actions options
+   * @returns {Promise<ApplyPhotoshopActionsOptions>} Photoshop Actions options
    */
   async resolveInputsPhotoshopActionsOptions (options) {
     if (options && options.actions) {
@@ -264,7 +264,7 @@ class FileResolver {
    * Resolve output from href to an object with href, storage, and type
    *
    * @param {string|File|Output} output One or more output files
-   * @returns {Output} resolved files
+   * @returns {Promise<Output>} resolved files
    */
   async resolveOutput (output) {
     return resolveMimeType(
@@ -276,7 +276,7 @@ class FileResolver {
    * Resolve outputs from href to an object with href, storage, and type
    *
    * @param {string|string[]|File|File[]|Output|Output[]} outputs One or more output files
-   * @returns {Output[]} resolved files
+   * @returns {Promise<Output[]>} resolved files
    */
   async resolveOutputs (outputs) {
     const resolvedFiles = await this.__resolveFiles(outputs, 'rwd')

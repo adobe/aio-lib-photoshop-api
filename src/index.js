@@ -219,7 +219,7 @@ class PhotoshopAPI {
    *
    * @private
    * @param {string} url Job status url
-   * @returns {*} Job status response
+   * @returns {Promise<Object>} Job status response
    */
   async __getJobStatus (url) {
     const requestInterceptor = request => {
@@ -245,7 +245,7 @@ class PhotoshopAPI {
    *
    * @param {string|Input} input Input file
    * @param {string|Output} output Output file
-   * @returns {Job} Auto cutout job
+   * @returns {Promise<Job>} Auto cutout job
    */
   async createCutout (input, output) {
     try {
@@ -268,7 +268,7 @@ class PhotoshopAPI {
    *
    * @param {string|Input} input Input file
    * @param {string|Output} output Output file
-   * @returns {Job} Auto masking job
+   * @returns {Promise<Job>} Auto masking job
    */
   async createMask (input, output) {
     try {
@@ -291,7 +291,7 @@ class PhotoshopAPI {
    *
    * @param {string|Input} input Input file
    * @param {string|Output|Output[]} outputs Output file
-   * @returns {Job} Auto straighten job
+   * @returns {Promise<Job>} Auto straighten job
    */
   async straighten (input, outputs) {
     try {
@@ -314,7 +314,7 @@ class PhotoshopAPI {
    *
    * @param {string|Input} input Input file
    * @param {string|Output} output Output file
-   * @returns {Job} Auto tone job
+   * @returns {Promise<Job>} Auto tone job
    */
   async autoTone (input, output) {
     try {
@@ -338,7 +338,7 @@ class PhotoshopAPI {
    * @param {string|Input} input Input file
    * @param {string|Output} output Output file
    * @param {EditPhotoOptions} options Edit options
-   * @returns {Job} Edit photo job
+   * @returns {Promise<Job>} Edit photo job
    */
   async editPhoto (input, output, options) {
     try {
@@ -365,7 +365,7 @@ class PhotoshopAPI {
    * @param {string|Input} input Input file
    * @param {string|Input} preset Lightroom preset XMP file
    * @param {string|Output} output Output file
-   * @returns {Job} Apply preset job
+   * @returns {Promise<Job>} Apply preset job
    */
   async applyPreset (input, preset, output) {
     try {
@@ -392,7 +392,7 @@ class PhotoshopAPI {
    * @param {string|Input} input Input file
    * @param {string|Output} output Output file
    * @param {string} xmp Lightroom preset XMP file contents
-   * @returns {Job} Apply preset job
+   * @returns {Promise<Job>} Apply preset job
    */
   async applyPresetXmp (input, output, xmp) {
     try {
@@ -420,7 +420,7 @@ class PhotoshopAPI {
    *
    * @param {string|string[]|Output|Output[]} outputs Desired output
    * @param {CreateDocumentOptions} options Document create options
-   * @returns {Job} Create document job
+   * @returns {Promise<Job>} Create document job
    */
   async createDocument (outputs, options) {
     try {
@@ -445,7 +445,7 @@ class PhotoshopAPI {
    * @param {object} [options] available options to apply to all input files
    * @param {object} [options.thumbnails] Include presigned GET URLs to small preview thumbnails for any renderable layer.
    * @param {MimeType} [options.thumbnails.type] desired image format. Allowed values: "image/jpeg", "image/png", "image/tiff"
-   * @returns {Job} Get document manifest job
+   * @returns {Promise<Job>} Get document manifest job
    */
   async getDocumentManifest (input, options) {
     try {
@@ -469,7 +469,7 @@ class PhotoshopAPI {
    * @param {string|Input} input An object describing an input PSD file. Current support is for files less than 1000MB.
    * @param {string|string[]|Output|Output[]} outputs Desired output
    * @param {ModifyDocumentOptions} options Modify document options
-   * @returns {Job} Modify document job
+   * @returns {Promise<Job>} Modify document job
    */
   async modifyDocument (input, outputs, options) {
     try {
@@ -493,7 +493,7 @@ class PhotoshopAPI {
    *
    * @param {string|Input} input An object describing an input file. Currently supported filetypes include: jpeg, png, psd, tiff. Current support is for files less than 1000MB.
    * @param {string|string[]|Output|Output[]} outputs Desired output
-   * @returns {Job} Create rendition job
+   * @returns {Promise<Job>} Create rendition job
    */
   async createRendition (input, outputs) {
     try {
@@ -517,7 +517,7 @@ class PhotoshopAPI {
    * @param {Input} input An object describing an input PSD file. Current support is for files less than 1000MB.
    * @param {string|Output|Output[]} outputs Desired output
    * @param {ReplaceSmartObjectOptions} options Replace smart object options
-   * @returns {Job} Replace smart object job
+   * @returns {Promise<Job>} Replace smart object job
    */
   async replaceSmartObject (input, outputs, options) {
     try {
@@ -542,7 +542,7 @@ class PhotoshopAPI {
    * @param {Input} input An object describing an input image file. Current support is for files less than 1000MB.
    * @param {string|Output|Output[]} outputs Desired output
    * @param {ApplyPhotoshopActionsOptions} options Apply Photoshop Actions options
-   * @returns {Job} Photoshop Actions job
+   * @returns {Promise<Job>} Photoshop Actions job
    */
   async applyPhotoshopActions (input, outputs, options) {
     try {
@@ -567,7 +567,7 @@ class PhotoshopAPI {
    * @param {Input} input An object describing an input image file. Current support is for files less than 1000MB.
    * @param {string|Output|Output[]} outputs Desired output
    * @param {ApplyPhotoshopActionsOptions} options Apply Photoshop Actions options
-   * @returns {Job} Photoshop Actions job
+   * @returns {Promise<Job>} Photoshop Actions job
    */
   async applyPhotoshopActionsJson (input, outputs, options) {
     try {

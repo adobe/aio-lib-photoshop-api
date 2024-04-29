@@ -77,7 +77,7 @@ class Job {
   /**
    * Poll for job status
    *
-   * @returns {Job} Job instance
+   * @returns {Promise<Job>} Job instance
    */
   async poll () {
     const response = await this.getJobStatus(this.url)
@@ -123,7 +123,7 @@ class Job {
    * Poll job until done
    *
    * @param {number} [pollTimeMs=2000] Polling time
-   * @returns {Job} Job instance
+   * @returns {Promise<Job>} Job instance
    */
   async pollUntilDone (pollTimeMs = 2000) {
     while (!this.isDone()) {

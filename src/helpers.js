@@ -179,7 +179,7 @@ function requestToString (request) {
  *
  * @private
  * @param {Response} response the response object
- * @returns {Response} the response object
+ * @returns {Promise<Response>} the response object
  */
 async function responseInterceptor (response) {
   logger.debug(`RESPONSE:\n ${await responseBodyToString(response)}`)
